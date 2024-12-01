@@ -5,14 +5,14 @@
     <form style="display: grid;" @submit.prevent="solicitarGarantia">
 
         <label class="form-label" for="selectOne-cliente">Selecione o Cliente: </label>
-        <select class="form-select" id="selectOne-cliente" required>
+        <select class="form-select" id="selectOne-cliente" @click="fetchClientes()" required>
             <option>Selecione o Cliente</option>
             <option v-for="cliente in clientes" :value="solicitacao.cliente_id" :key="cliente.id">{{ cliente.nome }} - {{ cliente.descricao }}</option>
         </select>
 <br>
 
         <label class="form-label" for="selectOne-fornecedor">Selecione o Fornecedor: </label>
-        <select class="form-select" id="selectOne-fornecedor" required @click="fetchFornecedores" >
+        <select class="form-select" id="selectOne-fornecedor" required @click="fetchFornecedores()" >
             <option>Selecione o Fornecedor</option>
             <option v-for="fornecedor in fornecedores" :value="solicitacao.fornecedor_id" :key="fornecedor.id">{{ fornecedor.nome }}</option>
         </select>

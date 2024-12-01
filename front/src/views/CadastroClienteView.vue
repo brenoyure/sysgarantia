@@ -1,22 +1,22 @@
 <template>
 
     <h2>Cadastro de Cliente</h2>
-    
-    <form style="display: grid;" @submit.prevent="cadastrarCliente">
+
+    <form style="display: grid;" @submit.prevent="cadastrarCliente()">
 
         <label class="form-label"   for="inputText-nome">Nome: </label>
-        <input class="form-control" id="inputText-nome">
+        <input class="form-control" id="inputText-nome" v-model="cliente.nome" required>
 <br>
         <label class="form-label"   for="inputText-descricao">Descrição: </label>
-        <input class="form-control" id="inputText-descricao" required>
+        <input class="form-control" id="inputText-descricao" v-model="cliente.descricao" required>
 <br>
 
         <label class="form-label"   for="inputText-numerosParaContato">Números para Contato: </label>
-        <input class="form-control" id="inputText-numerosParaContato" required>
+        <input class="form-control" id="inputText-numerosParaContato" v-model="cliente.numerosParaContato" required>
 <br>
 
         <label class="form-label"   for="inputText-emailsParaContato">E-mails para Contato: </label>
-        <input class="form-control" id="inputText-emailsParaContato" required>
+        <input class="form-control" id="inputText-emailsParaContato" v-model="cliente.emailsParaContato" required>
 <br>
 
     <h3>Dados de Endereços</h3>
@@ -48,23 +48,24 @@
     <h3>Horários</h3>
 
         <label class="form-label"   for="selectTime-horarioInicioDoExpediente">Início do Expediente: </label>
-        <input class="form-control" type="time" id="selectTime-horarioInicioDoExpediente" required>
+        <input class="form-control" type="time" id="selectTime-horarioInicioDoExpediente" v-model="cliente.horarioInicioDoExpediente" required>
 <br>
 
         <label class="form-label"   for="selectTime-horarioFimDoExpediente">Fim do Expediente: </label>
-        <input class="form-control" type="time" id="selectTime-horarioFimdoExpediente" required>
+        <input class="form-control" type="time" id="selectTime-horarioFimdoExpediente" v-model="cliente.horarioFimDoExpediente" required>
 <br>
 
         <label class="form-label"   for="checkbox-possuiHorarioDeAlmoco">Possui Horário de Almoço: </label>
-        <input class="form-check"   type="checkbox" id="checkbox-possuiHorarioDeAlmoco" required>
+        <input class="form-check"   type="checkbox" id="checkbox-possuiHorarioDeAlmoco" v-model="cliente.possuiHorarioDeAlmoco">
 <br>
 
-        <label class="form-label"   for="selectTime-inicioDoHorarioDeAlmoco">Início do Almoço: </label>
-        <input class="form-control" type="time" id="selectTime-inicioDoHorarioDeAlmoco">
+        <div v-if="cliente.possuiHorarioDeAlmoco">
+            <label class="form-label"   for="selectTime-inicioDoHorarioDeAlmoco">Início do Almoço: </label>
+            <input class="form-control" type="time" id="selectTime-inicioDoHorarioDeAlmoco" v-model="cliente.inicioDoHorarioDeAlmoco" >
 <br>
-
-        <label class="form-label"   for="selectTime-fimDoHorarioDeAlmoco">Fim do Almoço: </label>
-        <input class="form-control" type="time" id="selectTime-fimDoHorarioDeAlmoco">
+            <label class="form-label"   for="selectTime-fimDoHorarioDeAlmoco">Fim do Almoço: </label>
+            <input class="form-control" type="time" id="selectTime-fimDoHorarioDeAlmoco" v-model="cliente.fimDoHorarioDeAlmoco" >
+        </div>
 <br>
 
         <button>Salvar</button>
@@ -75,7 +76,7 @@
 </template>
 
 <script>
-import axios from 'axios'
+import axios from '@/axios'
 export default {
     name: 'CadastroClienteView',
     data() {
@@ -93,20 +94,22 @@ export default {
                 cep: null,
                 horarioInicioDoExpediente: null,
                 horarioFimDoExpediente: null,
-                possuiHorarioDeAlmoco: null
+                possuiHorarioDeAlmoco: false,
+                inicioDoHorarioDeAlmoco: null,
+                fimDoHorarioDeAlmoco: null
             }
         }
     },
     methods: {
         async cadastrarCliente() {
             await axios
-                    .post('/clientes', {
-                        data: this.cliente
-                    })
+                    .post('/clientes', this.cliente)
                     .then(response => {
                         console.log(response)
                     })
-                    .catch(error => console.log(error))
+                    .catch(error => {
+                        console.log(error)
+                    })
         },
         async fetchEndereco() {
             if (this.cliente.cep != null && this.cliente.cep.trim() != '') {

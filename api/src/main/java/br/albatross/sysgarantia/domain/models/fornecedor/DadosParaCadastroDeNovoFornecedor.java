@@ -23,7 +23,7 @@ public class DadosParaCadastroDeNovoFornecedor {
     @NotBlank
     private String emails;
 
-    @NotEmpty
+//    @NotEmpty
     private Set<Integer> idsDosServicosDoFornecedorNoSistemaDeChamados = new HashSet<>();
 
 }

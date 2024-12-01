@@ -3,10 +3,10 @@ package br.albatross.sysgarantia.externos.otrs.repositories;
 import java.util.Optional;
 
 import br.albatross.sysgarantia.externos.InventarioRepository;
-import jakarta.enterprise.context.RequestScoped;
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.inject.Inject;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.NoResultException;
-import jakarta.persistence.PersistenceContext;
 
 /**
  * Contexto de persistência com o sistema de chamados OTRS/Znuny, 
@@ -14,11 +14,11 @@ import jakarta.persistence.PersistenceContext;
  * 
  * @author breno.brito
  */
-@RequestScoped
+@ApplicationScoped
 public class OtrsZnunyCMDBInventarioRepository implements InventarioRepository {
 
-//    @PersistenceContext(unitName = "otrsdb")
-    private EntityManager entityManager;
+    @Inject
+    EntityManager entityManager;
 
     /**
      * Busca o número de série pelo BM do equipamento utilizando a NativeQuery JPA.

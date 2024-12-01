@@ -1,7 +1,7 @@
 <template>
     <nav class="navbar navbar-expand-md navbar-dark bg-dark mb-4">
       <div class="container-fluid">
-        <a class="navbar-brand" href="#">Serviço de Garantia</a>
+        <RouterLink class="navbar-brand" to="/">Serviço de Garantia</RouterLink>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
           <span class="navbar-toggler-icon"></span>
         </button>
@@ -10,17 +10,25 @@
             <li class="nav-item">
               <a class="nav-link active" aria-current="page" href="#">Home</a>
             </li>
-            <li class="nav-item">
-              <a class="nav-link" href="#">Link</a>
+            <li class="nav-item dropdown">
+              <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                Fornecedores
+              </a>
+              <ul class="dropdown-menu">
+                <li><RouterLink class="dropdown-item" to="/administracao/fornecedores/cadastro">Novo</RouterLink></li>
+                <li><a class="dropdown-item" href="#">Listagem</a></li>
+              </ul>
             </li>
-            <li class="nav-item">
-              <a class="nav-link disabled" aria-disabled="true">Disabled</a>
+            <li class="nav-item dropdown">
+              <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                Clientes
+              </a>
+              <ul class="dropdown-menu">
+                <li><RouterLink class="dropdown-item" to="/administracao/clientes/cadastro">Novo</RouterLink></li>
+                <li><a class="dropdown-item" href="#">Listagem</a></li>
+              </ul>
             </li>
           </ul>
-          <form class="d-flex" role="search">
-            <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
-            <button class="btn btn-outline-success" type="submit">Search</button>
-          </form>
         </div>
       </div>
     </nav>

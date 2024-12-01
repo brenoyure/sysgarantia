@@ -2,15 +2,20 @@ package br.albatross.sysgarantia.domain.models.garantia.apis.chamado;
 
 import java.io.Serializable;
 
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
+import lombok.AllArgsConstructor;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
-public interface DadosDoServico extends Serializable {
+@Getter @Setter
+@EqualsAndHashCode(of = "idDoServico")
+@AllArgsConstructor @NoArgsConstructor
+public class DadosDoServico implements Serializable {
 
-	@NotNull
-	Integer getIdDoServico();
+	private static final long serialVersionUID = 1L;
 
-	@NotBlank
-	String getNomeDoServico();
-
+	private Integer idDoServico;
+	private String  nomeDoServico;
+	
 }

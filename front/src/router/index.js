@@ -1,18 +1,22 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import IndexView from '@/views/IndexView.vue'
 import CadastroClienteView from '@/views/CadastroClienteView'
+import CadastroFornecedorView from '@/views/CadastroFornecedorView.vue'
 
 const routes = [
   {
     path: '/',
-    name: 'index',
     component: IndexView
   },
-  
+
   {
-      path: '/administracao/clientes/cadastro',
-      name: 'administracao-clientes-cadastro',
-      component: CadastroClienteView
+    path: '/administracao/clientes/cadastro',
+    component: CadastroClienteView
+  },
+
+  {
+    path: '/administracao/fornecedores/cadastro',
+    component: CadastroFornecedorView
   }
 
 ]

@@ -5,9 +5,9 @@ import java.util.List;
 import br.albatross.sysgarantia.domain.models.garantia.apis.chamado.DadosDoChamado;
 import br.albatross.sysgarantia.domain.models.garantia.apis.chamado.DadosDoChamadoDto;
 import br.albatross.sysgarantia.externos.ChamadoRepository;
-import jakarta.enterprise.context.RequestScoped;
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.inject.Inject;
 import jakarta.persistence.EntityManager;
-import jakarta.persistence.PersistenceContext;
 
 /**
  * Representa o contexto de persistência com o Sistema de Chamados OTRS/Znuny,
@@ -16,11 +16,11 @@ import jakarta.persistence.PersistenceContext;
  * @author breno.brito
  * 
  */
-@RequestScoped
+@ApplicationScoped
 public class OtrsZnunyChamadosRepository implements ChamadoRepository {
 
-//    @PersistenceContext(unitName = "otrsdb")
-    private EntityManager entityManager;
+    @Inject
+    EntityManager entityManager;
 
     private static final byte TRASH_QUEUE_ID = 3;
     private static final byte TICKET_STATE_AS_NEW  = 1;

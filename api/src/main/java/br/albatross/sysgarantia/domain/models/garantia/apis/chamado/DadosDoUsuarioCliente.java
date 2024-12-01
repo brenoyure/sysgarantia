@@ -1,7 +1,15 @@
 package br.albatross.sysgarantia.domain.models.garantia.apis.chamado;
 
-public interface DadosDoUsuarioCliente {
+import java.io.Serializable;
 
-	String getNomeDoUsuarioCliente();
+import lombok.Getter;
+import lombok.Setter;
+
+@Getter @Setter
+public class DadosDoUsuarioCliente implements Serializable {
+
+    private static final long serialVersionUID = 1L;
+
+    private String nomeDoUsuarioCliente;
 
 }

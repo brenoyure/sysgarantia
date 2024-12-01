@@ -2,24 +2,52 @@ package br.albatross.sysgarantia.domain.models.garantia.apis.chamado;
 
 import java.io.Serializable;
 
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
+import lombok.AllArgsConstructor;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
-public interface DadosDoChamado extends Serializable {
+@Getter @Setter
+@EqualsAndHashCode(of = "id")
+@NoArgsConstructor @AllArgsConstructor
+public class DadosDoChamado implements Serializable {
 
-	@NotNull
-	Long getId();
+	private static final long serialVersionUID = 1L;
 
-	@NotBlank
-	String getNumeroDoChamado();
+	private Long id;
 
-	@NotBlank
-	String getTitulo();	
+	private String numeroDoChamado;
 
-	@NotNull
-	DadosDoServico getDadosDoServico();
+	private String titulo;
 
-	@NotNull
-	DadosDoUsuarioCliente getDadosDoUsuarioCliente();
+	private Integer idDoServico;
+
+	private String nomeDoServico;
+
+	private String nomeDoUsuario;
+
+//	public DadosDoServico getDadosDoServico() {
+//		return new DadosDoServico() {
+//
+//			private static final long serialVersionUID = 1L;
+//
+//			@Override
+//			public String getNomeDoServico() {
+//				return nomeDoServico;
+//			}
+//
+//			@Override
+//			public Integer getIdDoServico() {
+//				return idDoServico;
+//			}
+//		};
+//	}
+//
+//	public DadosDoUsuarioCliente getDadosDoUsuarioCliente() {
+//		DadosDoUsuarioCliente usuarioCliente = new DadosDoUsuarioCliente();
+//		usuarioCliente.setNomeDoUsuarioCliente(nomeDoUsuario);
+//        return usuarioCliente;
+//	}
 
 }

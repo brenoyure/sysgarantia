@@ -2,7 +2,15 @@ package br.albatross.sysgarantia.externos;
 
 import java.util.List;
 
+import org.eclipse.microprofile.rest.client.inject.RegisterRestClient;
+
 import br.albatross.sysgarantia.domain.models.garantia.apis.chamado.DadosDoChamado;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.ws.rs.Consumes;
+import jakarta.ws.rs.POST;
+import jakarta.ws.rs.Path;
+import jakarta.ws.rs.Produces;
+import jakarta.ws.rs.core.MediaType;
 
 /**
  * 
@@ -11,6 +19,8 @@ import br.albatross.sysgarantia.domain.models.garantia.apis.chamado.DadosDoChama
  * @author breno.brito
  * 
  */
+@Path("/chamados")
+@RegisterRestClient
 public interface ChamadoRepository {
 
     /**
@@ -20,6 +30,9 @@ public interface ChamadoRepository {
      * @param serviceIds
      * @return
      */
-	List<DadosDoChamado> findByService(List<Integer> servicesIds);
+    @POST
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+	List<DadosDoChamado> findByService(@NotEmpty List<Integer> servicesIds);
 
 }

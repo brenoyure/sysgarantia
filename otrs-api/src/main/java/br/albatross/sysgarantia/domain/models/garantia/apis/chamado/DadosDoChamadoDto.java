@@ -1,7 +1,5 @@
 package br.albatross.sysgarantia.domain.models.garantia.apis.chamado;
 
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -28,25 +26,25 @@ public class DadosDoChamadoDto implements DadosDoChamado {
 	private String nomeDoUsuario;
 
 	@Override
-	public @NotNull DadosDoServico getDadosDoServico() {
+	public DadosDoServico getDadosDoServico() {
 		return new DadosDoServico() {
 
 			private static final long serialVersionUID = 1L;
 
 			@Override
-			public @NotBlank String getNomeDoServico() {
+			public String getNomeDoServico() {
 				return nomeDoServico;
 			}
 
 			@Override
-			public @NotNull Integer getIdDoServico() {
+			public Integer getIdDoServico() {
 				return idDoServico;
 			}
 		};
 	}
 
 	@Override
-	public @NotNull DadosDoUsuarioCliente getDadosDoUsuarioCliente() {
+	public DadosDoUsuarioCliente getDadosDoUsuarioCliente() {
 		return () -> nomeDoUsuario;
 	}
 

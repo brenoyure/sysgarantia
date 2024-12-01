@@ -6,15 +6,22 @@ import br.albatross.sysgarantia.domain.models.fornecedor.DadosParaAtualizacaoDeF
 import br.albatross.sysgarantia.domain.models.fornecedor.DadosParaCadastroDeNovoFornecedor;
 import br.albatross.sysgarantia.domain.models.garantia.apis.fornecedores.DadosDoFornecedor;
 import br.albatross.sysgarantia.domain.services.fornecedores.FornecedoresService;
+import br.albatross.sysgarantia.persistence.repositories.fornecedor.FornecedorRepository;
+
 import jakarta.inject.Inject;
+
 import jakarta.transaction.Transactional;
+
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.Positive;
+
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.POST;
 import jakarta.ws.rs.PUT;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.PathParam;
 import jakarta.ws.rs.Produces;
+import jakarta.ws.rs.core.HttpHeaders;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.Response.Status;
@@ -28,29 +35,32 @@ public class FornecedoresResource {
     FornecedoresService fornecedoresService;
 
     @Inject
+    FornecedorRepository fornecedorRepository;
+
+    @Inject
     UriInfo uriInfo;
 
     @GET
     public Response fornecedores() {
-        return Response.ok(fornecedoresService.listarFornecedoresDisponiveis()).build();
+        return Response.ok(fornecedorRepository.findAllAsFornecedorComboBoxOrderByNome()).build();
     }
 
     @POST
     @Transactional
-    public Response cadastrarNovo(DadosParaCadastroDeNovoFornecedor novoFornecedor) {
+    public Response cadastrarNovo(@Valid DadosParaCadastroDeNovoFornecedor novoFornecedor) {
         DadosDoFornecedor fornecedor = 
                 fornecedoresService.cadastrarNovoFornecedor(novoFornecedor);
 
        URI novoFornecedorURI = 
                uriInfo.getRequestUriBuilder().path(String.valueOf(fornecedor.getId())).build(fornecedor);
 
-       return Response.created(novoFornecedorURI).entity(fornecedor).build();
+       return Response.created(novoFornecedorURI).header(HttpHeaders.LOCATION, novoFornecedorURI).build();
 
     }
 
     @PUT
     @Transactional
-    public Response atualizar(DadosParaAtualizacaoDeFornecedor dadosAtualizados) {
+    public Response atualizar(@Valid DadosParaAtualizacaoDeFornecedor dadosAtualizados) {
         fornecedoresService.atualizarFornecedor(dadosAtualizados);
         return Response.noContent().build();
     }
@@ -65,18 +75,3 @@ public class FornecedoresResource {
     }
 
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

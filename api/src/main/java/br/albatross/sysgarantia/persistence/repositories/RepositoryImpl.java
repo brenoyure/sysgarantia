@@ -21,7 +21,7 @@ import jakarta.persistence.criteria.Root;
 public abstract class RepositoryImpl<T, K> implements Repository<T, K> {
 
     @Inject
-    private EntityManager entityManager;
+    EntityManager entityManager;
 
     private final Class<T> entityClazz;
 

@@ -9,9 +9,9 @@ import br.albatross.sysgarantia.domain.models.garantia.apis.chamado.DadosDoServi
 import br.albatross.sysgarantia.domain.models.garantia.apis.chamado.DadosDoServicoDto;
 import br.albatross.sysgarantia.externos.ServicosDosChamadosRepository;
 import br.albatross.sysgarantia.externos.otrs.entities.service.Service;
-import jakarta.enterprise.context.RequestScoped;
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.inject.Inject;
 import jakarta.persistence.EntityManager;
-import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.CriteriaQuery;
 import jakarta.persistence.criteria.Root;
@@ -19,11 +19,11 @@ import jakarta.persistence.criteria.Root;
 /**
  * Representa o contexto de persistência com a entidade Service(Serviço do Ticket) do Sistema de Chamados OTRS/Znuny.
  */
-@RequestScoped
+@ApplicationScoped
 public class OtrsZnunyTicketsServiceRepository implements ServicosDosChamadosRepository {
 
-//    @PersistenceContext(unitName = "otrsdb")
-    private EntityManager entityManager;
+    @Inject
+    EntityManager entityManager;
 
     @Override
     public List<DadosDoServico> findAll() {
