@@ -86,7 +86,7 @@ public class FornecedoresRepositoryImpl extends RepositoryImpl<Fornecedor, Integ
     public List<FornecedorComboBox> findAllAsFornecedorComboBoxOrderByNome() {
 
         return entityManager
-                .createQuery("SELECT new br.albatross.otrs.domain.models.fornecedor.FornecedorComboBox(f.id, f.nome) FROM Fornecedor f ORDER BY f.nome", FornecedorComboBox.class)
+                .createQuery("SELECT new br.albatross.sysgarantia.domain.models.fornecedor.FornecedorComboBox(f.id, f.nome) FROM Fornecedor f ORDER BY f.nome", FornecedorComboBox.class)
                 .getResultList();
 
     }

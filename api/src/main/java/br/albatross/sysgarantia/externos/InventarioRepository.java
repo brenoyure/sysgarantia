@@ -1,7 +1,5 @@
 package br.albatross.sysgarantia.externos;
 
-import java.util.Optional;
-
 import org.eclipse.microprofile.rest.client.inject.RegisterRestClient;
 
 import jakarta.validation.constraints.NotBlank;
@@ -19,11 +17,13 @@ public interface InventarioRepository {
      * Retorna o número de série de algum equipamento, recebendo como 
      * parâmetro algum identificador que o sistema possua, por exemplo número de patrimônio.
      * 
+     * TODO Implementar um MessageBodyReader<Optional<String>> ainda.
+     *
      * @author breno.brito
      */
     @GET
     @Path("/{identificador}")
-    @Produces(MediaType.APPLICATION_JSON)
-	Optional<String> findSerialNumberByIdentifier(@NotBlank @PathParam("identificador") String identifier);
+    @Produces(MediaType.TEXT_PLAIN)
+	String findSerialNumberByIdentifier(@PathParam("identificador") @NotBlank String identificador);
 
 }

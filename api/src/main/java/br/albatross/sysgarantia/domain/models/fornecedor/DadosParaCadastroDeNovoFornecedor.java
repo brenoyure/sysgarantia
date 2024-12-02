@@ -4,7 +4,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotEmpty;
+
 import lombok.Getter;
 import lombok.Setter;
 
@@ -23,7 +23,6 @@ public class DadosParaCadastroDeNovoFornecedor {
     @NotBlank
     private String emails;
 
-//    @NotEmpty
     private Set<Integer> idsDosServicosDoFornecedorNoSistemaDeChamados = new HashSet<>();
 
 }
