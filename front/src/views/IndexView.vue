@@ -1,7 +1,7 @@
 <template>
 
     <h2>Serviço de Garantia</h2>
-    
+
     <form style="display: grid;" @submit.prevent="solicitarGarantia">
 
         <label class="form-label" for="selectOne-cliente">Selecione o Cliente: </label>
@@ -18,19 +18,31 @@
         </select>
 <br>
 
-        <label class="form-label"   for="inputText-identificadorEquipamento">(Opcional) Buscar Número de Série pelo Identificador: </label>
-        <input class="form-control" id="inputText-identificadorEquipamento" placeholder="Por exemplo, número de patrimônio ..." v-model="identificadorDoEquipamento" @change="buscarNumeroDeSeriePeloIdentificadorDoEquipamentoNoSistemaDeChamados()">
-<br>
+        <div id="div-buscaNumeroDeSeriePeloIdentificadorEquipamento" v-if="sistemaDeChamadosDisponivel">
+            <label class="form-label"   for="inputText-identificadorEquipamento">(Opcional) Buscar Número de Série pelo Identificador: </label>
+            <input class="form-control" id="inputText-identificadorEquipamento" placeholder="Por exemplo, número de patrimônio ..." v-model="identificadorDoEquipamento" @change="buscarNumeroDeSeriePeloIdentificadorDoEquipamentoNoSistemaDeChamados()">
+            <br>
+        </div>
+
         <label class="form-label"   for="inputText-numeroDeSerieEquipamento">Número de Série: </label>
-        <input class="form-control" id="inputText-numeroDeSerieEquipamento" v-model="solicitacao.numero_de_serie" required>
+        <input class="form-control" id="inputText-numeroDeSerieEquipamento" v-model="solicitacao.numero_de_serie" placeholder="ex. AVCLX486" required>
 <br>
 
-        <label for="selectOne-ticketChamado">(Opcional) Selecione o Ticket: </label>
-        <select id="selectOne-ticketChamado" v-model="solicitacao.chamado_id">
-            <option value="0">Selecione o Ticket</option>
-            <option :value="chamado.id" v-for="chamado in chamados" :key="chamado.id">[Ticket#{{ chamado.numeroDoChamado }}] {{ chamado.titulo }} | Serviço: {{ chamado.nomeDoServico }} | Usuário: {{ chamado.nomeDoUsuario }}</option>
+        <label class="form-label" for="selectOne-descricaoProblema">Selecione o Problema: </label>
+        <select class="form-select" id="selectOne-descricaoProblema" v-model="solicitacao.descricao_problema_id" required>
+            <option value="0">Selecione o Problema</option>
+            <option v-for="descricaoProblema in descricaoProblemas" :value="descricaoProblema.id" :key="descricaoProblema.id">{{ descricaoProblema }}</option>
         </select>
 <br>
+
+        <div id="div-selectOne-chamado" v-if="sistemaDeChamadosDisponivel">
+            <label for="selectOne-ticketChamado">(Opcional) Selecione o Ticket: </label>
+            <select id="selectOne-ticketChamado" v-model="solicitacao.chamado_id">
+                <option value="0">Selecione o Ticket</option>
+                <option :value="chamado.id" v-for="chamado in chamados" :key="chamado.id">[Ticket#{{ chamado.numeroDoChamado }}] {{ chamado.titulo }} | Serviço: {{ chamado.nomeDoServico }} | Usuário: {{ chamado.nomeDoUsuario }}</option>
+            </select>
+            <br>
+        </div>
 
         <button>Solicitar Garantia</button>
 
@@ -45,15 +57,17 @@ export default {
     name: 'IndexView',
     data() {
         return {
+            sistemaDeChamadosDisponivel: false,
             chamados: null,
             identificadorDoEquipamento: null,
             clientes: null,
             fornecedores: null,
+            descricaoProblemas: null,
             solicitacao: {
                 numero_de_serie: null,
                 cliente_id: 0,
                 fornecedor_id: 0,
-                chamado_id: 0,
+                chamado_id: null,
                 descricao_problema_id: 0,
             }
         }
@@ -67,13 +81,15 @@ export default {
         },
 
         async listarChamadosDoFornecedor() {
-            this.solicitacao.chamado_id = 0
+            this.solicitacao.chamado_id = null
             await axios
                     .get('/fornecedores/' + this.solicitacao.fornecedor_id)
                     .then(response => {
-                        axios
-                            .post('/sistemaDeChamados/chamados', response.data.idsDosServicosDoFornecedorNoSistemaDeChamados)
-                            .then(response => this.chamados = response.data)
+                        if (this.sistemaDeChamadosDisponivel) {
+                            axios
+                              .post('/sistemaDeChamados/chamados', response.data.idsDosServicosDoFornecedorNoSistemaDeChamados)
+                              .then(response => this.chamados = response.data)
+                        }
                     })
         },
 
@@ -105,12 +121,31 @@ export default {
                         .catch(error => console.log(error))
             }
 
+        },
+
+        async fetchDescricaoProblemas() {
+            await axios
+                    .get('/descricaoProblemas')
+                    .then(response => this.descricaoProblemas = response.data)
+                    .catch(error => console.log(error))
+        },
+
+        async checkExternalHelpDeskSystemHealth() {
+            await axios
+                    .get('/sistemaDeChamados/up')
+                    .then(() => this.sistemaDeChamadosDisponivel = true)
+                    .catch(error => {
+                        console.log(error)
+                        this.solicitacao.chamado_id = null
+                    })
         }
 
     },
     async mounted() {
+        await this.checkExternalHelpDeskSystemHealth()
         await this.fetchClientes()
         await this.fetchFornecedores()
+        await this.fetchDescricaoProblemas()
     }
   
 }

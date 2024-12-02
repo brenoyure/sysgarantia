@@ -6,14 +6,17 @@
     <label class="form-label"   for="inputText-nome">Nome: </label>
         <input class="form-control" id="inputText-nome" v-model="fornecedor.nome" required>
 <br>
-        <label class="form-label"   for="inputText-emails">E-mails para Contato: </label>
-        <input class="form-control" id="inputText-emails" v-model="fornecedor.emails" required>
+    <label class="form-label"   for="inputText-emails">E-mails para Contato: </label>
+    <input class="form-control" id="inputText-emails" v-model="fornecedor.emails" required>
 <br>
 
+    <div id="div-selectOne-chamado" v-if="sistemaDeChamadosDisponivel">
         <label class="form-label"   for="checkMany-idsDosServicosDoFornecedorNoSistemaDeChamados">Serviços do Fornecedor no Sistema de Chamados:  </label>
         <select multiple class="form-control" id="checkMany-idsDosServicosDoFornecedorNoSistemaDeChamados" v-model="fornecedor.idsDosServicosDoFornecedorNoSistemaDeChamados" >
             <option v-for="servico in servicosDoFornecedor" :key="servico.id" :value="servico.idDoServico">{{ servico.nomeDoServico }}</option>
         </select>
+        <br>
+    </div>
 
         <button>Salvar</button>
 <br>
@@ -28,6 +31,7 @@ export default {
     name: 'CadastroFornecedorView',
     data() {
         return {
+            sistemaDeChamadosDisponivel: false,
             servicosDoFornecedor: null,
             fornecedor: {
                 nome: null,
@@ -42,18 +46,17 @@ export default {
             console.log(this.fornecedor)
             await axios
                     .post('/fornecedores', this.fornecedor)
-                    .then(response => {
-                        console.log(response)
-                    })
-                    .catch(error => {
-                        console.log(error)
-                    })
+                    .then(response => console.log(response))
+                    .catch(error => console.log(error))
         },
 
         async fetchServicosDoFornecedorNoSistemaDeChamados() {
             await axios
                     .get('/sistemaDeChamados/chamados/servicos')
-                    .then(response => this.servicosDoFornecedor = response.data)
+                    .then(response => {
+                        this.servicosDoFornecedor = response.data
+                        this.sistemaDeChamadosDisponivel = true
+                    })
                     .catch(error => console.log(error))
         }
     },
