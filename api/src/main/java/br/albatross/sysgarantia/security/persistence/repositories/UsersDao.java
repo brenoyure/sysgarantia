@@ -6,6 +6,7 @@ import java.util.Optional;
 
 import br.albatross.sysgarantia.security.models.DadosParaListagemDoUsuarioDto;
 import br.albatross.sysgarantia.security.persistence.entities.User;
+import io.quarkus.hibernate.orm.PersistenceUnit;
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
 import jakarta.persistence.EntityManager;
@@ -16,7 +17,8 @@ import jakarta.persistence.NoResultException;
 public class UsersDao {
 
     @Inject
-	private EntityManager entityManager;
+    @PersistenceUnit("sysgarantia-pu")
+    EntityManager entityManager;
 
 	public DadosParaListagemDoUsuarioDto persist(User user) {
 		entityManager.persist(user);

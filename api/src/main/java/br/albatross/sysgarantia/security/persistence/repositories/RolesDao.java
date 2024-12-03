@@ -3,6 +3,7 @@ package br.albatross.sysgarantia.security.persistence.repositories;
 import java.util.List;
 
 import br.albatross.sysgarantia.security.persistence.entities.Role;
+import io.quarkus.hibernate.orm.PersistenceUnit;
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
 import jakarta.persistence.EntityManager;
@@ -11,7 +12,8 @@ import jakarta.persistence.EntityManager;
 public class RolesDao {
 
     @Inject
-    private EntityManager entityManager;
+    @PersistenceUnit("sysgarantia-pu")
+    EntityManager entityManager;
 
 	public List<Role> getRoles() {
 		return entityManager

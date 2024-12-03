@@ -18,7 +18,7 @@
         </select>
 <br>
 
-        <div id="div-buscaNumeroDeSeriePeloIdentificadorEquipamento" v-if="sistemaDeChamadosDisponivel">
+        <div id="div-buscaNumeroDeSeriePeloIdentificadorEquipamento">
             <label class="form-label"   for="inputText-identificadorEquipamento">(Opcional) Buscar Número de Série pelo Identificador: </label>
             <input class="form-control" id="inputText-identificadorEquipamento" placeholder="Por exemplo, número de patrimônio ..." v-model="identificadorDoEquipamento" @change="buscarNumeroDeSeriePeloIdentificadorDoEquipamentoNoSistemaDeChamados()">
             <br>
@@ -31,20 +31,57 @@
         <label class="form-label" for="selectOne-descricaoProblema">Selecione o Problema: </label>
         <select class="form-select" id="selectOne-descricaoProblema" v-model="solicitacao.descricao_problema_id" required>
             <option value="0">Selecione o Problema</option>
-            <option v-for="descricaoProblema in descricaoProblemas" :value="descricaoProblema.id" :key="descricaoProblema.id">{{ descricaoProblema }}</option>
+            <option v-for="descricaoProblema in descricaoProblemas" :value="descricaoProblema.id" :key="descricaoProblema.id">{{ descricaoProblema.problema.tipo }} | {{ descricaoProblema.descricaoResumida }}</option>
         </select>
 <br>
 
-        <div id="div-selectOne-chamado" v-if="sistemaDeChamadosDisponivel">
-            <label for="selectOne-ticketChamado">(Opcional) Selecione o Ticket: </label>
-            <select id="selectOne-ticketChamado" v-model="solicitacao.chamado_id">
-                <option value="0">Selecione o Ticket</option>
-                <option :value="chamado.id" v-for="chamado in chamados" :key="chamado.id">[Ticket#{{ chamado.numeroDoChamado }}] {{ chamado.titulo }} | Serviço: {{ chamado.nomeDoServico }} | Usuário: {{ chamado.nomeDoUsuario }}</option>
-            </select>
-            <br>
-        </div>
+        <label for="selectOne-ticketChamado">Selecione o Ticket: </label>
+        <select class="form-select" id="selectOne-ticketChamado" v-model="solicitacao.chamado_id" required>
+            <option value="0">Selecione o Ticket</option>
+            <option :value="chamado.id" v-for="chamado in chamados" :key="chamado.id">[Ticket#{{ chamado.numeroDoChamado }}] {{ chamado.titulo }} | Serviço: {{ chamado.nomeDoServico }} | Usuário: {{ chamado.nomeDoUsuario }}</option>
+        </select>
+<br>
 
-        <button>Solicitar Garantia</button>
+        <!-- Button trigger modal -->
+        <button type="button" class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
+        Solicitar Garantia
+        </button>
+
+        <!-- Modal -->
+        <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+            <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="exampleModalLabel">Nova Solicitação de Garantia</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div>
+                    <h4>Cliente</h4>
+                    <p><b>Solicitante:</b> JFCE - Justiça Federal no Ceará</p>
+                    <p><b>Número de Série:</b> AVCLX486</p>
+                </div>
+                <div>
+                    <h4>Fornecedor</h4>
+                    <p><b>Nome: </b>DATEN</p>
+                    <p><b>E-mail(s): </b>atendimento.governo@daten.com.br, suporte5@daten.com.br</p>
+                </div>
+                <div>
+                    <h4>Sistema de Chamados</h4>
+                    <p><b>Chamado: </b>2024120382000486</p>
+                    <p><b>Título: </b>Monitor Não Liga</p>
+                    <p><b>Serviço: </b>Monitor DATEN</p>
+                    <p><b>Usuário: </b>andre.santos </p>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="submit" class="btn btn-outline-primary">Confirmar Solicitação</button>
+                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancelar</button>
+            </div>
+            </div>
+        </div>
+        </div>
+<br>
 
     </form>
 
@@ -57,7 +94,6 @@ export default {
     name: 'IndexView',
     data() {
         return {
-            sistemaDeChamadosDisponivel: false,
             chamados: null,
             identificadorDoEquipamento: null,
             clientes: null,
@@ -67,7 +103,7 @@ export default {
                 numero_de_serie: null,
                 cliente_id: 0,
                 fornecedor_id: 0,
-                chamado_id: null,
+                chamado_id: 0,
                 descricao_problema_id: 0,
             }
         }
@@ -81,19 +117,20 @@ export default {
         },
 
         async listarChamadosDoFornecedor() {
-            this.solicitacao.chamado_id = null
+            this.solicitacao.chamado_id = 0
             await axios
-                    .get('/fornecedores/' + this.solicitacao.fornecedor_id)
-                    .then(response => {
-                        if (this.sistemaDeChamadosDisponivel) {
-                            axios
-                              .post('/sistemaDeChamados/chamados', response.data.idsDosServicosDoFornecedorNoSistemaDeChamados)
-                              .then(response => this.chamados = response.data)
-                        }
-                    })
+                .get('/fornecedores/' + this.solicitacao.fornecedor_id)
+                .then(response => {
+                    const fornecedor = response.data
+                    if (fornecedor.idsDosServicosDoFornecedorNoSistemaDeChamados.length > 0) {
+                        axios
+                            .post('/sistemaDeChamados/chamados', fornecedor.idsDosServicosDoFornecedorNoSistemaDeChamados)
+                            .then(response => this.chamados = response.data)
+                    }
+                })
         },
 
-        async solicitarGarantia() {
+        solicitarGarantia() {
             alert(JSON.stringify(this.solicitacao))
             console.log(this.solicitacao)
             // await axios.post('/solicitacaoGarantia', {
@@ -130,19 +167,8 @@ export default {
                     .catch(error => console.log(error))
         },
 
-        async checkExternalHelpDeskSystemHealth() {
-            await axios
-                    .get('/sistemaDeChamados/up')
-                    .then(() => this.sistemaDeChamadosDisponivel = true)
-                    .catch(error => {
-                        console.log(error)
-                        this.solicitacao.chamado_id = null
-                    })
-        }
-
     },
     async mounted() {
-        await this.checkExternalHelpDeskSystemHealth()
         await this.fetchClientes()
         await this.fetchFornecedores()
         await this.fetchDescricaoProblemas()

@@ -2,6 +2,7 @@ import { createRouter, createWebHistory } from 'vue-router'
 import IndexView from '@/views/IndexView.vue'
 import CadastroClienteView from '@/views/CadastroClienteView'
 import CadastroFornecedorView from '@/views/CadastroFornecedorView.vue'
+import ListaFornecedoresView from '@/views/ListaFornecedoresView.vue'
 
 const routes = [
   {
@@ -17,6 +18,11 @@ const routes = [
   {
     path: '/administracao/fornecedores/cadastro',
     component: CadastroFornecedorView
+  },
+
+  {
+    path: '/administracao/fornecedores/listagem',
+    component: ListaFornecedoresView
   }
 
 ]

@@ -2,10 +2,10 @@ package br.albatross.sysgarantia.domain.models.garantia.apis.solicitacao;
 
 import java.io.Serializable;
 
-import br.albatross.sysgarantia.domain.models.garantia.apis.chamado.DadosDoChamado;
-import br.albatross.sysgarantia.domain.models.garantia.apis.cliente.DadosDoCliente;
-import br.albatross.sysgarantia.domain.models.garantia.apis.fornecedores.DadosDoFornecedor;
 import br.albatross.sysgarantia.domain.models.garantia.apis.problemas.DescricaoProblema;
+import br.albatross.sysgarantia.dto.cliente.DadosDoCliente;
+import br.albatross.sysgarantia.dto.fornecedor.DadosDoFornecedor;
+import br.albatross.sysgarantia.models.garantia.DadosDoChamado;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 

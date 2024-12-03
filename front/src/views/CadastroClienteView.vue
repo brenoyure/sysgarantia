@@ -1,6 +1,6 @@
 <template>
 
-    <h2>Cadastro de Cliente</h2>
+    <h2>Administração / Clientes / Cadastro</h2>
 
     <form style="display: grid;" @submit.prevent="cadastrarCliente()">
 
@@ -68,7 +68,8 @@
         </div>
 <br>
 
-        <button>Salvar</button>
+        <button class="btn btn-outline-primary">Salvar</button>
+<br>
 
     </form>
 

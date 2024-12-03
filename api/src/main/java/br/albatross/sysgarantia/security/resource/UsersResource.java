@@ -2,9 +2,7 @@ package br.albatross.sysgarantia.security.resource;
 
 import br.albatross.sysgarantia.security.persistence.repositories.RolesDao;
 import br.albatross.sysgarantia.security.persistence.repositories.UsersDao;
-
 import jakarta.inject.Inject;
-
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.Produces;

@@ -1,5 +1,5 @@
 <template>
-<h2>Cadastro de Fornecedor</h2>
+ <h2>Administração / Fornecedores / Cadastro</h2>
 
 <form style="display: grid;" @submit.prevent="cadastrarFornecedor()">
 
@@ -10,15 +10,14 @@
     <input class="form-control" id="inputText-emails" v-model="fornecedor.emails" required>
 <br>
 
-    <div id="div-selectOne-chamado" v-if="sistemaDeChamadosDisponivel">
-        <label class="form-label"   for="checkMany-idsDosServicosDoFornecedorNoSistemaDeChamados">Serviços do Fornecedor no Sistema de Chamados:  </label>
-        <select multiple class="form-control" id="checkMany-idsDosServicosDoFornecedorNoSistemaDeChamados" v-model="fornecedor.idsDosServicosDoFornecedorNoSistemaDeChamados" >
-            <option v-for="servico in servicosDoFornecedor" :key="servico.id" :value="servico.idDoServico">{{ servico.nomeDoServico }}</option>
-        </select>
-        <br>
-    </div>
+    <label class="form-label"   for="checkMany-idsDosServicosDoFornecedorNoSistemaDeChamados">Serviços do Fornecedor no Sistema de Chamados:  </label>
+    <select multiple class="form-control" id="checkMany-idsDosServicosDoFornecedorNoSistemaDeChamados" v-model="fornecedor.idsDosServicosDoFornecedorNoSistemaDeChamados" >
+        <option v-for="servico in servicosDoFornecedor" :key="servico.id" :value="servico.idDoServico">{{ servico.nomeDoServico }}</option>
+    </select>
+<br>
 
-        <button>Salvar</button>
+    <button class="btn btn-outline-primary">Salvar</button>
+
 <br>
 
 </form>
@@ -31,7 +30,6 @@ export default {
     name: 'CadastroFornecedorView',
     data() {
         return {
-            sistemaDeChamadosDisponivel: false,
             servicosDoFornecedor: null,
             fornecedor: {
                 nome: null,
@@ -50,19 +48,18 @@ export default {
                     .catch(error => console.log(error))
         },
 
-        async fetchServicosDoFornecedorNoSistemaDeChamados() {
-            await axios
-                    .get('/sistemaDeChamados/chamados/servicos')
-                    .then(response => {
-                        this.servicosDoFornecedor = response.data
-                        this.sistemaDeChamadosDisponivel = true
-                    })
-                    .catch(error => console.log(error))
+        fetchServicosDoFornecedorNoSistemaDeChamados() {
+            axios
+                .get('/sistemaDeChamados/chamados/servicos')
+                .then(response => {
+                    this.servicosDoFornecedor = response.data
+                })
+                .catch(error => console.log(error))
         }
     },
 
-    async mounted() {
-        await this.fetchServicosDoFornecedorNoSistemaDeChamados()
+    mounted() {
+        this.fetchServicosDoFornecedorNoSistemaDeChamados()
     }
 
 }

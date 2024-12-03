@@ -1,6 +1,6 @@
 package br.albatross.sysgarantia.resource;
 
-import br.albatross.sysgarantia.persistence.repositories.problemas.ProblemaRepository;
+import br.albatross.sysgarantia.repositories.ProblemaRepository;
 import jakarta.annotation.security.RolesAllowed;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.GET;

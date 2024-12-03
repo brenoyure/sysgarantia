@@ -1,7 +1,6 @@
 package br.albatross.sysgarantia.resource;
 
-import br.albatross.sysgarantia.domain.models.garantia.entidades.solicitacao.DadosParaNovaSolicitacaoDeGarantia;
-
+import br.albatross.sysgarantia.dto.garantia.DadosParaNovaSolicitacaoDeGarantia;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.core.Response;
 

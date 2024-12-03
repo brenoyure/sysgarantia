@@ -1,9 +1,6 @@
 package br.albatross.sysgarantia.externos.resource;
 
 import java.util.List;
-import java.util.Optional;
-
-import org.eclipse.microprofile.rest.client.inject.RestClient;
 
 import br.albatross.sysgarantia.externos.ChamadoRepository;
 import br.albatross.sysgarantia.externos.InventarioRepository;
@@ -30,15 +27,12 @@ import jakarta.ws.rs.core.Response.Status;
 public class SistemaDeChamadosResource {
 
     @Inject
-    @RestClient
     ChamadoRepository chamadoRepository;
-    
+
     @Inject
-    @RestClient
     InventarioRepository inventarioRepository;
 
     @Inject
-    @RestClient
     ServicosDosChamadosRepository servicosDosChamadosRepository;
 
     @POST
@@ -56,9 +50,13 @@ public class SistemaDeChamadosResource {
     @GET
     @Produces(MediaType.TEXT_PLAIN)
     @Path("/inventario/{identificador}")
-    public Response buscarNumeroDeSeriePeloIdentificador(@PathParam("identificador") @NotBlank String identificador) {
-        return Optional
-                .ofNullable(inventarioRepository.findSerialNumberByIdentifier(identificador))
+    public Response buscarNumeroDeSeriePeloIdentificador(@NotBlank @PathParam("identificador") String identificador) {
+        System.out.println(identificador);
+        inventarioRepository
+            .findSerialNumberByIdentifier(identificador)
+            .ifPresent(System.out::println);
+        return inventarioRepository
+                .findSerialNumberByIdentifier(identificador)
                 .map(numeroDeSerie -> Response.ok(numeroDeSerie).build())
                 .orElse(Response.status(Status.NOT_FOUND).build());
     }

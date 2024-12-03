@@ -1,7 +1,6 @@
 package br.albatross.sysgarantia.resource;
 
-import br.albatross.sysgarantia.persistence.repositories.emailtemplate.EmailTemplateRepository;
-
+import br.albatross.sysgarantia.repositories.EmailTemplateRepository;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.Path;
