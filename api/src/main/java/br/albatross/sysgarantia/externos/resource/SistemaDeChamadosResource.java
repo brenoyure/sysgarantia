@@ -51,10 +51,6 @@ public class SistemaDeChamadosResource {
     @Produces(MediaType.TEXT_PLAIN)
     @Path("/inventario/{identificador}")
     public Response buscarNumeroDeSeriePeloIdentificador(@NotBlank @PathParam("identificador") String identificador) {
-        System.out.println(identificador);
-        inventarioRepository
-            .findSerialNumberByIdentifier(identificador)
-            .ifPresent(System.out::println);
         return inventarioRepository
                 .findSerialNumberByIdentifier(identificador)
                 .map(numeroDeSerie -> Response.ok(numeroDeSerie).build())

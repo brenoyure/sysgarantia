@@ -10,10 +10,16 @@
     <input class="form-control" id="inputText-emails" v-model="fornecedor.emails" required>
 <br>
 
-    <label class="form-label"   for="checkMany-idsDosServicosDoFornecedorNoSistemaDeChamados">Serviços do Fornecedor no Sistema de Chamados:  </label>
-    <select multiple class="form-control" id="checkMany-idsDosServicosDoFornecedorNoSistemaDeChamados" v-model="fornecedor.idsDosServicosDoFornecedorNoSistemaDeChamados" >
-        <option v-for="servico in servicosDoFornecedor" :key="servico.id" :value="servico.idDoServico">{{ servico.nomeDoServico }}</option>
-    </select>
+    <div>
+        <label >Serviços do Fornecedor no Sistema de Chamados:  </label>
+        <div style="margin-top: 2vh; max-height: 50vh; overflow-x: hidden; overflow-y: scroll;">
+            <div class="form-check" v-for="servico in servicosDoFornecedor" :key="servico.id" :value="servico.idDoServico">
+                <input type="checkbox" class="form-check-input" v-model="fornecedor.idsDosServicosDoFornecedorNoSistemaDeChamados" >
+                <label class="form-label">{{ servico.nomeDoServico }}</label>    
+            </div>
+        </div>
+    </div>
+
 <br>
 
     <button class="btn btn-outline-primary">Salvar</button>
@@ -41,15 +47,14 @@ export default {
 
     methods: {
         async cadastrarFornecedor() {
-            console.log(this.fornecedor)
             await axios
                     .post('/fornecedores', this.fornecedor)
                     .then(response => console.log(response))
                     .catch(error => console.log(error))
         },
 
-        fetchServicosDoFornecedorNoSistemaDeChamados() {
-            axios
+        async fetchServicosDoFornecedorNoSistemaDeChamados() {
+            await axios
                 .get('/sistemaDeChamados/chamados/servicos')
                 .then(response => {
                     this.servicosDoFornecedor = response.data
@@ -58,8 +63,8 @@ export default {
         }
     },
 
-    mounted() {
-        this.fetchServicosDoFornecedorNoSistemaDeChamados()
+    async mounted() {
+        await this.fetchServicosDoFornecedorNoSistemaDeChamados()
     }
 
 }

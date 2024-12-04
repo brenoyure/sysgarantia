@@ -38,7 +38,7 @@
         <label for="selectOne-ticketChamado">Selecione o Ticket: </label>
         <select class="form-select" id="selectOne-ticketChamado" v-model="solicitacao.chamado_id" required>
             <option value="0">Selecione o Ticket</option>
-            <option :value="chamado.id" v-for="chamado in chamados" :key="chamado.id">[Ticket#{{ chamado.numeroDoChamado }}] {{ chamado.titulo }} | Serviço: {{ chamado.nomeDoServico }} | Usuário: {{ chamado.nomeDoUsuario }}</option>
+            <option :value="chamado.id" v-for="chamado in chamados" :key="chamado.id">Nº do Ticket: {{ chamado.numeroDoChamado }} | Título: {{ chamado.titulo }} | Serviço: {{ chamado.nomeDoServico }} | Usuário: {{ chamado.nomeDoUsuario }}</option>
         </select>
 <br>
 
@@ -49,37 +49,37 @@
 
         <!-- Modal -->
         <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
-            <div class="modal-content">
-            <div class="modal-header">
-                <h1 class="modal-title fs-5" id="exampleModalLabel">Nova Solicitação de Garantia</h1>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                <div>
-                    <h4>Cliente</h4>
-                    <p><b>Solicitante:</b> JFCE - Justiça Federal no Ceará</p>
-                    <p><b>Número de Série:</b> AVCLX486</p>
+            <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+                <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="exampleModalLabel">Nova Solicitação de Garantia</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-                <div>
-                    <h4>Fornecedor</h4>
-                    <p><b>Nome: </b>DATEN</p>
-                    <p><b>E-mail(s): </b>atendimento.governo@daten.com.br, suporte5@daten.com.br</p>
+                <div class="modal-body">
+                    <div>
+                        <h4>Cliente</h4>
+                        <p><b>Solicitante:</b> JFCE - Justiça Federal no Ceará</p>
+                        <p><b>Número de Série:</b> AVCLX486</p>
+                    </div>
+                    <div>
+                        <h4>Fornecedor</h4>
+                        <p><b>Nome: </b>DATEN</p>
+                        <p><b>E-mail(s): </b>atendimento.governo@daten.com.br, suporte5@daten.com.br</p>
+                    </div>
+                    <div>
+                        <h4>Sistema de Chamados</h4>
+                        <p><b>Chamado: </b>2024120382000486</p>
+                        <p><b>Título: </b>Monitor Não Liga</p>
+                        <p><b>Serviço: </b>Monitor DATEN</p>
+                        <p><b>Usuário: </b>andre.santos </p>
+                    </div>
                 </div>
-                <div>
-                    <h4>Sistema de Chamados</h4>
-                    <p><b>Chamado: </b>2024120382000486</p>
-                    <p><b>Título: </b>Monitor Não Liga</p>
-                    <p><b>Serviço: </b>Monitor DATEN</p>
-                    <p><b>Usuário: </b>andre.santos </p>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-outline-primary">Confirmar Solicitação</button>
+                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancelar</button>
+                </div>
                 </div>
             </div>
-            <div class="modal-footer">
-                <button type="submit" class="btn btn-outline-primary">Confirmar Solicitação</button>
-                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancelar</button>
-            </div>
-            </div>
-        </div>
         </div>
 <br>
 
@@ -142,21 +142,17 @@ export default {
         },
 
         async fetchFornecedores() {
-            if (this.fornecedores == null) {
-                await axios
-                    .get('/fornecedores')
-                    .then(response => this.fornecedores = response.data)
-                    .catch(error   => console.log(error))
-            }
+            await axios
+                .get('/fornecedores')
+                .then(response => this.fornecedores = response.data)
+                .catch(error => console.log(error))
         },
 
         async fetchClientes() {
-            if (this.clientes == null) {
-                await axios
-                        .get('/clientes')
-                        .then(response => this.clientes = response.data)
-                        .catch(error => console.log(error))
-            }
+            await axios
+                .get('/clientes')
+                .then(response => this.clientes = response.data)
+                .catch(error => console.log(error))
 
         },
 

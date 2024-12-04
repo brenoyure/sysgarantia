@@ -2,12 +2,15 @@ package br.albatross.sysgarantia.dto.fornecedor;
 
 import java.util.Objects;
 
+import io.quarkus.runtime.annotations.RegisterForReflection;
+
 /**
  * 
  * DTO que representa os dados do fornecedor, suficientes para serem exibidos em uma combobox
  * 
  * @author breno.brito
  */
+@RegisterForReflection
 public class FornecedorComboBox {
 
     private final int id;

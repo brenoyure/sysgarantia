@@ -92,9 +92,17 @@ public class FornecedoresRepositoryImpl extends RepositoryImpl<Fornecedor, Integ
 
     @Override
     public List<FornecedorComboBox> findAllOrderByNomeAsCombobox() {
-        return entityManager
-                .createQuery("SELECT new br.albatross.sysgarantia.dto.fornecedor.FornecedorComboBox(f.id, f.nome) FROM Fornecedor f ORDER BY f.nome", FornecedorComboBox.class)
-                .getResultList();
+        CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+        CriteriaQuery<FornecedorComboBox> query = criteriaBuilder.createQuery(FornecedorComboBox.class);
+        Root<Fornecedor> fornecedor = query.from(Fornecedor.class);
+
+        query
+            .select(criteriaBuilder.construct(FornecedorComboBox.class, 
+                    fornecedor.get(Fornecedor_.id), 
+                    fornecedor.get(Fornecedor_.nome)))
+            .orderBy(criteriaBuilder.asc(fornecedor.get(Fornecedor_.nome)));
+
+        return entityManager.createQuery(query).getResultList();
 
     }
 
