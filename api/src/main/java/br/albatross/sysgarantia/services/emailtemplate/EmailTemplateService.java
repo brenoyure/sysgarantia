@@ -92,7 +92,7 @@ public class EmailTemplateService {
                 .replace("$problema.descricao", 
                         solicitacaoDeGarantia.getDescricaoDoProblema().getDescricaoDetalhada())
                 .replace("$chamado.numeroDoTicket", 
-                        solicitacaoDeGarantia.getChamado().getNumeroDoChamado())
+                        solicitacaoDeGarantia.getChamado().numero())
                 .replace("$fornecedor.nome", 
                         solicitacaoDeGarantia.getDadosDoFornecedor().getNome())
                 .replace("$cliente.nome", 

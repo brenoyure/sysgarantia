@@ -2,10 +2,7 @@ package br.albatross.sysgarantia.externos.resource;
 
 import java.util.List;
 
-import br.albatross.sysgarantia.externos.ChamadoRepository;
-import br.albatross.sysgarantia.externos.InventarioRepository;
-import br.albatross.sysgarantia.externos.ServicosDosChamadosRepository;
-
+import br.albatross.sysgarantia.externos.SistemaDeChamados;
 import jakarta.inject.Inject;
 
 import jakarta.validation.constraints.NotBlank;
@@ -27,31 +24,25 @@ import jakarta.ws.rs.core.Response.Status;
 public class SistemaDeChamadosResource {
 
     @Inject
-    ChamadoRepository chamadoRepository;
-
-    @Inject
-    InventarioRepository inventarioRepository;
-
-    @Inject
-    ServicosDosChamadosRepository servicosDosChamadosRepository;
+    SistemaDeChamados sistemaDeChamados;
 
     @POST
     @Path("/chamados")
     public Response listarChamadosPelosServicosDoFornecedor(@NotEmpty List<Integer> ids) {
-        return Response.ok(chamadoRepository.findByService(ids)).build();
+        return Response.ok(sistemaDeChamados.findByService(ids)).build();
     }
 
     @GET
     @Path("/chamados/servicos")
     public Response listarServicosDosChamados() {
-        return Response.ok(servicosDosChamadosRepository.findAll()).build();
+        return Response.ok(sistemaDeChamados.findAllTicketsServices()).build();
     }
 
     @GET
     @Produces(MediaType.TEXT_PLAIN)
     @Path("/inventario/{identificador}")
     public Response buscarNumeroDeSeriePeloIdentificador(@NotBlank @PathParam("identificador") String identificador) {
-        return inventarioRepository
+        return sistemaDeChamados
                 .findSerialNumberByIdentifier(identificador)
                 .map(numeroDeSerie -> Response.ok(numeroDeSerie).build())
                 .orElse(Response.status(Status.NOT_FOUND).build());

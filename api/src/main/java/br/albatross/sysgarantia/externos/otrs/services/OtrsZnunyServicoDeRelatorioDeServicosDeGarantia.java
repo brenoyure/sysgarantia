@@ -1,4 +1,4 @@
-package br.albatross.sysgarantia.externos.otrs.repositories;
+package br.albatross.sysgarantia.externos.otrs.services;
 
 import java.sql.Timestamp;
 import java.time.LocalDateTime;

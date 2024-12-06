@@ -5,7 +5,7 @@ import java.io.Serializable;
 import br.albatross.sysgarantia.domain.models.garantia.apis.problemas.DescricaoProblema;
 import br.albatross.sysgarantia.dto.cliente.DadosDoCliente;
 import br.albatross.sysgarantia.dto.fornecedor.DadosDoFornecedor;
-import br.albatross.sysgarantia.models.garantia.DadosDoChamado;
+import br.albatross.sysgarantia.externos.dto.Chamado;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 
@@ -33,7 +33,7 @@ public interface SolicitacaoDeGarantia extends Serializable {
 	 * @return Os Dados do Chamado a qual esta solicitação pertence (<strong>Não</strong> podendo ficar nulo).
 	 */
 	@NotNull
-	DadosDoChamado getChamado();
+	Chamado getChamado();
 
 //	/**
 //	 * 
@@ -64,7 +64,7 @@ public interface SolicitacaoDeGarantia extends Serializable {
 	 * 
 	 * Define qual os Dados do Chamado a qual esta Solicitação pertence (<strong>Não</strong> podendo ficar em nulo).
 	 */
-	void setChamado(DadosDoChamado chamado);
+	void setChamado(Chamado chamado);
 
 //	/**
 //	 * 
