@@ -1,16 +1,15 @@
 package br.albatross.sysgarantia.dto.cliente;
 
 import jakarta.validation.constraints.Positive;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
 
-@Getter @Setter
-@NoArgsConstructor
 public class DadosAtualizacaoCliente extends DadosParaCadastroDeCliente {
 
     @Positive
     private int id;
+
+    public DadosAtualizacaoCliente() {
+
+    }
 
     public DadosAtualizacaoCliente(DadosDoCliente cliente) {
         this.id = cliente.getId();
@@ -34,5 +33,13 @@ public class DadosAtualizacaoCliente extends DadosParaCadastroDeCliente {
         setFimDoHorarioDeAlmoco(cliente.getHorarios().getFimDoHorarioDeAlmoco());
 
     }
-    
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
 }

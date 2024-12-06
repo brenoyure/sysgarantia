@@ -1,37 +1,54 @@
 package br.albatross.sysgarantia.security.models;
 
-import java.io.Serializable;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.Objects;
 
 import br.albatross.sysgarantia.security.persistence.entities.User;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.Setter;
+public final class DadosParaListagemDoUsuarioDto {
 
-@Getter @Setter
-@EqualsAndHashCode(of = "id")
-public final class DadosParaListagemDoUsuarioDto implements Serializable {
+    private final int id;
+    private final String username;
+    private final Collection<RoleDto> roles;
 
-	private static final long serialVersionUID = 1L;
+    public DadosParaListagemDoUsuarioDto(User userEntity) {
 
-	private final int id;
-	private final String username;
-	private final Collection<RoleDto> roles;
+        this.id = userEntity.getId();
+        this.username = userEntity.getUsername();
 
-	public DadosParaListagemDoUsuarioDto(User userEntity) {
-		
-		this.id = userEntity.getId();
-		this.username = userEntity.getUsername();
+        this.roles = new HashSet<>(userEntity.getRoles().size());
 
-		this.roles = new HashSet<>(userEntity.getRoles().size());
+        userEntity.getRoles().stream().map(RoleDto::new).forEach(roles::add);
 
-		userEntity
-			.getRoles()
-			.stream()
-			.map(RoleDto::new)
-			.forEach(roles::add);
+    }
 
-	}
+    public int getId() {
+        return id;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public Collection<RoleDto> getRoles() {
+        return roles;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        if (obj == null)
+            return false;
+        if (getClass() != obj.getClass())
+            return false;
+        DadosParaListagemDoUsuarioDto other = (DadosParaListagemDoUsuarioDto) obj;
+        return id == other.id;
+    }
 
 }

@@ -1,8 +1,5 @@
 package br.albatross.sysgarantia.security.exceptions;
 
-import lombok.Getter;
-
-@Getter
 public class UsuarioServiceException extends RuntimeException {
 
 	private static final long serialVersionUID = 1L;
@@ -14,4 +11,13 @@ public class UsuarioServiceException extends RuntimeException {
 		this.mensagemDetalhada = mensagemDetalhada;
 		this.mensagem = mensagem;
 	}
+
+    public String getMensagem() {
+        return mensagem;
+    }
+
+    public String getMensagemDetalhada() {
+        return mensagemDetalhada;
+    }
+	
 }

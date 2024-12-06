@@ -13,35 +13,73 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.Setter;
 
 /**
- * Representa o tipo do Ticket/Serviço como Incidente, Solicitação de Serviço, Problema e etc.
+ * Representa o tipo do Ticket/Serviço como Incidente, Solicitação de Serviço,
+ * Problema e etc.
  * 
  * @author breno.brito
  *
  */
-@Entity @Table(name = "ticket_type")
-@EqualsAndHashCode(of = "id")
-@Getter @Setter
+@Entity
+@Table(name = "ticket_type")
 public class TicketType {
 
-	@Id @GeneratedValue(strategy = IDENTITY)
-	private Integer id;
+    @Id
+    @GeneratedValue(strategy = IDENTITY)
+    private Integer id;
 
-	@Column(length = 200, nullable = false, unique = true)
-	private String name;
+    @Column(length = 200, nullable = false, unique = true)
+    private String name;
 
-	@Column(name = "create_time", nullable = false)
-	private LocalDateTime createTime;
+    @Column(name = "create_time", nullable = false)
+    private LocalDateTime createTime;
 
-	@Column(name = "change_time", nullable = false)
-	private LocalDateTime changeTime;
+    @Column(name = "change_time", nullable = false)
+    private LocalDateTime changeTime;
 
-	@ManyToOne(fetch = LAZY)
-	@JoinColumn(name = "valid_id", nullable = false)
-	private Valid valid;
+    @ManyToOne(fetch = LAZY)
+    @JoinColumn(name = "valid_id", nullable = false)
+    private Valid valid;
+
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public LocalDateTime getCreateTime() {
+        return createTime;
+    }
+
+    public void setCreateTime(LocalDateTime createTime) {
+        this.createTime = createTime;
+    }
+
+    public LocalDateTime getChangeTime() {
+        return changeTime;
+    }
+
+    public void setChangeTime(LocalDateTime changeTime) {
+        this.changeTime = changeTime;
+    }
+
+    public Valid getValid() {
+        return valid;
+    }
+
+    public void setValid(Valid valid) {
+        this.valid = valid;
+    }
 
 }

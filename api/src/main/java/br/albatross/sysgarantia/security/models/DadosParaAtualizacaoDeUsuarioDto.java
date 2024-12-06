@@ -5,16 +5,7 @@ import static java.util.stream.Collectors.toList;
 import br.albatross.sysgarantia.security.persistence.entities.Role;
 import br.albatross.sysgarantia.security.persistence.entities.User;
 import jakarta.validation.constraints.Positive;
-import lombok.AllArgsConstructor;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
 
-@Getter @Setter
-@EqualsAndHashCode(of = "id", callSuper = false)
-@NoArgsConstructor
-@AllArgsConstructor
 public class DadosParaAtualizacaoDeUsuarioDto extends DadosParaCadastroDeUsuarioDto {
 
 	@Positive
@@ -30,4 +21,12 @@ public class DadosParaAtualizacaoDeUsuarioDto extends DadosParaCadastroDeUsuario
 		this.id = dtoListagem.getId();
 	}
 
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+	
 }

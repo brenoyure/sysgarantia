@@ -13,30 +13,56 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.SecondaryTable;
 import jakarta.persistence.Table;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.Setter;
 
-@Entity @Table(name = "configitem_version")
-@EqualsAndHashCode(of = "id")
-@Getter @Setter
+@Entity
+@Table(name = "configitem_version")
 @SecondaryTable(name = "xml_storage")
 public class ConfigItemVersion {
 
-	@Id @GeneratedValue(strategy = IDENTITY)
-	private Long id;
+    @Id
+    @GeneratedValue(strategy = IDENTITY)
+    private Long id;
 
-	/**
-	 * Nome da Versão do Item de configuração, nesse caso o BM.
-	 */
-	@Column(length = 250, nullable = false)
-	private String name;
+    @Column(length = 250, nullable = false)
+    private String name;
 
-	@ManyToOne(fetch = LAZY)
-	@JoinColumn(name = "configitem_id")
-	private ConfigItem configItem;
+    @ManyToOne(fetch = LAZY)
+    @JoinColumn(name = "configitem_id")
+    private ConfigItem configItem;
 
-	@Column(name = "create_time", nullable = false)
-	private LocalDateTime createTime;
+    @Column(name = "create_time", nullable = false)
+    private LocalDateTime createTime;
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public ConfigItem getConfigItem() {
+        return configItem;
+    }
+
+    public void setConfigItem(ConfigItem configItem) {
+        this.configItem = configItem;
+    }
+
+    public LocalDateTime getCreateTime() {
+        return createTime;
+    }
+
+    public void setCreateTime(LocalDateTime createTime) {
+        this.createTime = createTime;
+    }
 
 }

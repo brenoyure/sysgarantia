@@ -3,12 +3,7 @@ package br.albatross.sysgarantia.dto.cliente;
 import java.io.Serializable;
 
 import br.albatross.sysgarantia.models.Cliente;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.Setter;
 
-@Getter @Setter
-@AllArgsConstructor
 public class DadosDeEndereco implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -29,4 +24,41 @@ public class DadosDeEndereco implements Serializable {
         this.cep = cliente.getCep();
     }
 
+    public DadosDeEndereco(String logradouro, String numero, String bairro, String estado, String cidade, String cep) {
+        this.logradouro = logradouro;
+        this.numero = numero;
+        this.bairro = bairro;
+        this.estado = estado;
+        this.cidade = cidade;
+        this.cep = cep;
+    }
+
+    public static long getSerialversionuid() {
+        return serialVersionUID;
+    }
+
+    public String getLogradouro() {
+        return logradouro;
+    }
+
+    public String getNumero() {
+        return numero;
+    }
+
+    public String getBairro() {
+        return bairro;
+    }
+
+    public String getEstado() {
+        return estado;
+    }
+
+    public String getCidade() {
+        return cidade;
+    }
+
+    public String getCep() {
+        return cep;
+    }
+    
 }

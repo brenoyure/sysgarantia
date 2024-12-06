@@ -4,12 +4,7 @@ import java.io.Serializable;
 import java.time.LocalTime;
 
 import br.albatross.sysgarantia.models.Cliente;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.Setter;
 
-@Getter @Setter
-@AllArgsConstructor
 public class HorariosDoCliente implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -32,6 +27,30 @@ public class HorariosDoCliente implements Serializable {
 
     public boolean possuiHorarioDeAlmoco() {
         return possuiHorarioDeAlmoco;
-    }    
+    }
+
+    public static long getSerialversionuid() {
+        return serialVersionUID;
+    }
+
+    public LocalTime getHorarioInicioDoExpediente() {
+        return horarioInicioDoExpediente;
+    }
+
+    public LocalTime getHorarioFimDoExpediente() {
+        return horarioFimDoExpediente;
+    }
+
+    public boolean isPossuiHorarioDeAlmoco() {
+        return possuiHorarioDeAlmoco;
+    }
+
+    public LocalTime getInicioDoHorarioDeAlmoco() {
+        return inicioDoHorarioDeAlmoco;
+    }
+
+    public LocalTime getFimDoHorarioDeAlmoco() {
+        return fimDoHorarioDeAlmoco;
+    }
 
 }

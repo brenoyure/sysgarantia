@@ -5,8 +5,6 @@ import java.util.Set;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
-import lombok.Getter;
-import lombok.Setter;
 
 /**
  * 
@@ -14,7 +12,6 @@ import lombok.Setter;
  * 
  * @author breno.brito
  */
-@Getter @Setter
 public class DadosParaCadastroDeNovoFornecedor {
 
     @NotBlank
@@ -25,5 +22,40 @@ public class DadosParaCadastroDeNovoFornecedor {
 
     @NotEmpty
     private Set<Integer> idsDosServicosDoFornecedorNoSistemaDeChamados = new HashSet<>();
+
+    public DadosParaCadastroDeNovoFornecedor() {
+
+    }
+
+    public DadosParaCadastroDeNovoFornecedor(String nome, String emails, Set<Integer> idsDosServicosDoFornecedorNoSistemaDeChamados) {
+        this.nome = nome;
+        this.emails = emails;
+        this.idsDosServicosDoFornecedorNoSistemaDeChamados = idsDosServicosDoFornecedorNoSistemaDeChamados;
+    }
+
+    public String getNome() {
+        return nome;
+    }
+
+    public void setNome(String nome) {
+        this.nome = nome;
+    }
+
+    public String getEmails() {
+        return emails;
+    }
+
+    public void setEmails(String emails) {
+        this.emails = emails;
+    }
+
+    public Set<Integer> getIdsDosServicosDoFornecedorNoSistemaDeChamados() {
+        return idsDosServicosDoFornecedorNoSistemaDeChamados;
+    }
+
+    public void setIdsDosServicosDoFornecedorNoSistemaDeChamados(
+            Set<Integer> idsDosServicosDoFornecedorNoSistemaDeChamados) {
+        this.idsDosServicosDoFornecedorNoSistemaDeChamados = idsDosServicosDoFornecedorNoSistemaDeChamados;
+    }
 
 }

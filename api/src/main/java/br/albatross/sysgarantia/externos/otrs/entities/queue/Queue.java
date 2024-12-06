@@ -13,9 +13,6 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.Setter;
 
 /**
  * Representa as Filas de chamados, como: Nível 1, Nível 2, Lixo e etc.
@@ -23,28 +20,76 @@ import lombok.Setter;
  * @author breno.brito
  *
  */
-@Entity @Table(name = "queue")
-@EqualsAndHashCode(of = "id")
-@Getter @Setter
+@Entity
+@Table(name = "queue")
 public class Queue {
 
-	@Id @GeneratedValue(strategy = IDENTITY)
-	private Integer id;
+    @Id
+    @GeneratedValue(strategy = IDENTITY)
+    private Integer id;
 
-	@Column(length = 200, unique = true, nullable = false)
-	private String name;
+    @Column(length = 200, unique = true, nullable = false)
+    private String name;
 
-	@Column(length = 250, unique = false, nullable = true)
-	private String comments;
+    @Column(length = 250, unique = false, nullable = true)
+    private String comments;
 
-	@ManyToOne(fetch = LAZY)
-	@JoinColumn(name = "valid_id", nullable = false)
-	private Valid valid;
+    @ManyToOne(fetch = LAZY)
+    @JoinColumn(name = "valid_id", nullable = false)
+    private Valid valid;
 
-	@Column(name = "create_time", nullable = false)
-	private LocalDateTime createTime;
+    @Column(name = "create_time", nullable = false)
+    private LocalDateTime createTime;
 
-	@Column(name = "change_time", nullable = false)
-	private LocalDateTime changeTime;
-	
+    @Column(name = "change_time", nullable = false)
+    private LocalDateTime changeTime;
+
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getComments() {
+        return comments;
+    }
+
+    public void setComments(String comments) {
+        this.comments = comments;
+    }
+
+    public Valid getValid() {
+        return valid;
+    }
+
+    public void setValid(Valid valid) {
+        this.valid = valid;
+    }
+
+    public LocalDateTime getCreateTime() {
+        return createTime;
+    }
+
+    public void setCreateTime(LocalDateTime createTime) {
+        this.createTime = createTime;
+    }
+
+    public LocalDateTime getChangeTime() {
+        return changeTime;
+    }
+
+    public void setChangeTime(LocalDateTime changeTime) {
+        this.changeTime = changeTime;
+    }
+
 }

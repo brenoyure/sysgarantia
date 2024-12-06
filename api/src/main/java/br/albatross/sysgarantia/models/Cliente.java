@@ -1,8 +1,10 @@
 package br.albatross.sysgarantia.models;
 
 import java.time.LocalTime;
+import java.util.Objects;
 
 import br.albatross.sysgarantia.dto.cliente.DadosParaCadastroDeCliente;
+
 import jakarta.persistence.Basic;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -12,15 +14,9 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Lob;
 import jakarta.persistence.Table;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
 
-@Entity @Table(name = "clientes")
-@Getter @Setter
-@EqualsAndHashCode(of = "id")
-@NoArgsConstructor
+@Entity
+@Table(name = "clientes")
 public class Cliente {
 
     @Id
@@ -48,7 +44,7 @@ public class Cliente {
     private String numero;
 
     @Column(length = 55, unique = false, nullable = false)
-    private String bairro;    
+    private String bairro;
 
     @Column(length = 55, unique = false, nullable = false)
     private String estado;
@@ -98,6 +94,151 @@ public class Cliente {
             this.fimDoHorarioDeAlmoco = novosDados.getFimDoHorarioDeAlmoco();
         }
 
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public String getNome() {
+        return nome;
+    }
+
+    public void setNome(String nome) {
+        this.nome = nome;
+    }
+
+    public String getDescricao() {
+        return descricao;
+    }
+
+    public void setDescricao(String descricao) {
+        this.descricao = descricao;
+    }
+
+    public String getNumerosParaContato() {
+        return numerosParaContato;
+    }
+
+    public void setNumerosParaContato(String numerosParaContato) {
+        this.numerosParaContato = numerosParaContato;
+    }
+
+    public String getEmailsParaContato() {
+        return emailsParaContato;
+    }
+
+    public void setEmailsParaContato(String emailsParaContato) {
+        this.emailsParaContato = emailsParaContato;
+    }
+
+    public String getLogradouro() {
+        return logradouro;
+    }
+
+    public void setLogradouro(String logradouro) {
+        this.logradouro = logradouro;
+    }
+
+    public String getNumero() {
+        return numero;
+    }
+
+    public void setNumero(String numero) {
+        this.numero = numero;
+    }
+
+    public String getBairro() {
+        return bairro;
+    }
+
+    public void setBairro(String bairro) {
+        this.bairro = bairro;
+    }
+
+    public String getEstado() {
+        return estado;
+    }
+
+    public void setEstado(String estado) {
+        this.estado = estado;
+    }
+
+    public String getCidade() {
+        return cidade;
+    }
+
+    public void setCidade(String cidade) {
+        this.cidade = cidade;
+    }
+
+    public String getCep() {
+        return cep;
+    }
+
+    public void setCep(String cep) {
+        this.cep = cep;
+    }
+
+    public LocalTime getHorarioInicioDoExpediente() {
+        return horarioInicioDoExpediente;
+    }
+
+    public void setHorarioInicioDoExpediente(LocalTime horarioInicioDoExpediente) {
+        this.horarioInicioDoExpediente = horarioInicioDoExpediente;
+    }
+
+    public LocalTime getHorarioFimDoExpediente() {
+        return horarioFimDoExpediente;
+    }
+
+    public void setHorarioFimDoExpediente(LocalTime horarioFimDoExpediente) {
+        this.horarioFimDoExpediente = horarioFimDoExpediente;
+    }
+
+    public boolean isPossuiHorarioDeAlmoco() {
+        return possuiHorarioDeAlmoco;
+    }
+
+    public void setPossuiHorarioDeAlmoco(boolean possuiHorarioDeAlmoco) {
+        this.possuiHorarioDeAlmoco = possuiHorarioDeAlmoco;
+    }
+
+    public LocalTime getInicioDoHorarioDeAlmoco() {
+        return inicioDoHorarioDeAlmoco;
+    }
+
+    public void setInicioDoHorarioDeAlmoco(LocalTime inicioDoHorarioDeAlmoco) {
+        this.inicioDoHorarioDeAlmoco = inicioDoHorarioDeAlmoco;
+    }
+
+    public LocalTime getFimDoHorarioDeAlmoco() {
+        return fimDoHorarioDeAlmoco;
+    }
+
+    public void setFimDoHorarioDeAlmoco(LocalTime fimDoHorarioDeAlmoco) {
+        this.fimDoHorarioDeAlmoco = fimDoHorarioDeAlmoco;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        if (obj == null)
+            return false;
+        if (getClass() != obj.getClass())
+            return false;
+        Cliente other = (Cliente) obj;
+        return id == other.id;
     }
 
 }
