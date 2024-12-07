@@ -36,6 +36,16 @@ public class DescricaoProblema {
     @JoinColumn(name = "fk_problema_id")
     private Problema problema;
 
+    public DescricaoProblema() {
+
+    }
+
+    public DescricaoProblema(String descricaoResumida, String descricaoDetalhada, Problema problema) {
+        this.descricaoResumida = descricaoResumida;
+        this.descricaoDetalhada = descricaoDetalhada;
+        this.problema = problema;
+    }
+
     public Integer getId() {
         return id;
     }

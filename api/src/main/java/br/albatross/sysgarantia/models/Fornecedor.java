@@ -35,6 +35,7 @@ public class Fornecedor {
     private Set<Integer> idsDosServicosDoFornecedorNoSistemaDeChamados = new HashSet<>();
 
     public Fornecedor() {
+
     }
 
     public Fornecedor(String nome, String emails, Set<Integer> idsDosServicosDoFornecedorNoSistemaDeChamados) {

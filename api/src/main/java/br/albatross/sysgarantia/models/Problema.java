@@ -23,6 +23,14 @@ public class Problema {
     @Column(length = 20, unique = true, nullable = false)
     private String tipo;
 
+    public Problema() {
+
+    }
+
+    public Problema(String tipo) {
+        this.tipo = tipo;
+    }
+
     public Short getId() {
         return id;
     }
