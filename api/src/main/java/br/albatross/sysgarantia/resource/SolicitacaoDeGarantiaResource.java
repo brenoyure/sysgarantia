@@ -3,9 +3,7 @@ package br.albatross.sysgarantia.resource;
 import org.jboss.resteasy.annotations.providers.multipart.MultipartForm;
 
 import br.albatross.sysgarantia.dto.garantia.DadosParaNovaSolicitacaoDeGarantia;
-
 import jakarta.validation.Valid;
-
 import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.POST;
 import jakarta.ws.rs.Path;

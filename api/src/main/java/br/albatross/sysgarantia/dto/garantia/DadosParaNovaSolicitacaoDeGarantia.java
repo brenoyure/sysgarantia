@@ -27,6 +27,14 @@ public class DadosParaNovaSolicitacaoDeGarantia {
     @FormParam("numero_de_serie")
     private String numeroDeSerie;
 
+    @NotBlank(message = "Assunto é Obrigatório")
+    @FormParam("assunto")
+    private String assunto;
+
+    @NotBlank(message = "Corpo do E-mail é Obrigatório")
+    @FormParam("corpo_do_email")
+    private String corpoDoEmail;
+
     public DadosParaNovaSolicitacaoDeGarantia() {
 
     }
@@ -69,6 +77,22 @@ public class DadosParaNovaSolicitacaoDeGarantia {
 
     public void setNumeroDeSerie(String numeroDeSerie) {
         this.numeroDeSerie = numeroDeSerie;
-    } 
+    }
+
+    public String getAssunto() {
+        return assunto;
+    }
+
+    public void setAssunto(String assunto) {
+        this.assunto = assunto;
+    }
+
+    public String getCorpoDoEmail() {
+        return corpoDoEmail;
+    }
+
+    public void setCorpoDoEmail(String corpoDoEmail) {
+        this.corpoDoEmail = corpoDoEmail;
+    }
 
 }
