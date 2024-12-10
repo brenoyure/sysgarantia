@@ -131,14 +131,14 @@ export default {
         },
 
         solicitarGarantia() {
-            alert(JSON.stringify(this.solicitacao))
-            console.log(this.solicitacao)
-            // await axios.post('/solicitacaoGarantia', {
-            //     data: this.solicitacao
-            // }).then((response) => {
-            //     console.log(response)
-            //     alert(response)
-            // }).catch((error) => console.log(error))
+            this.solicitacao.chamado_id = 3
+            axios.post('/solicitacaoGarantia', this.solicitacao, {
+                headers: { 'Content-Type': 'multipart/form-data' }
+            })
+                .then((response) => {
+                console.log(response)
+                alert(response)
+            }).catch((error) => console.log(error))
         },
 
         async fetchFornecedores() {
