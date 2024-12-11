@@ -38,7 +38,7 @@ public class FornecedoresResource {
 
     @GET
     public Response fornecedores() {
-        return Response.ok(fornecedorRepository.findAllOrderByNomeAsCombobox()).build();
+        return Response.ok(fornecedorRepository.findAll()).build();
     }
 
     @POST

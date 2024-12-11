@@ -6,7 +6,8 @@ import io.quarkus.runtime.annotations.RegisterForReflection;
 
 /**
  * 
- * DTO que representa os dados do fornecedor, suficientes para serem exibidos em uma combobox
+ * DTO que representa os dados do fornecedor, suficientes para serem exibidos em
+ * uma combobox
  * 
  * @author breno.brito
  */
@@ -15,10 +16,12 @@ public class FornecedorComboBox {
 
     private final int id;
     private final String nome;
+    private final String emails;
 
-    public FornecedorComboBox(int id, String nome) {
+    public FornecedorComboBox(int id, String nome, String emails) {
         this.id = id;
         this.nome = nome;
+        this.emails = emails;
     }
 
     public int getId() {
@@ -27,6 +30,10 @@ public class FornecedorComboBox {
 
     public String getNome() {
         return nome;
+    }
+
+    public String getEmails() {
+        return emails;
     }
 
     @Override

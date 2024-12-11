@@ -5,7 +5,7 @@
     <form style="display: grid;" @submit.prevent="cadastrarCliente()">
 
         <label class="form-label"   for="inputText-nome">Nome: </label>
-        <input class="form-control" id="inputText-nome" v-model="cliente.nome" required>
+        <input class="form-control" id="inputText-nome" v-model="cliente.nome" required autofocus>
 <br>
         <label class="form-label"   for="inputText-descricao">Descrição: </label>
         <input class="form-control" id="inputText-descricao" v-model="cliente.descricao" required>

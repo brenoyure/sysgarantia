@@ -2,7 +2,6 @@ package br.albatross.sysgarantia.dto.garantia;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Positive;
-
 import jakarta.ws.rs.FormParam;
 
 public class DadosParaNovaSolicitacaoDeGarantia {
@@ -34,6 +33,12 @@ public class DadosParaNovaSolicitacaoDeGarantia {
     @NotBlank(message = "Corpo do E-mail é Obrigatório")
     @FormParam("corpo_do_email")
     private String corpoDoEmail;
+
+    @FormParam("copia_para")
+    private String copiaPara;
+
+    @FormParam("copia_oculta")
+    private String copiaOculta;    
 
     public DadosParaNovaSolicitacaoDeGarantia() {
 
@@ -94,5 +99,21 @@ public class DadosParaNovaSolicitacaoDeGarantia {
     public void setCorpoDoEmail(String corpoDoEmail) {
         this.corpoDoEmail = corpoDoEmail;
     }
+
+    public void setCopiaPara(String copiaPara) {
+        this.copiaPara = copiaPara;
+    }
+
+    public String getCopiaPara() {
+        return copiaPara;
+    }
+
+    public void setCopiaOculta(String copiaOculta) {
+        this.copiaOculta = copiaOculta;
+    }
+
+    public String getCopiaOculta() {
+        return copiaOculta;
+    }    
 
 }

@@ -8,13 +8,9 @@ import java.util.Optional;
 import br.albatross.sysgarantia.dto.fornecedor.FornecedorComboBox;
 import br.albatross.sysgarantia.models.Fornecedor;
 import br.albatross.sysgarantia.models.Fornecedor_;
-
 import io.quarkus.hibernate.orm.PersistenceUnit;
-
 import jakarta.enterprise.context.ApplicationScoped;
-
 import jakarta.inject.Inject;
-
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.NoResultException;
 import jakarta.persistence.criteria.CriteriaBuilder;
@@ -32,6 +28,19 @@ public class FornecedoresRepositoryImpl extends RepositoryImpl<Fornecedor, Integ
 
     public FornecedoresRepositoryImpl() {
         super(Fornecedor.class);
+    }
+
+    @Override
+    public List<Fornecedor> findAll() {
+        CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+        CriteriaQuery<Fornecedor> query = criteriaBuilder.createQuery(Fornecedor.class);
+        Root<Fornecedor> fornecedor = query.from(Fornecedor.class);
+
+        fornecedor.fetch(idsDosServicosDoFornecedorNoSistemaDeChamados, JoinType.INNER);
+
+        query.orderBy(criteriaBuilder.asc(fornecedor.get(Fornecedor_.nome)));
+
+        return entityManager.createQuery(query).getResultList();
     }
 
     @Override
@@ -90,20 +99,21 @@ public class FornecedoresRepositoryImpl extends RepositoryImpl<Fornecedor, Integ
 
     }
 
-    @Override
-    public List<FornecedorComboBox> findAllOrderByNomeAsCombobox() {
-        CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
-        CriteriaQuery<FornecedorComboBox> query = criteriaBuilder.createQuery(FornecedorComboBox.class);
-        Root<Fornecedor> fornecedor = query.from(Fornecedor.class);
-
-        query
-            .select(criteriaBuilder.construct(FornecedorComboBox.class, 
-                    fornecedor.get(Fornecedor_.id), 
-                    fornecedor.get(Fornecedor_.nome)))
-            .orderBy(criteriaBuilder.asc(fornecedor.get(Fornecedor_.nome)));
-
-        return entityManager.createQuery(query).getResultList();
-
-    }
+//    @Override
+//    public List<FornecedorComboBox> findAllOrderByNomeAsCombobox() {
+//        CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+//        CriteriaQuery<FornecedorComboBox> query = criteriaBuilder.createQuery(FornecedorComboBox.class);
+//        Root<Fornecedor> fornecedor = query.from(Fornecedor.class);
+//
+//        query
+//            .select(criteriaBuilder.construct(FornecedorComboBox.class, 
+//                    fornecedor.get(Fornecedor_.id), 
+//                    fornecedor.get(Fornecedor_.nome),
+//                    fornecedor.get(Fornecedor_.emails)))
+//            .orderBy(criteriaBuilder.asc(fornecedor.get(Fornecedor_.nome)));
+//
+//        return entityManager.createQuery(query).getResultList();
+//
+//    }
 
 }

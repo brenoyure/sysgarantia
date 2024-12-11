@@ -13,6 +13,6 @@ public interface FornecedorRepository extends Repository<Fornecedor, Integer> {
 
     List<Integer> findIdsDosServicosDoFornecedorNoSistemaDeChamadosById(int id);
 
-    List<FornecedorComboBox> findAllOrderByNomeAsCombobox();
+//    List<FornecedorComboBox> findAllOrderByNomeAsCombobox();
 
 }
