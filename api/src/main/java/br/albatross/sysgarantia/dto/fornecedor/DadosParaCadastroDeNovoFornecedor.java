@@ -14,13 +14,13 @@ import jakarta.validation.constraints.NotEmpty;
  */
 public class DadosParaCadastroDeNovoFornecedor {
 
-    @NotBlank
+    @NotBlank(message="Nome do Fornecedor é Obrigatório")
     private String nome;
 
-    @NotBlank
+    @NotBlank(message="E-mail(s) do Fornecedor é(são) Obrigatório(s)")
     private String emails;
 
-    @NotEmpty
+    @NotEmpty(message="Você deve informar qual(is) o(s) serviço(s), do Sistema de Chamados, que são relacionados ao Fornecedor")
     private Set<Integer> idsDosServicosDoFornecedorNoSistemaDeChamados = new HashSet<>();
 
     public DadosParaCadastroDeNovoFornecedor() {

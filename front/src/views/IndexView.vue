@@ -4,14 +4,14 @@
 
     <form style="display: grid;" @submit.prevent="solicitarGarantia">
 
-        <label class="form-label" for="selectOne-cliente">Selecione o Cliente: </label>
-        <select class="form-select" id="selectOne-cliente" @change="setCliente()" v-model="cliente" required>
+        <label style="font-weight: bold;" class="form-label" for="selectOne-cliente">Selecione o Cliente: </label>
+        <select class="form-select" id="selectOne-cliente" @change="setCliente()" v-model="cliente" required autofocus >
             <option value="0">Selecione o Cliente</option>
             <option v-for="cliente in clientes" :value="cliente" :key="cliente.id">{{ cliente.nome }} - {{ cliente.descricao }}</option>
         </select>
 <br>
 
-        <label class="form-label" for="selectOne-fornecedor">Selecione o Fornecedor: </label>
+        <label style="font-weight: bold;" class="form-label" for="selectOne-fornecedor">Selecione o Fornecedor: </label>
         <select class="form-select" id="selectOne-fornecedor" v-model="fornecedor" @change="setFornecedor()" required>
             <option value="0">Selecione o Fornecedor</option>
             <option v-for="fornecedor in fornecedores" :value="fornecedor" :key="fornecedor.id">{{ fornecedor.nome }}</option>
@@ -19,47 +19,47 @@
 <br>
 
         <div id="div-buscaNumeroDeSeriePeloIdentificadorEquipamento">
-            <label class="form-label"   for="inputText-identificadorEquipamento">(Opcional) Buscar Número de Série pelo Identificador: </label>
+            <label style="font-weight: bold;" class="form-label"   for="inputText-identificadorEquipamento">(Opcional) Buscar Número de Série pelo Identificador: </label>
             <input class="form-control" id="inputText-identificadorEquipamento" placeholder="Por exemplo, número de patrimônio ..." v-model="identificadorDoEquipamento" @change="buscarNumeroDeSeriePeloIdentificadorDoEquipamentoNoSistemaDeChamados()">
             <br>
         </div>
 
-        <label class="form-label"   for="inputText-numeroDeSerieEquipamento">Número de Série: </label>
+        <label style="font-weight: bold;" class="form-label"   for="inputText-numeroDeSerieEquipamento">Número de Série: </label>
         <input class="form-control" id="inputText-numeroDeSerieEquipamento" v-model="solicitacao.numero_de_serie" placeholder="ex. AVCLX486" required>
 <br>
 
-        <label class="form-label" for="selectOne-descricaoProblema">Selecione o Problema: </label>
+        <label style="font-weight: bold;" class="form-label" for="selectOne-descricaoProblema">Selecione o Problema: </label>
         <select class="form-select" id="selectOne-descricaoProblema" v-model="descricaoProblema" required>
             <option value="0">Selecione o Problema</option>
             <option v-for="descricaoProblema in descricaoProblemas" :value="descricaoProblema" :key="descricaoProblema.id">{{ descricaoProblema.problema.tipo }} | {{ descricaoProblema.descricaoResumida }}</option>
         </select>
 <br>
 
-        <label for="selectOne-ticketChamado">Selecione o Ticket: </label>
+        <label style="font-weight: bold;" for="selectOne-ticketChamado">Selecione o Ticket: </label>
         <select class="form-select" id="selectOne-ticketChamado" @change="setChamado()" v-model="chamado" required>
             <option value="0">Selecione o Ticket</option>
             <option :value="chamado" v-for="chamado in chamados" :key="chamado.id">Nº do Ticket: {{ chamado.numeroDoChamado }} | Título: {{ chamado.titulo }} | Serviço: {{ chamado.nomeDoServico }} | Usuário: {{ chamado.nomeDoUsuario }}</option>
         </select>
 <br>
 
-        <label class="form-label"   for="inputText-assunto">Assunto: </label>
+        <label style="font-weight: bold;" class="form-label"   for="inputText-assunto">Assunto: </label>
         <input class="form-control" id="inputText-assunto" v-model="solicitacao.assunto" placeholder="" required>
 <br>
 
-        <label class="form-label"   for="textArea-corpoDoEmail">Corpo do Email: </label>
+        <label style="font-weight: bold;" class="form-label"   for="textArea-corpoDoEmail">Corpo do Email: </label>
         <textarea class="form-control" id="textArea-corpoDoEmail" v-model="solicitacao.corpo_do_email" placeholder="Prezados, falamos da empresa XPTO, equipamento de número de série AVCLX486 está ..." required></textarea>
 <br>
 
-        <label class="form-label"   for="inputText-copiaPara">Copia Para: </label>
+        <label style="font-weight: bold;" class="form-label"   for="inputText-copiaPara">Copia Para: </label>
         <input class="form-control" id="inputText-copiaPara" v-model="solicitacao.copia_para" placeholder="copia1@example.com, copia2@example.com" >
 <br>
 
-        <label class="form-label"   for="inputText-copiaOculta">Copia Oculta: </label>
+        <label style="font-weight: bold;" class="form-label"   for="inputText-copiaOculta">Copia Oculta: </label>
         <input class="form-control" id="inputText-copiaOculta" v-model="solicitacao.copia_oculta" placeholder="copia_oculta@example.com" >
 <br>
 
         <!-- Button trigger modal -->
-        <button type="button" class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
+        <button :disabled="dadosObrigatoriosFaltantes()" type="button" class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
         Solicitar Garantia
         </button>
 
@@ -135,6 +135,10 @@ export default {
         }
     },
     methods: {
+        dadosObrigatoriosFaltantes() {
+            return this.cliente == 0 || this.fornecedor == 0 || this.descricaoProblema == 0 || this.solicitacao.numero_de_serie == null || this.solicitacao.numero_de_serie.trim() == ''
+        },
+
         setCliente() {
             this.solicitacao.cliente_id = this.cliente.id
         },

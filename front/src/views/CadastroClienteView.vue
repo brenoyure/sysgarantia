@@ -2,6 +2,12 @@
 
     <h2>Administração / Clientes / Cadastro</h2>
 
+    <div v-if="errors">
+        <ul>
+            <li style="color: red" v-for="error in errors" :key="error">{{ error }}</li>
+        </ul>
+    </div>
+
     <form style="display: grid;" @submit.prevent="cadastrarCliente()">
 
         <label class="form-label"   for="inputText-nome">Nome: </label>
@@ -82,6 +88,7 @@ export default {
     name: 'CadastroClienteView',
     data() {
         return {
+            errors: new Set(),
             cliente: {
                 nome: null,
                 descricao: null,
@@ -110,6 +117,11 @@ export default {
                     })
                     .catch(error => {
                         console.log(error)
+                        if (error.status == 400) { 
+                            this.exibirConstraintViolations(error) 
+                        } else {
+                            throw error
+                        }
                     })
         },
         async fetchEndereco() {
@@ -137,7 +149,15 @@ export default {
             this.cliente.bairro = null
             this.cliente.estado = null
             this.cliente.cidade = null            
+        },
+
+        exibirConstraintViolations(error) {
+            const messages = error.response.data
+            messages.forEach(message => {
+                this.errors.add(message)
+            })
         }
+
     }
   
 }

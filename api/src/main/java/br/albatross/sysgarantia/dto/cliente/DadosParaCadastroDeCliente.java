@@ -8,52 +8,52 @@ import jakarta.validation.constraints.Size;
 
 public class DadosParaCadastroDeCliente {
 
-    @NotBlank
+    @NotBlank(message="Nome do Cliente Obrigatório")
     @Size(min = 1, max = 100)
     private String nome;
 
-    @NotBlank
+    @NotBlank(message="Descrição Obrigatória, podendo ser o nome completo do órgão ou empresa, ou sede")
     @Size(min = 1, max = 255)
     private String descricao;
 
-    @NotBlank
+    @NotBlank(message="Número(s) para contato com o Cliente Obrigatório(s)")
     @Size(max = 255)
     private String numerosParaContato;
 
-    @NotBlank
+    @NotBlank(message="E-mail(s) para contato com o Cliente Obrigatório(s)")
     private String emailsParaContato;
 
-    @NotBlank
+    @NotBlank(message="Endereço: Logradouro Obrigatório")
     @Size(max = 100)
     private String logradouro;
 
-    @NotBlank
+    @NotBlank(message="Endereço: Número Obrigatório")
     @Size(max = 55)
     private String numero;
 
-    @NotBlank
+    @NotBlank(message="Endereço: Bairro Obrigatório")
     @Size(max = 55)
     private String bairro;
 
-    @NotBlank
+    @NotBlank(message="Endereço: Estado Obrigatório")
     @Size(max = 55)
     private String estado;
 
-    @NotBlank
+    @NotBlank(message="Endereço: Cidade Obrigatória")
     @Size(max = 55)
     private String cidade;
 
-    @NotBlank
+    @NotBlank(message="Endereço: CEP Obrigatório")
     @Size(max = 13)
     private String cep;
 
-    @NotNull
+    @NotNull(message="Horário: Início do Expediente Obrigatório")
     private LocalTime horarioInicioDoExpediente;
 
-    @NotNull
+    @NotNull(message="Horário: Fim do Expediente Obrigatório")
     private LocalTime horarioFimDoExpediente;
 
-    @NotNull
+    @NotNull(message="Horário: Obrigatório informar se há ou não horário de almoço")
     private Boolean possuiHorarioDeAlmoco;
 
     private LocalTime inicioDoHorarioDeAlmoco;

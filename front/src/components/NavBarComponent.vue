@@ -25,7 +25,7 @@
               </a>
               <ul class="dropdown-menu">
                 <li><RouterLink class="dropdown-item" to="/administracao/clientes/cadastro">Novo</RouterLink></li>
-                <li><a class="dropdown-item" href="#">Listagem</a></li>
+                <li><RouterLink class="dropdown-item" to="/administracao/clientes/listagem">Listagem</RouterLink></li>
               </ul>
             </li>
           </ul>

@@ -29,13 +29,18 @@ import jakarta.ws.rs.core.UriInfo;
 public class ClientesResource {
 
     @Inject
+    UriInfo uriInfo;    
+
+    @Inject
+    ClientesService clienteService;    
+
+    @Inject
     ClienteRepository clienteRepository;
 
-    @Inject
-    ClientesService clienteService;
-
-    @Inject
-    UriInfo uriInfo;
+    @GET
+    public Response buscarTodos() {
+        return Response.ok(clienteRepository.findAllAsComboboxOrderByNome()).build();
+    }
 
     @POST
     @Transactional
@@ -44,10 +49,9 @@ public class ClientesResource {
         Cliente cliente = 
                 clienteService.cadastrarNovoCliente(dadosNovoCliente);
         URI novoClienteURI = 
-                uriInfo.getRequestUriBuilder().path(String.valueOf(cliente.getId())).build();
+                uriInfo.getRequestUriBuilder().path("/{id}").build(cliente.getId());
 
-        return Response.created(novoClienteURI).location(novoClienteURI).build();
-
+        return Response.created(novoClienteURI).entity(cliente).build();
     }
 
     @PUT
@@ -74,11 +78,6 @@ public class ClientesResource {
         return clienteRepository.deleteById(id) ? 
                 Response.noContent().build() : 
                 Response.status(Status.NOT_FOUND).build();
-    }
-
-    @GET
-    public Response buscarTodos() {
-        return Response.ok(clienteRepository.findAllAsComboboxOrderByNome()).build();
     }
 
 }

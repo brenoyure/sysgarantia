@@ -8,9 +8,9 @@
         </tr>
     </thead>
     <tbody>
-        <tr>
-            <td>DATEN</td>
-            <td>atendimento.governo@daten.com.br, suporte5@daten.com.br</td>
+        <tr v-for="fornecedor in fornecedores" :key="fornecedor.id">
+            <td>{{ fornecedor.nome }}</td>
+            <td>{{ fornecedor.emails }}</td>
             <td><RouterLink class="btn btn-outline-secondary" to="/administracao/fornecedores/cadastro">Informações</RouterLink></td>
         </tr>
         
@@ -18,7 +18,19 @@
 </table>
 </template>
 <script>
+import axios from '@/axios'
 export default {
-    name: 'TableFornecedoresView'
+    name: 'TableFornecedoresView',
+    data() {
+        return {
+            fornecedores: null
+        }
+    },
+
+    async created() {
+        await axios
+                .get('/fornecedores')
+                .then(response => this.fornecedores = response.data)
+    }
 }
 </script>

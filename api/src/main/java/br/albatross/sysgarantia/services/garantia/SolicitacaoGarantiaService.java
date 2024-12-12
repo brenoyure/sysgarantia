@@ -32,6 +32,9 @@ import jakarta.validation.ValidationException;
 public class SolicitacaoGarantiaService {
 
     @Inject
+    EmailRepository emailRepository;    
+
+    @Inject
     ClienteRepository clienteRepository;
 
     @Inject
@@ -41,19 +44,21 @@ public class SolicitacaoGarantiaService {
     DescricaoProblemaRepository descricaoProblemaRepository;
 
     @Inject
-    EmailRepository emailRepository;
-
-    @Inject
-    SolicitacaoGarantiaRepository solicitacaoGarantiaRepository;
+    SolicitacaoGarantiaRepository solicitacaoGarantiaRepository;    
 
     @Transactional
     public SolicitacaoGarantia solicitarGarantia(@Valid DadosParaNovaSolicitacaoDeGarantia dadosSolicitacao) {
         validaExistenciaDoClienteFornecedorEDescricaoProblema(dadosSolicitacao);
         SolicitacaoGarantia solicitacaoGarantia = criaSolicitacaoGarantiaAPartirDeDtoEPersiste(dadosSolicitacao);
-        criaEmailAPartirDeDtoEPersiste(dadosSolicitacao, solicitacaoGarantia); 
+        criaEmailAPartirDeDtoESolicitacaoExistenteEPersiste(dadosSolicitacao, solicitacaoGarantia); 
         return solicitacaoGarantia;
     }
 
+    /**
+     * Valida se as entidades, como Fornecedor, Cliente e etc, com os IDs informados no DTO de fato existem nos repositórios. 
+     * 
+     * @param dadosSolicitacao
+     */
     private void validaExistenciaDoClienteFornecedorEDescricaoProblema(DadosParaNovaSolicitacaoDeGarantia dadosSolicitacao) {
 
         if (!clienteRepository.existsById(dadosSolicitacao.getClienteId())) {
@@ -70,17 +75,25 @@ public class SolicitacaoGarantiaService {
 
     }
 
+    /**
+     * 
+     * Cria uma nova Solicitação de Garantia a partir dos dados recebidos do DTO.
+     * 
+     * @param dadosSolicitacao
+     * @return <code>SolicitacaoGarantia</code>
+     * @author breno.brito
+     */
     private SolicitacaoGarantia criaSolicitacaoGarantiaAPartirDeDtoEPersiste(DadosParaNovaSolicitacaoDeGarantia dadosSolicitacao) {
         return solicitacaoGarantiaRepository.persist(
                 new SolicitacaoGarantia(
-                        dadosSolicitacao.getNumeroDeSerie(), 
-                        clienteRepository.getReferenceById(dadosSolicitacao.getClienteId()), 
-                        fornecedorRepository.getReferenceById(dadosSolicitacao.getFornecedorId()), 
-                        descricaoProblemaRepository.getReferenceById(dadosSolicitacao.getDescricaoProblemaId()), 
-                        Status.CRIADA));
+                        dadosSolicitacao.getNumeroDeSerie(),                                                     /* Número de Série do Equipamento */
+                        clienteRepository.getReferenceById(dadosSolicitacao.getClienteId()),                     /* Cliente */
+                        fornecedorRepository.getReferenceById(dadosSolicitacao.getFornecedorId()),               /* Fornecedor */
+                        descricaoProblemaRepository.getReferenceById(dadosSolicitacao.getDescricaoProblemaId()), /* Descrição do Problema */
+                        Status.CRIADA));                                                                         /* Status da Solicitação */
     }
 
-    private Email criaEmailAPartirDeDtoEPersiste(DadosParaNovaSolicitacaoDeGarantia dadosSolicitacao, SolicitacaoGarantia solicitacaoGarantia) {
+    private Email criaEmailAPartirDeDtoESolicitacaoExistenteEPersiste(DadosParaNovaSolicitacaoDeGarantia dadosSolicitacao, SolicitacaoGarantia solicitacaoGarantia) {
         return emailRepository.persist(new Email(
                                             solicitacaoGarantia.getCliente().getEmailsParaContato(), 
                                             solicitacaoGarantia.getFornecedor().getEmails(), 

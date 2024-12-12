@@ -49,9 +49,9 @@ public class FornecedoresResource {
                 fornecedoresService.cadastrarNovoFornecedor(novoFornecedor);
 
        URI novoFornecedorURI = 
-               uriInfo.getRequestUriBuilder().path(String.valueOf(fornecedor.getId())).build(fornecedor);
+               uriInfo.getRequestUriBuilder().path("/{id}").build(fornecedor.getId());
 
-       return Response.created(novoFornecedorURI).build();
+       return Response.created(novoFornecedorURI).entity(fornecedor).build();
 
     }
 

@@ -1,9 +1,23 @@
 package br.albatross.sysgarantia.dto.garantia;
 
+import io.quarkus.runtime.annotations.RegisterForReflection;
+
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Positive;
+
 import jakarta.ws.rs.FormParam;
 
+/**
+ * 
+ * <p>Este DTO representa os dados vindo de um formulário do tipo <code>multipart/form-data</code>
+ * para abertura de uma nova solicitação de garantia.</p>
+ *
+ * <p>OBS: O DTO foi anotado com <code>@io.quarkus.runtime.annotations.RegisterForReflection</code> para 
+ * que funcione no caso de gerar imagem nativa do projeto, utilizando a <code>GraalVM</code> por exemplo.</p>
+ * 
+ * @author breno.brito
+ */
+@RegisterForReflection
 public class DadosParaNovaSolicitacaoDeGarantia {
 
     @Positive(message = "Id do Cliente é obrigatório e deve ser um número inteiro positivo")

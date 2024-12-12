@@ -23,19 +23,23 @@ import jakarta.ws.rs.core.UriInfo;
 public class SolicitacaoDeGarantiaResource {
 
     @Inject
-    SolicitacaoGarantiaService solicitacaoGarantiaService;
+    UriInfo uriInfo;
 
     @Inject
-    UriInfo uriInfo;    
+    SolicitacaoGarantiaService solicitacaoGarantiaService;
 
     @POST
     @Consumes(MediaType.MULTIPART_FORM_DATA)
     public Response solicitar(@Valid @MultipartForm DadosParaNovaSolicitacaoDeGarantia dadosSolicitacao) {
+
         SolicitacaoGarantia solicitacaoGarantia = 
                 solicitacaoGarantiaService.solicitarGarantia(dadosSolicitacao);
+
         URI novaSolicitacaoURI =
                 uriInfo.getRequestUriBuilder().path("/{id}").build(solicitacaoGarantia.getId());
+
         return Response.created(novaSolicitacaoURI).entity(solicitacaoGarantia).build();
+
     }
 
 }
