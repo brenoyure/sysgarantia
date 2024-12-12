@@ -39,7 +39,7 @@ public class ClientesResource {
 
     @GET
     public Response buscarTodos() {
-        return Response.ok(clienteRepository.findAllAsComboboxOrderByNome()).build();
+        return Response.ok(clienteRepository.findAll()).build();
     }
 
     @POST

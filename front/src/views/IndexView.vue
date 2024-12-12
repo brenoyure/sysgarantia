@@ -29,16 +29,27 @@
 <br>
 
         <label style="font-weight: bold;" class="form-label" for="selectOne-descricaoProblema">Selecione o Problema: </label>
-        <select class="form-select" id="selectOne-descricaoProblema" v-model="descricaoProblema" required>
+        <select class="form-select" id="selectOne-descricaoProblema" @change="setDescricaoProblema()" v-model="descricaoProblema" required>
             <option value="0">Selecione o Problema</option>
             <option v-for="descricaoProblema in descricaoProblemas" :value="descricaoProblema" :key="descricaoProblema.id">{{ descricaoProblema.problema.tipo }} | {{ descricaoProblema.descricaoResumida }}</option>
         </select>
 <br>
 
+        <label style="font-weight: bold;" class="form-label"   for="textArea-descricaoProblema">Descrição do Problema: </label>
+        <textarea rows="5" class="form-control" id="textArea-descricaoProblema" v-model="descricaoProblema.descricaoDetalhada" placeholder="Selecione um Problema na combobox acima" disabled></textarea>
+<br>
+
         <label style="font-weight: bold;" for="selectOne-ticketChamado">Selecione o Ticket: </label>
         <select class="form-select" id="selectOne-ticketChamado" @change="setChamado()" v-model="chamado" required>
             <option value="0">Selecione o Ticket</option>
-            <option :value="chamado" v-for="chamado in chamados" :key="chamado.id">Nº do Ticket: {{ chamado.numeroDoChamado }} | Título: {{ chamado.titulo }} | Serviço: {{ chamado.nomeDoServico }} | Usuário: {{ chamado.nomeDoUsuario }}</option>
+            <option :value="chamado" v-for="chamado in chamados" :key="chamado.id">Nº do Ticket: {{ chamado.numero }} | Título: {{ chamado.titulo }} | Serviço: {{ chamado.servico }} | Usuário: {{ chamado.usuario }}</option>
+        </select>
+<br>
+
+        <label style="font-weight: bold;" class="form-label" for="selectOne-emailTemplate">(Opcional) Utilizar modelo de e-mail pronto: </label>
+        <select class="form-select" id="selectOne-emailTemplate" :disabled="dadosObrigatoriosFaltantesParaGerarOTemplate()" v-model="emailTemplateSelecionado" required @change="setAssuntoECorpoDoEmail">
+            <option value="0">(Opcional) Selecione um Modelo</option>
+            <option v-for="emailTemplate in emailTemplates" :value="emailTemplate" :key="emailTemplate.id">{{ emailTemplate.descricao }}</option>
         </select>
 <br>
 
@@ -47,7 +58,7 @@
 <br>
 
         <label style="font-weight: bold;" class="form-label"   for="textArea-corpoDoEmail">Corpo do Email: </label>
-        <textarea class="form-control" id="textArea-corpoDoEmail" v-model="solicitacao.corpo_do_email" placeholder="Prezados, falamos da empresa XPTO, equipamento de número de série AVCLX486 está ..." required></textarea>
+        <textarea rows="10" class="form-control" id="textArea-corpoDoEmail" v-model="solicitacao.corpo_do_email" placeholder="Prezados, falamos da empresa XPTO, equipamento de número de série AVCLX486 está ..." required></textarea>
 <br>
 
         <label style="font-weight: bold;" class="form-label"   for="inputText-copiaPara">Copia Para: </label>
@@ -76,6 +87,7 @@
                         <h4>Cliente</h4>
                         <p><b>Solicitante:</b> {{ cliente.nome }} - {{ cliente.descricao }}</p>
                         <p><b>Número de Série:</b> {{ solicitacao.numero_de_serie }}</p>
+                        <p><b>Problema:</b> {{ descricaoProblema.descricaoDetalhada }}</p>
                     </div>
                     <div>
                         <h4>Fornecedor</h4>
@@ -84,10 +96,10 @@
                     </div>
                     <div v-if="chamado">
                         <h4>Sistema de Chamados</h4>
-                        <p><b>Chamado: </b>2024120382000486</p>
-                        <p><b>Título: </b>Monitor Não Liga</p>
-                        <p><b>Serviço: </b>Monitor DATEN</p>
-                        <p><b>Usuário: </b>andre.santos </p>
+                        <p><b>Chamado: </b>{{ chamado.numero }}</p>
+                        <p><b>Título: </b>{{ chamado.titulo }}</p>
+                        <p><b>Serviço: </b>{{ chamado.servico }}</p>
+                        <p><b>Usuário: </b>{{ chamado.usuario }}</p>
                     </div>
                 </div>
                 <div class="modal-footer">
@@ -110,16 +122,19 @@ export default {
     name: 'IndexView',
     data() {
         return {
+            errors: new Set(),
             cliente: 0,
             fornecedor: 0,
             descricaoProblema: 0,
             chamado: 0,
+            emailTemplateSelecionado: 0,
 
             chamados: null,
             identificadorDoEquipamento: null,
             clientes: null,
             fornecedores: null,
             descricaoProblemas: null,
+            emailTemplates: null,
 
             solicitacao: {
                 numero_de_serie: null,
@@ -134,51 +149,81 @@ export default {
             }
         }
     },
+
     methods: {
         dadosObrigatoriosFaltantes() {
-            return this.cliente == 0 || this.fornecedor == 0 || this.descricaoProblema == 0 || this.solicitacao.numero_de_serie == null || this.solicitacao.numero_de_serie.trim() == ''
+            return this.cliente == 0 ||
+                   this.fornecedor == 0 ||
+                   this.descricaoProblema == 0 || 
+                   this.chamado == 0 ||
+                   this.solicitacao.chamado_id == 0 ||
+                   this.solicitacao.numero_de_serie == null || this.solicitacao.numero_de_serie.trim() == '' ||
+                   this.solicitacao.assunto == null || this.solicitacao.assunto.trim() == '' ||
+                   this.solicitacao.corpo_do_email == null || this.solicitacao.corpo_do_email.trim() == ''
+        },
+
+        dadosObrigatoriosFaltantesParaGerarOTemplate() {
+            return this.cliente == 0 ||
+                   this.fornecedor == 0 ||
+                   this.descricaoProblema == 0 || 
+                   this.chamado == 0 ||
+                   this.solicitacao.chamado_id == 0 ||
+                   this.solicitacao.numero_de_serie == null || this.solicitacao.numero_de_serie.trim() == ''
         },
 
         setCliente() {
             this.solicitacao.cliente_id = this.cliente.id
+            this.solicitacao.copia_oculta = this.cliente.emailsParaContato
         },
         async setFornecedor() {
             this.solicitacao.fornecedor_id = this.fornecedor.id
             await this.listarChamadosDoFornecedor()
         },
         setDescricaoProblema() {
-            this.solicitacao.fornecedor_id = this.descricaoProblema.id
+            this.solicitacao.descricao_problema_id = this.descricaoProblema.id
         },
         setChamado() {
-            if (this.chamados != null && this.chamados.lenth > 0) {
-                this.solicitacao.chamado_id = this.chamado.id
-            }
+            this.solicitacao.chamado_id = this.chamado.id
         },
+
         async buscarNumeroDeSeriePeloIdentificadorDoEquipamentoNoSistemaDeChamados() {
-            await axios
+            if (this.identificadorDoEquipamento.trim() != '') {
+                await axios
                     .get('/sistemaDeChamados/inventario/' + this.identificadorDoEquipamento)
                     .then(response => this.solicitacao.numero_de_serie = response.data)
-                    .catch(error => console.log(error))
+                    .catch(error => {
+                        console.log(error)
+                        if (error.status == 404) {
+                            alert('Número de Série para o identificador informado não encontrado')
+                        }
+                    })
+            }
         },
 
         async listarChamadosDoFornecedor() {
             this.solicitacao.chamado_id = 0
-            // if (this.fornecedor.idsDosServicosDoFornecedorNoSistemaDeChamados.length > 0) {
-            //     axios
-            //         .post('/sistemaDeChamados/chamados', this.fornecedor.idsDosServicosDoFornecedorNoSistemaDeChamados)
-            //         .then(response => this.chamados = response.data)
-            // }
+            if (this.fornecedor.idsDosServicosDoFornecedorNoSistemaDeChamados.length > 0) {
+                axios
+                    .post('/sistemaDeChamados/chamados', this.fornecedor.idsDosServicosDoFornecedorNoSistemaDeChamados)
+                    .then(response => this.chamados = response.data)
+            }
         },
 
         solicitarGarantia() {
-            this.solicitacao.chamado_id = 3
+            this.errors.clear()
             axios.post('/solicitacaoGarantia', this.solicitacao, {
                 headers: { 'Content-Type': 'multipart/form-data' }
             })
                 .then((response) => {
-                console.log(response)
-                alert(response)
-            }).catch((error) => console.log(error))
+                    console.log(response)
+            }).catch(error => {
+                    console.log(error)
+                    if (error.status == 400) { 
+                        this.exibirConstraintViolations(error) 
+                    } else {
+                        throw error
+                    }
+            })
         },
 
         async fetchFornecedores() {
@@ -203,13 +248,79 @@ export default {
                     .catch(error => console.log(error))
         },
 
+        async fetchEmailsTemplates() {
+            await axios
+                    .get('/emailstemplates')
+                    .then(response => this.emailTemplates = response.data)
+        },
+
+        exibirConstraintViolations(error) {
+            const messages = error.response.data
+            messages.forEach(message => {
+                this.errors.add(message)
+            })
+        },
+
+        setAssuntoECorpoDoEmail(event) {
+            if (event.target.value != 0) {
+                this.solicitacao.assunto = this.fromTemplateToRealString(this.emailTemplateSelecionado.assunto)
+                this.solicitacao.corpo_do_email = this.fromTemplateToRealString(this.emailTemplateSelecionado.corpoDoEmail)
+            }
+        },
+
+        fromTemplateToRealString(templateString) {
+            let replaced =  templateString
+
+            .replaceAll("$numeroDeSerie", 
+                this.solicitacao.numero_de_serie)
+            .replaceAll("$problema.tipo", 
+                this.descricaoProblema.problema.tipo)
+            .replaceAll("$problema.descricao", 
+                this.descricaoProblema.descricaoDetalhada)
+            .replaceAll("$chamado.numeroDoTicket", 
+                this.chamado.numero)
+            .replaceAll("$fornecedor.nome", 
+                this.fornecedor.nome)
+            .replaceAll("$cliente.nome", 
+                this.cliente.nome)
+            .replaceAll("$cliente.descricao", 
+                this.cliente.descricao)
+            .replaceAll("$cliente.numerosParaContato", 
+                this.cliente.numerosParaContato)
+            .replaceAll("$cliente.emailsParaContato", 
+                this.cliente.emailsParaContato)
+            .replaceAll("$cliente.endereco.logradouro", 
+                this.cliente.logradouro)
+            .replaceAll("$cliente.endereco.numero", 
+                this.cliente.numero)
+            .replaceAll("$cliente.endereco.bairro", 
+                this.cliente.bairro)
+            .replaceAll("$cliente.endereco.estado", 
+                this.cliente.estado)
+            .replaceAll("$cliente.endereco.cidade", 
+                this.cliente.cidade)
+            .replaceAll("$cliente.endereco.cep", 
+                this.cliente.cep)
+            .replaceAll("$cliente.horarios.inicioDoExpediente", 
+                this.cliente.horarioInicioDoExpediente)
+            .replaceAll("$cliente.horarios.fimDoExpediente", 
+                this.cliente.horarioFimDoExpediente)
+            .replaceAll("$cliente.horarios.inicioDoAlmoco", 
+                this.cliente.inicioDoHorarioDeAlmoco)
+            .replaceAll("$cliente.horarios.fimDoAlmoco", 
+                this.cliente.fimDoHorarioDeAlmoco);
+
+    return replaced;
+}
+
     },
     async created() {
         await this.fetchClientes()
         await this.fetchFornecedores()
         await this.fetchDescricaoProblemas()
+        await this.fetchEmailsTemplates()
     }
-  
+
 }
 
 </script>
