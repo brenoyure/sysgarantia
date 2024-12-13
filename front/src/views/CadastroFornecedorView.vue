@@ -72,9 +72,13 @@ export default {
 
         exibirConstraintViolations(error) {
             const messages = error.response.data
-            messages.forEach(message => {
-                this.errors.add(message)
-            })
+            if (Array.isArray(messages)) {
+                messages.forEach(message => {
+                    this.errors.add(message)
+                })
+            } else {
+                this.errors.add(messages.error)
+            }
         },
 
         async fetchServicosDoFornecedorNoSistemaDeChamados() {
