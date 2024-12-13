@@ -4,6 +4,7 @@ import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
 
+import jakarta.persistence.Basic;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -11,6 +12,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
+import jakarta.persistence.Lob;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
@@ -29,6 +31,14 @@ public class Email {
     @Column(nullable = false)
     private String destinatario;
 
+    @Column(nullable = false)
+    private String assunto;
+
+    @Lob
+    @Basic(fetch = FetchType.LAZY)
+    @Column(nullable = false)
+    private String corpo;
+
     @Column(name = "copia_para")
     private String copiaPara;
 
@@ -46,11 +56,24 @@ public class Email {
 
     }
 
-    public Email(String remetente, String destinatario, String copiaPara, String copiaOculta, SolicitacaoGarantia solicitacaoGarantia) {
+    public Email(String remetente, String destinatario, String assunto, String corpo, String copiaPara, String copiaOculta, SolicitacaoGarantia solicitacaoGarantia) {
         this.remetente = remetente;
         this.destinatario = destinatario;
+        this.assunto = assunto;
+        this.corpo = corpo;
         this.copiaPara = copiaPara;
         this.copiaOculta = copiaOculta;
+        this.solicitacaoGarantia = solicitacaoGarantia;
+    }    
+
+    public Email(String remetente, String destinatario, String assunto, String corpo, String copiaPara, String copiaOculta, Set<Anexo> anexos, SolicitacaoGarantia solicitacaoGarantia) {
+        this.remetente = remetente;
+        this.destinatario = destinatario;
+        this.assunto = assunto;
+        this.corpo = corpo;
+        this.copiaPara = copiaPara;
+        this.copiaOculta = copiaOculta;
+        this.anexos = anexos;
         this.solicitacaoGarantia = solicitacaoGarantia;
     }
 
@@ -78,6 +101,22 @@ public class Email {
         this.destinatario = destinatario;
     }
 
+    public String getAssunto() {
+        return assunto;
+    }
+
+    public void setAssunto(String assunto) {
+        this.assunto = assunto;
+    }
+
+    public String getCorpo() {
+        return corpo;
+    }
+
+    public void setCorpo(String corpo) {
+        this.corpo = corpo;
+    }
+
     public String getCopiaPara() {
         return copiaPara;
     }
@@ -92,6 +131,14 @@ public class Email {
 
     public void setCopiaOculta(String copiaOculta) {
         this.copiaOculta = copiaOculta;
+    }
+
+    public Set<Anexo> getAnexos() {
+        return anexos;
+    }
+
+    public void setAnexos(Set<Anexo> anexos) {
+        this.anexos = anexos;
     }
 
     public SolicitacaoGarantia getSolicitacaoGarantia() {

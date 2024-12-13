@@ -96,6 +96,8 @@ public class SolicitacaoGarantiaService {
         return emailRepository.persist(new Email(
                                             solicitacaoGarantia.getCliente().getEmailsParaContato(), 
                                             solicitacaoGarantia.getFornecedor().getEmails(), 
+                                            dadosSolicitacao.getAssunto(),
+                                            dadosSolicitacao.getCorpoDoEmail(),
                                             dadosSolicitacao.getCopiaPara(), 
                                             dadosSolicitacao.getCopiaOculta(), 
                                             solicitacaoGarantia));

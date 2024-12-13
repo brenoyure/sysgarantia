@@ -28,6 +28,8 @@ CREATE TABLE IF NOT EXISTS email (
     id BIGINT PRIMARY KEY AUTO_INCREMENT,
     remetente VARCHAR(255) NOT NULL,
     destinatario TEXT NOT NULL,
+    assunto VARCHAR(255) NOT NULL,
+    corpo TEXT NOT NULL,
     copia_para TEXT DEFAULT NULL,
     copia_oculta TEXT DEFAULT NULL,
     fk_solicitacao_garantia_id BIGINT NOT NULL,
