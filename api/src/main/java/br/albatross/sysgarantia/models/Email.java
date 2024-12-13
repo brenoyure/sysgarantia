@@ -29,10 +29,10 @@ public class Email {
     @Column(nullable = false)
     private String destinatario;
 
-    @Column(name = "copia_para", nullable = false)
+    @Column(name = "copia_para")
     private String copiaPara;
 
-    @Column(name = "copia_oculta", nullable = false)
+    @Column(name = "copia_oculta")
     private String copiaOculta;
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "email")
