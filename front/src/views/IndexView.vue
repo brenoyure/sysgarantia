@@ -103,7 +103,7 @@
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="submit" class="btn btn-outline-primary">Confirmar Solicitação</button>
+                    <button type="submit" class="btn btn-outline-primary" data-bs-dismiss="modal">Confirmar Solicitação</button>
                     <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancelar</button>
                 </div>
                 </div>
