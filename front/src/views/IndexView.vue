@@ -31,7 +31,7 @@
         <label style="font-weight: bold;" class="form-label" for="selectOne-descricaoProblema">Selecione o Problema: </label>
         <select class="form-select" id="selectOne-descricaoProblema" @change="setDescricaoProblema()" v-model="descricaoProblema" required>
             <option value="0">Selecione o Problema</option>
-            <option v-for="descricaoProblema in descricaoProblemas" :value="descricaoProblema" :key="descricaoProblema.id">{{ descricaoProblema.problema.tipo }} | {{ descricaoProblema.descricaoResumida }}</option>
+            <option v-for="descricaoProblema in descricaoProblemas" :title="descricaoProblema.descricaoDetalhada" :value="descricaoProblema" :key="descricaoProblema.id">{{ descricaoProblema.problema.tipo }} | {{ descricaoProblema.descricaoResumida }}</option>
         </select>
 <br>
 

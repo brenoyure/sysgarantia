@@ -47,11 +47,10 @@ public class SolicitacaoGarantiaService {
     SolicitacaoGarantiaRepository solicitacaoGarantiaRepository;    
 
     @Transactional
-    public SolicitacaoGarantia solicitarGarantia(@Valid DadosParaNovaSolicitacaoDeGarantia dadosSolicitacao) {
+    public void solicitarGarantia(@Valid DadosParaNovaSolicitacaoDeGarantia dadosSolicitacao) {
         validaExistenciaDoClienteFornecedorEDescricaoProblema(dadosSolicitacao);
         SolicitacaoGarantia solicitacaoGarantia = criaSolicitacaoGarantiaAPartirDeDtoEPersiste(dadosSolicitacao);
         criaEmailAPartirDeDtoESolicitacaoExistenteEPersiste(dadosSolicitacao, solicitacaoGarantia); 
-        return solicitacaoGarantia;
     }
 
     /**
