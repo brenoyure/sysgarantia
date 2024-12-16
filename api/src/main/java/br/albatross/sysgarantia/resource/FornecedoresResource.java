@@ -15,6 +15,7 @@ import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.POST;
 import jakarta.ws.rs.PUT;
+import jakarta.ws.rs.DELETE;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.PathParam;
 import jakarta.ws.rs.Produces;
@@ -65,11 +66,21 @@ public class FornecedoresResource {
 
     @GET
     @Path("/{id}")
-    public Response peloId(@PathParam("id") @Positive int fornecedorId) {
+    public Response buscarPeloId(@PathParam("id") @Positive int fornecedorId) {
         return fornecedorRepository
                 .findById(fornecedorId)
                 .map(fornecedor -> Response.ok(fornecedor).build())
                 .orElse(Response.status(Status.NOT_FOUND).build());
+    }
+
+    @DELETE
+    @Transactional
+    @Path("/{id}")
+    public Response excluirPeloId(@PathParam("id") @Positive int fornecedorId) {
+        return fornecedorRepository
+                .deleteById(fornecedorId) ?
+                Response.noContent().build():
+                Response.status(Status.NOT_FOUND).build();
     }
 
 }

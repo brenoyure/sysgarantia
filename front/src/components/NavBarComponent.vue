@@ -15,7 +15,7 @@
                 Fornecedores
               </a>
               <ul class="dropdown-menu">
-                <li><RouterLink class="dropdown-item" to="/administracao/fornecedores/cadastro">Novo</RouterLink></li>
+                <li><a class="dropdown-item" href="/administracao/fornecedores/cadastro">Novo</a></li>
                 <li><RouterLink class="dropdown-item" to="/administracao/fornecedores/listagem">Listagem</RouterLink></li>
               </ul>
             </li>
@@ -24,7 +24,7 @@
                 Clientes
               </a>
               <ul class="dropdown-menu">
-                <li><RouterLink class="dropdown-item" to="/administracao/clientes/cadastro">Novo</RouterLink></li>
+                <li><a class="dropdown-item" href="/administracao/clientes/cadastro">Novo</a></li>
                 <li><RouterLink class="dropdown-item" to="/administracao/clientes/listagem">Listagem</RouterLink></li>
               </ul>
             </li>
