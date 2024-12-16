@@ -9,10 +9,10 @@
 
 <form style="display: grid;" @submit.prevent="salvar()">
 
-    <label style="font-weight: bold;" class="form-label"   for="inputText-nome">Nome: </label>
+    <label class="form-label"   for="inputText-nome">Nome: </label>
     <input class="form-control" autofocus id="inputText-nome" v-model="fornecedor.nome" required >
 <br>
-    <label style="font-weight: bold;" class="form-label"   for="inputText-emails">E-mails para Contato: </label>
+    <label class="form-label"   for="inputText-emails">E-mails para Contato: </label>
     <input class="form-control" id="inputText-emails" v-model="fornecedor.emails" required >
 <br>
 
@@ -219,3 +219,9 @@ export default {
         // },
 
 </script>
+
+<style scoped>
+.form-label {
+    font-weight: bold;
+}
+</style>

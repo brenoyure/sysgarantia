@@ -8,7 +8,7 @@
         </ul>
     </div>
 
-    <form style="display: grid;" @submit.prevent="cadastrarCliente()">
+    <form style="display: grid;" @submit.prevent="salvar()">
 
         <label class="form-label"   for="inputText-nome">Nome: </label>
         <input class="form-control" id="inputText-nome" v-model="cliente.nome" required autofocus>
@@ -75,6 +75,24 @@
 <br>
 
         <button class="btn btn-outline-primary">Salvar</button>
+        <button v-if="cliente.id" type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#exclueClienteModal">Excluir</button>
+        <div class="modal fade" id="exclueClienteModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h1 class="modal-title fs-5" id="exampleModalLabel">Confirmação de Exclusão</h1>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <label>Confirmar Exclusão do Cliente: <span style="text-transform: capitalize; font-weight: bold;">{{ cliente.nome }}</span> ?</label>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-danger" data-bs-dismiss="modal" @click="excluirCliente()">Confirmar Exclusão</button>
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    </div>
+                </div>
+            </div>
+        </div>
 <br>
 
     </form>
@@ -109,11 +127,20 @@ export default {
         }
     },
     methods: {
+        async salvar() {
+            this.errors.clear()
+            if (this.cliente.id) {
+                await this.atualizarCliente()
+            } else {
+                await this.cadastrarCliente()
+            }
+        },
         async cadastrarCliente() {
             await axios
                     .post('/clientes', this.cliente)
                     .then(response => {
-                        console.log(response)
+                        alert(`Cliente ${this.cliente.nome} cadastrado com sucesso`)
+                        window.location.href = window.location.href.concat(`?id=${response.data.id}`)
                     })
                     .catch(error => {
                         console.log(error)
@@ -124,6 +151,40 @@ export default {
                         }
                     })
         },
+
+        async atualizarCliente() {
+            await axios
+                    .put('/clientes', this.cliente)
+                    .then(() => {
+                        alert(`Cadastro do Cliente ${this.cliente.nome} atualizado com sucesso`)
+                    })
+                    .catch(error => {
+                        console.log(error)
+                        if (error.status == 400) { 
+                            this.exibirConstraintViolations(error) 
+                        } else {
+                            throw error
+                        }
+                    })
+        },
+
+        async excluirCliente() {
+            await axios
+                    .delete(`/clientes/${this.cliente.id}`)
+                    .then(() => {
+                        alert(`Cliente ${this.cliente.nome} excluído com sucesso`)
+                        this.$router.push('/administracao/clientes/listagem')
+                    })
+                    .catch(error => {
+                        console.log(error)
+                        if (error.status == 400) { 
+                            this.exibirConstraintViolations(error) 
+                        } else {
+                            throw error
+                        }
+                    })
+        },
+
         async fetchEndereco() {
             if (this.cliente.cep != null && this.cliente.cep.trim() != '') {
                 await axios
@@ -162,8 +223,24 @@ export default {
             }
         }
 
+    },
+
+    async created() {
+        const clienteId = parseInt(new URLSearchParams(window.location.search).get('id'))
+        if (Number.isInteger(clienteId) && clienteId > 0) {
+            await axios
+                    .get(`/clientes/${clienteId}`)
+                    .then(response => this.cliente = response.data)
+        }
+
     }
   
 }
 
 </script>
+
+<style scoped>
+label {
+    font-weight: bold;
+}
+</style>

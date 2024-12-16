@@ -11,7 +11,7 @@
         <tr v-for="cliente in clientes" :key="cliente.id">
             <td>{{ cliente.nome }}</td>
             <td>{{ cliente.descricao }}</td>
-            <td><RouterLink class="btn btn-outline-secondary" to="/administracao/clientes/cadastro">Informações</RouterLink></td>
+            <td><RouterLink class="btn btn-outline-secondary" :to="`/administracao/clientes/cadastro?id=${cliente.id}`">Informações</RouterLink></td>
         </tr>
         
     </tbody>
