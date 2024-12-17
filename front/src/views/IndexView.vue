@@ -171,41 +171,23 @@ export default {
                    this.solicitacao.numero_de_serie == null || this.solicitacao.numero_de_serie.trim() == ''
         },
 
-        setCliente() {
-            this.solicitacao.cliente_id = this.cliente.id
-            this.solicitacao.copia_oculta = this.cliente.emailsParaContato
-        },
-        async setFornecedor() {
-            this.solicitacao.fornecedor_id = this.fornecedor.id
-            await this.listarChamadosDoFornecedor()
-        },
-        setDescricaoProblema() {
-            this.solicitacao.descricao_problema_id = this.descricaoProblema.id
-        },
-        setChamado() {
-            this.solicitacao.chamado_id = this.chamado.id
-        },
-
         async buscarNumeroDeSeriePeloIdentificadorDoEquipamentoNoSistemaDeChamados() {
+            const inputNumeroDeSerie = document.querySelector('#inputText-numeroDeSerieEquipamento')
             if (this.identificadorDoEquipamento.trim() != '') {
                 await axios
                     .get('/sistemaDeChamados/inventario/' + this.identificadorDoEquipamento)
-                    .then(response => this.solicitacao.numero_de_serie = response.data)
+                    .then(response => {
+                        this.solicitacao.numero_de_serie = response.data
+                        inputNumeroDeSerie.style.borderColor = 'green'
+                    })
                     .catch(error => {
                         console.log(error)
                         if (error.status == 404) {
                             alert('Número de Série para o identificador informado não encontrado')
+                            this.solicitacao.numero_de_serie = null
+                            inputNumeroDeSerie.style.borderColor = 'red'
                         }
                     })
-            }
-        },
-
-        async listarChamadosDoFornecedor() {
-            this.solicitacao.chamado_id = 0
-            if (this.fornecedor.idsDosServicosDoFornecedorNoSistemaDeChamados.length > 0) {
-                axios
-                    .post('/sistemaDeChamados/chamados', this.fornecedor.idsDosServicosDoFornecedorNoSistemaDeChamados)
-                    .then(response => this.chamados = response.data)
             }
         },
 
@@ -216,6 +198,8 @@ export default {
             })
                 .then((response) => {
                     console.log(response)
+                    alert('Solicitação de Garantia enviada com Sucesso')
+                    window.location.reload()
             }).catch(error => {
                     console.log(error)
                     if (error.status == 400) { 
@@ -226,34 +210,6 @@ export default {
             })
         },
 
-        async fetchFornecedores() {
-            await axios
-                .get('/fornecedores')
-                .then(response => this.fornecedores = response.data)
-                .catch(error => console.log(error))
-        },
-
-        async fetchClientes() {
-            await axios
-                .get('/clientes')
-                .then(response => this.clientes = response.data)
-                .catch(error => console.log(error))
-
-        },
-
-        async fetchDescricaoProblemas() {
-            await axios
-                    .get('/descricaoProblemas')
-                    .then(response => this.descricaoProblemas = response.data)
-                    .catch(error => console.log(error))
-        },
-
-        async fetchEmailsTemplates() {
-            await axios
-                    .get('/emailstemplates')
-                    .then(response => this.emailTemplates = response.data)
-        },
-
         exibirConstraintViolations(error) {
             const messages = error.response.data
             if (Array.isArray(messages)) {
@@ -262,13 +218,6 @@ export default {
                 })
             } else {
                 this.errors.add(messages.error)
-            }
-        },
-
-        setAssuntoECorpoDoEmail(event) {
-            if (event.target.value != 0) {
-                this.solicitacao.assunto = this.fromTemplateToRealString(this.emailTemplateSelecionado.assunto)
-                this.solicitacao.corpo_do_email = this.fromTemplateToRealString(this.emailTemplateSelecionado.corpoDoEmail)
             }
         },
 
@@ -314,8 +263,69 @@ export default {
             .replaceAll("$cliente.horarios.fimDoAlmoco", 
                 this.cliente.fimDoHorarioDeAlmoco);
 
-    return replaced;
-}
+            return replaced;
+        },
+
+        setCliente() {
+            this.solicitacao.cliente_id = this.cliente.id
+            this.solicitacao.copia_oculta = this.cliente.emailsParaContato
+        },
+
+        setDescricaoProblema() {
+            this.solicitacao.descricao_problema_id = this.descricaoProblema.id
+        },
+        setChamado() {
+            this.solicitacao.chamado_id = this.chamado.id
+        },
+
+        async setFornecedor() {
+            this.solicitacao.fornecedor_id = this.fornecedor.id
+            await this.listarChamadosDoFornecedor()
+        },
+
+        async listarChamadosDoFornecedor() {
+            this.solicitacao.chamado_id = 0
+            if (this.fornecedor.idsDosServicosDoFornecedorNoSistemaDeChamados.length > 0) {
+                axios
+                    .post('/sistemaDeChamados/chamados', this.fornecedor.idsDosServicosDoFornecedorNoSistemaDeChamados)
+                    .then(response => this.chamados = response.data)
+            }
+        },
+
+        setAssuntoECorpoDoEmail(event) {
+            if (event.target.value != 0) {
+                this.solicitacao.assunto = this.fromTemplateToRealString(this.emailTemplateSelecionado.assunto)
+                this.solicitacao.corpo_do_email = this.fromTemplateToRealString(this.emailTemplateSelecionado.corpoDoEmail)
+            }
+        },
+
+        async fetchFornecedores() {
+            await axios
+                .get('/fornecedores')
+                .then(response => this.fornecedores = response.data)
+                .catch(error => console.log(error))
+        },
+
+        async fetchClientes() {
+            await axios
+                .get('/clientes')
+                .then(response => this.clientes = response.data)
+                .catch(error => console.log(error))
+
+        },
+
+        async fetchDescricaoProblemas() {
+            await axios
+                    .get('/descricaoProblemas')
+                    .then(response => this.descricaoProblemas = response.data)
+                    .catch(error => console.log(error))
+        },
+
+        async fetchEmailsTemplates() {
+            await axios
+                    .get('/emailstemplates')
+                    .then(response => this.emailTemplates = response.data)
+        },
 
     },
     async created() {
