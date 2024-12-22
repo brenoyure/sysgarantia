@@ -17,7 +17,11 @@
 <br>
 
     <div>
-        <label style="font-weight: bold;" >Serviços do Fornecedor no Sistema de Chamados:  </label>
+        <div>
+            <label style="font-weight: bold;" for="checkBox-showOnlySelectedServices">Mostrar apenas selecionados: </label>
+            <input style="margin-left: 5px;" type="checkbox" id="checkBox-showOnlySelectedServices" @click="toggleShowOrHideSelectedFornecedorServices()">
+        </div>
+        <label style="font-weight: bold;">Serviços do Fornecedor no Sistema de Chamados:  </label>
         <div id="divSelectManyServicos" style="margin-top: 2vh; max-height: 50vh; overflow-x: hidden; overflow-y: scroll;">
             <!-- <div v-for="servico in servicosDoFornecedor" :key="servico.id" class="form-check" >
                 <input type="checkbox" class="form-check-input" :value="servico.id" @click="setServico">
@@ -188,6 +192,22 @@ export default {
             
         },
 
+        toggleShowOrHideSelectedFornecedorServices() {
+            const checkBoxShowOnlySelectedServices = document.getElementById('checkBox-showOnlySelectedServices')
+            const checkBoxFornecedorServices = document.getElementById('divSelectManyServicos')
+            for (let i = 0; i < checkBoxFornecedorServices.children.length; i++) {
+                const divServicoOption = checkBoxFornecedorServices.children.item(i)
+                for (let j = 0; j < divServicoOption.children.length; j++) {
+                    const element = divServicoOption.children.item(j);
+                    if (element.type == 'checkbox' && !element.checked) {
+                        checkBoxShowOnlySelectedServices.checked ? 
+                            divServicoOption.hidden = true : 
+                            divServicoOption.hidden = false
+                    }
+                }
+            }
+        }
+
     },
 
     async created() {
@@ -198,12 +218,11 @@ export default {
                     .then(response => {
                         const fornecedor = response.data
                         this.fornecedor = fornecedor
-                        fornecedor.idsDosServicosDoFornecedorNoSistemaDeChamados.forEach(servico => this.servicosSelecionados.add(parseInt(servico)))
-                    })
+                        fornecedor.idsDosServicosDoFornecedorNoSistemaDeChamados.forEach(servico => this.servicosSelecionados.add(parseInt(servico)))})
         }
 
         await this.fetchServicosDoFornecedorNoSistemaDeChamados()
-       
+
     }
 
 }
