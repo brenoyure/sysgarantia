@@ -2,9 +2,18 @@
 <table class="table table-hover">
     <thead>
         <tr>
-            <th scope="col">Fornecedor</th>
-            <th scope="col">E-mails(s)</th>
-            <th scope="col">Informações</th>
+            <th scope="col">
+                <i class="bi bi-truck"></i>
+                Fornecedor
+            </th>
+            <th scope="col">
+                <i class="bi bi-envelope-at"></i>
+                E-mails(s)
+            </th>
+            <th scope="col">
+                <i class="bi bi-info-circle"></i>
+                Informações
+            </th>
         </tr>
     </thead>
     <tbody>

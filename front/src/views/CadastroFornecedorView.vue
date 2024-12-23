@@ -9,10 +9,16 @@
 
 <form style="display: grid;" @submit.prevent="salvar()">
 
-    <label class="form-label"   for="inputText-nome">Nome: </label>
+    <label class="form-label"   for="inputText-nome">
+        <i class="bi bi-truck"></i>
+        Nome: 
+    </label>
     <input class="form-control" autofocus id="inputText-nome" v-model="fornecedor.nome" required >
 <br>
-    <label class="form-label"   for="inputText-emails">E-mails para Contato: </label>
+    <label class="form-label"   for="inputText-emails">
+        <i class="bi bi-envelope-at"></i>
+        E-mails para Contato: 
+    </label>
     <input class="form-control" id="inputText-emails" v-model="fornecedor.emails" required >
 <br>
 
