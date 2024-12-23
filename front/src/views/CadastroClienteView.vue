@@ -1,6 +1,6 @@
 <template>
 
-    <h2>Administração / Clientes / Cadastro</h2>
+    <h2>Administração / Clientes / {{ cliente.id ? 'Atualização' : 'Cadastro' }}</h2>
 
     <div v-if="errors">
         <ul>
