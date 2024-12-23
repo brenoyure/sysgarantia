@@ -22,7 +22,6 @@
             <td>{{ fornecedor.emails }}</td>
             <td><RouterLink class="btn btn-outline-secondary" :to="`/administracao/fornecedores/cadastro?id=${fornecedor.id}`">Informações</RouterLink></td>
         </tr>
-        
     </tbody>
 </table>
 </template>

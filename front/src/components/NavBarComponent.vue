@@ -15,6 +15,10 @@
             <!-- <li class="nav-item">
               <a class="nav-link active" aria-current="page" href="#">Home</a>
             </li> -->
+            <RouterLink to="/administracao/TextosProntos" role="button" class="nav-link">
+              <i class="bi bi-text-left"></i>
+              Textos Prontos
+            </RouterLink>
             <li class="nav-item dropdown">
               <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-truck" viewBox="0 0 16 16">
