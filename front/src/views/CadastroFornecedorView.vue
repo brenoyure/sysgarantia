@@ -1,5 +1,5 @@
 <template>
- <h2>Administração / Fornecedores / Cadastro</h2>
+ <h2>Administração / Fornecedores / {{ fornecedor.id ? 'Atualização' : 'Cadastro' }}</h2>
 
 <div v-if="errors">
     <ul>
@@ -189,7 +189,16 @@ export default {
                 })
 
             })
-            
+
+            /**
+             * Mostrar apenas os serviços que o fornecedor possui (selecionados), caso o fornecedor 
+             * possua Id, ou seja, caso esteja atualizando um fornecedor existente.
+             */
+            if (this.fornecedor.id) {
+                document.getElementById('checkBox-showOnlySelectedServices').checked = true
+                this.toggleShowOrHideSelectedFornecedorServices()
+            }
+
         },
 
         toggleShowOrHideSelectedFornecedorServices() {
@@ -222,7 +231,7 @@ export default {
         }
 
         await this.fetchServicosDoFornecedorNoSistemaDeChamados()
-
+        document.getElementById('inputText-nome').focus()
     }
 
 }

@@ -333,6 +333,9 @@ export default {
         await this.fetchFornecedores()
         await this.fetchDescricaoProblemas()
         await this.fetchEmailsTemplates()
+
+        document.getElementById('selectOne-cliente').focus()
+
     }
 
 }

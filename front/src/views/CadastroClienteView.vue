@@ -233,6 +233,10 @@ export default {
                     .then(response => this.cliente = response.data)
         }
 
+    },
+
+    mounted() {
+        document.getElementById('inputText-nome').focus()
     }
   
 }
