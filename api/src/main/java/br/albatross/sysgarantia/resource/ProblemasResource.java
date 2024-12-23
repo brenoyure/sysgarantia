@@ -10,7 +10,7 @@ import jakarta.validation.Valid;
 import jakarta.validation.ValidationException;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
-
+import jakarta.ws.rs.DELETE;
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.POST;
 import jakarta.ws.rs.PUT;
@@ -40,9 +40,8 @@ public class ProblemasResource {
             throw new ValidationException("Já existe outra categoria cadastrada com o Tipo informado");
         }
 
-        if (problema.getId() != null || problema.getId() > 0) {
-            problema.setId(null);
-        }
+        problema.setId(null);
+
         problemaRepository.persist(problema);
         return Response
                 .created(uriInfo.getRequestUriBuilder().path("/{id}").build(problema.getId()))
@@ -76,6 +75,18 @@ public class ProblemasResource {
         return problemaRepository
                 .findById(id).map(problema -> Response.ok(problema).build())
                 .orElse(Response.status(Status.NOT_FOUND).build());
+    }
+
+    @DELETE
+    @Path("/{id}")
+    @Transactional
+    public Response excluirPorId(@PathParam("id") @NotNull @Positive Short id) {
+        if (problemaRepository.hasDescricaoProblemas(id)) {
+            throw new ValidationException("A Categoria possui Textos Prontos (Descrições de Problemas) associados a ela, exclusão não permitda");
+        }
+        return problemaRepository.deleteById(id) ?
+                Response.noContent().build():
+                Response.status(Status.NOT_FOUND).build();
     }
 
 }

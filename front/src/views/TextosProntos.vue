@@ -74,11 +74,26 @@ export default {
         salvarNovaCategoria(event) {
             event.target.setAttribute('disabled', true)
             event.target.innerText = 'Salvando...'
+            const inputProblemaTipo = document.getElementById('inputText-problema-tipo')
+            inputProblemaTipo.style.borderColor = null
             axios
                 .post('/problemas', this.novoProblema)
+                .then(response => {
+                    const tableBody = document.getElementById('tableCategorias-body')
+                    const categoriaCriada = response.data
+                    alert(`Nova Categoria ${categoriaCriada.tipo} criada com sucesso`)
+                    const row = document.createElement('tr')
+                    const data = document.createElement('td')
+                    data.innerText = categoriaCriada.tipo
+                    data.style.cursor = 'pointer'
+                    row.appendChild(data)
+                    tableBody.appendChild(row)
+                    this.transformCategoriaDataRowToInputText(data, categoriaCriada)
+                })
                 .catch(error => {
                     console.log(error);
                     if (error.response.status == 400) {
+                        inputProblemaTipo.style.borderColor = 'red'
                         if (Array.isArray(error.response.data)) {
                             error.response.data.forEach(error => {
                                 alert(error)
@@ -115,6 +130,7 @@ export default {
 
         transformCategoriaDataRowToInputText(dataRowElement, problema) {
             const inputCategoriaEdit = document.createElement('input')
+            const inputCategoriaOriginalText = dataRowElement.innerText
 
             dataRowElement.addEventListener('click', () => {
                 dataRowElement.replaceWith(inputCategoriaEdit)
@@ -129,12 +145,31 @@ export default {
                 inputCategoriaEdit.replaceWith(dataRowElement)
                 dataRowElement.innerText = inputCategoriaEdit.value
                 this.atualizarCategoriaProblema()
+                .catch(error => {
+                    console.log(error);
+                    if (error.response.status == 400) {
+                        if (Array.isArray(error.response.data)) {
+                            error.response.data.forEach(error => {
+                                alert(error)
+                            })
+                        } else {
+                            alert(error.response.data.error)
+                        }
+
+                        this.problemaSelecionado.tipo = inputCategoriaOriginalText
+                        dataRowElement.innerText = inputCategoriaOriginalText
+
+                    } else {
+                        throw error
+                    }
+                }).finally(() => {
+                    event.target.disabled = false
+                    event.target.innerText = 'Salvar'
+                })
             })
         },
 
-        atualizarCategoriaProblema() {
-            axios.put('/problemas', this.problemaSelecionado)
-        }
+        async atualizarCategoriaProblema() { await axios .put('/problemas', this.problemaSelecionado) }
 
     },
     async created() {

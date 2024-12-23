@@ -33,4 +33,14 @@ public class ProblemaRepositoryImpl extends RepositoryImpl<Problema, Short> impl
         } catch(NoResultException e) { return false; }
     }
 
+    @Override
+    public boolean hasDescricaoProblemas(Short id) {
+        try {
+            return entityManager
+                .createQuery("SELECT EXISTS (SELECT dp FROM DescricaoProblema dp WHERE dp.problema.id = ?1)", Boolean.class)
+                .setParameter(1, id)
+                .getSingleResult();
+        } catch(NoResultException e) { return false; }
+    }
+
 }

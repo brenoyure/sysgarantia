@@ -8,4 +8,6 @@ public interface ProblemaRepository extends Repository<Problema, Short> {
 
     boolean existsByTipoAndNotById(String tipo, Short id);
 
+    boolean hasDescricaoProblemas(Short id);
+
 }
