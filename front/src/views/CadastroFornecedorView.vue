@@ -24,15 +24,24 @@
 
     <div>
         <div>
+            <label style="font-weight: bold;" for="checkBox-showOnlySelectedServices">
+                <i class="bi bi-search"></i>
+                Pesquisar Serviços: 
+            </label>
+            <input style="display: inline-flex; max-width: max-content; margin-left: 5px;" class="form-control" id="inputSearch-servicos">
+        </div>
+        <div>
             <label style="font-weight: bold;" for="checkBox-showOnlySelectedServices">Mostrar apenas selecionados: </label>
             <input style="margin-left: 5px;" type="checkbox" id="checkBox-showOnlySelectedServices" @click="toggleShowOrHideSelectedFornecedorServices()">
         </div>
-        <label style="font-weight: bold;">Serviços do Fornecedor no Sistema de Chamados:  </label>
-        <div id="divSelectManyServicos" style="margin-top: 2vh; max-height: 50vh; overflow-x: hidden; overflow-y: scroll;">
-            <!-- <div v-for="servico in servicosDoFornecedor" :key="servico.id" class="form-check" >
-                <input type="checkbox" class="form-check-input" :value="servico.id" @click="setServico">
-                <label class="form-label">{{ servico.nome }}</label>
-            </div> -->
+        <div>
+            <label style="font-weight: bold;">Serviços do Fornecedor no Sistema de Chamados:  </label>
+            <div id="divSelectManyServicos" style="margin-top: 2vh; max-height: 50vh; overflow-x: hidden; overflow-y: scroll;">
+                <!-- <div v-for="servico in servicosDoFornecedor" :key="servico.id" class="form-check" >
+                    <input type="checkbox" class="form-check-input" :value="servico.id" @click="setServico">
+                    <label class="form-label">{{ servico.nome }}</label>
+                </div> -->
+            </div>
         </div>
     </div>
 
@@ -238,6 +247,25 @@ export default {
 
         await this.fetchServicosDoFornecedorNoSistemaDeChamados()
         document.getElementById('inputText-nome').focus()
+
+        const inputSearchServicos = document.getElementById('inputSearch-servicos')
+        inputSearchServicos.addEventListener('input', (event) => {
+            document.getElementById('checkBox-showOnlySelectedServices').checked = false
+            const digitado = event.target.value
+            const checkBoxFornecedorServices = document.getElementById('divSelectManyServicos')
+            for (let i = 0; i < checkBoxFornecedorServices.children.length; i++) {
+                const divServicoOption = checkBoxFornecedorServices.children.item(i)
+                for (let j = 0; j < divServicoOption.children.length; j++) {
+                    const element = divServicoOption.children.item(j);
+                        if (element.tagName == 'LABEL') {
+                            !element.innerText.toLowerCase().includes(digitado.trim().toLowerCase()) ?
+                            divServicoOption.hidden = true :
+                            divServicoOption.hidden = false
+                        }
+                        
+                }
+            }
+        })
     }
 
 }

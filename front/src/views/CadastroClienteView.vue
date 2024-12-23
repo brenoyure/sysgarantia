@@ -39,7 +39,7 @@
         </label>
         <input class="form-control" id="inputText-emailsParaContato" v-model="cliente.emailsParaContato" required>
 <br>
-
+<hr>
     <h3>
         <i class="bi bi-signpost-split"></i>
         Endereço
@@ -68,7 +68,7 @@
         <label class="form-label"   for="inputText-cidade">Cidade: </label>
         <input class="form-control" id="inputText-cidade" v-model="cliente.cidade">
 <br>
-
+<hr>
     <h3>
         <i class="bi bi-alarm"></i>
         Horários
