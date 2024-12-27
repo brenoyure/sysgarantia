@@ -122,6 +122,7 @@ export default {
     name: 'IndexView',
     data() {
         return {
+            solicitacaoJaRealizada: false,
             errors: new Set(),
             cliente: 0,
             fornecedor: 0,
@@ -183,7 +184,7 @@ export default {
                     .catch(error => {
                         console.log(error)
                         if (error.status == 404) {
-                            alert('Número de Série para o identificador informado não encontrado')
+                            this.showToast('warning', 'Número de Série para o identificador informado não encontrado')
                             this.solicitacao.numero_de_serie = null
                             inputNumeroDeSerie.style.borderColor = 'red'
                         }
@@ -192,14 +193,17 @@ export default {
         },
 
         solicitarGarantia() {
+            if (this.solicitacaoJaRealizada) {
+                this.showToast('warning', 'Solicitação de Garantia Já Realizada')
+                return
+            }
             this.errors.clear()
             axios.post('/solicitacaoGarantia', this.solicitacao, {
                 headers: { 'Content-Type': 'multipart/form-data' }
             })
-                .then((response) => {
-                    console.log(response)
-                    alert('Solicitação de Garantia enviada com Sucesso')
-                    window.location.reload()
+                .then(() => {
+                    this.solicitacaoJaRealizada = true
+                    this.showToast('success', 'Solicitação de Garantia enviada com Sucesso')
             }).catch(error => {
                     console.log(error)
                     if (error.status == 400) { 
@@ -214,10 +218,10 @@ export default {
             const messages = error.response.data
             if (Array.isArray(messages)) {
                 messages.forEach(message => {
-                    this.errors.add(message)
+                    this.showToast('error', message)
                 })
             } else {
-                this.errors.add(messages.error)
+                this.showToast('error', messages.error)
             }
         },
 
@@ -326,6 +330,25 @@ export default {
                     .get('/emailstemplates')
                     .then(response => this.emailTemplates = response.data)
         },
+
+        showToast(icon, title, message) {
+            const Toast = this.$swal.mixin({
+            toast: true,
+            position: "top-end",
+            showConfirmButton: false,
+            timer: 5000,
+            timerProgressBar: true,
+            didOpen: (toast) => {
+                toast.onmouseenter = this.$swal.stopTimer;
+                toast.onmouseleave = this.$swal.resumeTimer;
+            }
+            });
+            Toast.fire({
+            icon: icon,
+            title: title,
+            text: message
+            });
+        }
 
     },
     async created() {

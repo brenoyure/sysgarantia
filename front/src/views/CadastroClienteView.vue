@@ -160,7 +160,7 @@ export default {
             await axios
                     .post('/clientes', this.cliente)
                     .then(response => {
-                        alert(`Cliente ${this.cliente.nome} cadastrado com sucesso`)
+                        this.showToast('success', `Cliente ${this.cliente.nome} cadastrado com sucesso`)
                         window.location.href = window.location.href.concat(`?id=${response.data.id}`)
                     })
                     .catch(error => {
@@ -177,7 +177,7 @@ export default {
             await axios
                     .put('/clientes', this.cliente)
                     .then(() => {
-                        alert(`Cadastro do Cliente ${this.cliente.nome} atualizado com sucesso`)
+                        this.showToast('success', `Cadastro do Cliente ${this.cliente.nome} atualizado com sucesso`)
                     })
                     .catch(error => {
                         console.log(error)
@@ -193,7 +193,7 @@ export default {
             await axios
                     .delete(`/clientes/${this.cliente.id}`)
                     .then(() => {
-                        alert(`Cliente ${this.cliente.nome} excluído com sucesso`)
+                        this.showToast('success', `Cliente ${this.cliente.nome} excluído com sucesso`)
                         this.$router.push('/administracao/clientes/listagem')
                     })
                     .catch(error => {
@@ -236,11 +236,30 @@ export default {
             const messages = error.response.data
             if (Array.isArray(messages)) {
                 messages.forEach(message => {
-                    this.errors.add(message)
+                    this.showToast('error', message)
                 })
             } else {
-                this.errors.add(messages.error)
+                this.showToast('error', messages.error)
             }
+        },
+
+        showToast(icon, title, message) {
+            const Toast = this.$swal.mixin({
+            toast: true,
+            position: "top-end",
+            showConfirmButton: false,
+            timer: 5000,
+            timerProgressBar: true,
+            didOpen: (toast) => {
+                toast.onmouseenter = this.$swal.stopTimer;
+                toast.onmouseleave = this.$swal.resumeTimer;
+            }
+            });
+            Toast.fire({
+            icon: icon,
+            title: title,
+            text: message
+            });
         }
 
     },

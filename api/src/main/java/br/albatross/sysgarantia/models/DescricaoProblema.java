@@ -40,6 +40,13 @@ public class DescricaoProblema {
 
     }
 
+    public DescricaoProblema(Integer id, String descricaoResumida, String descricaoDetalhada, Problema problema) {
+        this.id = id;
+        this.descricaoResumida = descricaoResumida;
+        this.descricaoDetalhada = descricaoDetalhada;
+        this.problema = problema;
+    }
+
     public DescricaoProblema(String descricaoResumida, String descricaoDetalhada, Problema problema) {
         this.descricaoResumida = descricaoResumida;
         this.descricaoDetalhada = descricaoDetalhada;

@@ -10,6 +10,7 @@ import io.quarkus.hibernate.orm.PersistenceUnit;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.persistence.EntityManager;
+import jakarta.persistence.NoResultException;
 import jakarta.persistence.criteria.JoinType;
 
 @ApplicationScoped
@@ -40,5 +41,29 @@ public class DescricaoProblemaRepositoryImpl extends RepositoryImpl<DescricaoPro
 				       .getResultList();
 
 	}
+
+    @Override
+    public boolean existsByDescricaoResumidaOrDescricaoDetalhada(String descricaoResumida, String descricaoDetalhada) {
+        try {
+            return entityManager
+                    .createQuery("SELECT EXISTS(SELECT dp FROM DescricaoProblema dp WHERE dp.descricaoResumida = ?1 OR dp.descricaoDetalhada = ?2)", Boolean.class)
+                    .setParameter(1, descricaoResumida)
+                    .setParameter(2, descricaoDetalhada)
+                    .getSingleResult();
+        } catch (NoResultException e) { return false; }
+    }
+
+    @Override
+    public boolean existsByDescricaoResumidaOrDescricaoDetalhadaAndNotById(String descricaoResumida, String descricaoDetalhada, Integer id) {
+        try {
+            return entityManager
+                    .createQuery("SELECT EXISTS(SELECT dp FROM DescricaoProblema dp WHERE (dp.descricaoResumida = ?1 OR dp.descricaoDetalhada = ?2) AND dp.id != ?3)", Boolean.class)
+                    .setParameter(1, descricaoResumida)
+                    .setParameter(2, descricaoDetalhada)
+                    .setParameter(3, id)
+                    .getSingleResult();
+        } catch (NoResultException e) { return false; }
+
+    }
 
 }
