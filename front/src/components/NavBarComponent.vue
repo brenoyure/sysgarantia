@@ -1,3 +1,14 @@
+<script setup>
+import keycloak from '@/keycloak';
+import { ref, onMounted } from 'vue';
+
+const nome = ref()
+
+onMounted(() => {
+  nome.value = keycloak.tokenParsed.name
+})
+</script>
+
 <template>
     <nav class="navbar navbar-expand-md navbar-dark bg-dark mb-4">
       <div class="container-fluid">
@@ -90,17 +101,17 @@
               </ul>
             </li>
           </ul>
+          <span v-if="nome" style="color: whitesmoke; margin-right: 10px; cursor: default;">Olá, {{ nome }}</span>
+          <div>
+            <button @click="keycloak.logout()" class="btn btn-outline-primary">
+            <i class="bi bi-box-arrow-left" style="margin-right: 5px;"></i>
+            Sair
+          </button>
+          </div>
         </div>
       </div>
     </nav>
 </template>
-
-<script>
-export default {
-    name: 'NavBarComponent',
-}
-
-</script>
 
 <style scoped>
   .bd-placeholder-img {

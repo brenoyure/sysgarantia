@@ -74,6 +74,8 @@
 
 <script>
 import axios from '@/axios'
+import router from '@/router'
+import { useRoute } from 'vue-router'
 
 export default {
     name: 'CadastroFornecedorView',
@@ -103,9 +105,9 @@ export default {
         async cadastrarFornecedor() {
             await axios
                     .post('/fornecedores', this.fornecedor)
-                    .then(response => {
+                    .then(() => {
                         this.showToast('success', 'Fornecedor cadastrado com sucesso')
-                        window.location.href = window.location.href.concat(`?id=${response.data.id}`)
+                        router.push('/administracao/fornecedores/listagem')
                     })
                     .catch(error => {
                         console.log(error)
@@ -254,7 +256,7 @@ export default {
     },
 
     async created() {
-        const fornecedorId = parseInt(new URLSearchParams(window.location.search).get('id'))
+        const fornecedorId = parseInt(useRoute().query.id)
         if (Number.isInteger(fornecedorId) && fornecedorId > 0) {
             await axios
                     .get(`/fornecedores/${fornecedorId}`)

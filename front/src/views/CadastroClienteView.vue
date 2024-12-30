@@ -123,6 +123,8 @@
 
 <script>
 import axios from '@/axios'
+import router from '@/router';
+import { useRoute } from 'vue-router';
 export default {
     name: 'CadastroClienteView',
     data() {
@@ -194,7 +196,7 @@ export default {
                     .delete(`/clientes/${this.cliente.id}`)
                     .then(() => {
                         this.showToast('success', `Cliente ${this.cliente.nome} excluído com sucesso`)
-                        this.$router.push('/administracao/clientes/listagem')
+                        router.push('/administracao/clientes/listagem')
                     })
                     .catch(error => {
                         console.log(error)
@@ -265,7 +267,7 @@ export default {
     },
 
     async created() {
-        const clienteId = parseInt(new URLSearchParams(window.location.search).get('id'))
+        const clienteId = parseInt(useRoute().query.id)
         if (Number.isInteger(clienteId) && clienteId > 0) {
             await axios
                     .get(`/clientes/${clienteId}`)

@@ -5,10 +5,7 @@
   </div>
 </template>
 
-<script>
+<script setup>
 import NavBarComponent from '@/components/NavBarComponent.vue';
 
-export default {
-    components: { NavBarComponent }
-}
 </script>
