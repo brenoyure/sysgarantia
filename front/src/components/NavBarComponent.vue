@@ -1,12 +1,7 @@
 <script setup>
 import keycloak from '@/keycloak';
-import { ref, onMounted } from 'vue';
+import userdetails from '@/userdetails';
 
-const nome = ref()
-
-onMounted(() => {
-  nome.value = keycloak.tokenParsed.name
-})
 </script>
 
 <template>
@@ -101,7 +96,7 @@ onMounted(() => {
               </ul>
             </li>
           </ul>
-          <span v-if="nome" style="color: whitesmoke; margin-right: 10px; cursor: default;">Olá, {{ nome }}</span>
+          <span v-if="userdetails.first_name" style="color: whitesmoke; margin-right: 10px; cursor: default;">Olá, {{ userdetails.username == 'administrador' ? 'Você está logado como Administrador' : userdetails.first_name }}</span>
           <div>
             <button @click="keycloak.logout()" class="btn btn-outline-primary">
             <i class="bi bi-box-arrow-left" style="margin-right: 5px;"></i>
