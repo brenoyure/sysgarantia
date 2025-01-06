@@ -5,6 +5,7 @@ import java.util.Objects;
 import java.util.Set;
 
 import jakarta.persistence.Basic;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -45,7 +46,7 @@ public class Email {
     @Column(name = "copia_oculta")
     private String copiaOculta;
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "email")
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "email", cascade = CascadeType.ALL)
     private Set<Anexo> anexos = new HashSet<>();
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -65,17 +66,6 @@ public class Email {
         this.copiaOculta = copiaOculta;
         this.solicitacaoGarantia = solicitacaoGarantia;
     }    
-
-    public Email(String remetente, String destinatario, String assunto, String corpo, String copiaPara, String copiaOculta, Set<Anexo> anexos, SolicitacaoGarantia solicitacaoGarantia) {
-        this.remetente = remetente;
-        this.destinatario = destinatario;
-        this.assunto = assunto;
-        this.corpo = corpo;
-        this.copiaPara = copiaPara;
-        this.copiaOculta = copiaOculta;
-        this.anexos = anexos;
-        this.solicitacaoGarantia = solicitacaoGarantia;
-    }
 
     public Long getId() {
         return id;

@@ -38,7 +38,6 @@
         <label style="font-weight: bold;" class="form-label"   for="textArea-descricaoProblema">Descrição do Problema: </label>
         <textarea rows="5" class="form-control" id="textArea-descricaoProblema" v-model="descricaoProblema.descricaoDetalhada" placeholder="Selecione um Problema na combobox acima" disabled></textarea>
 <br>
-
         <label style="font-weight: bold;" for="selectOne-ticketChamado">Selecione o Ticket: </label>
         <select class="form-select" id="selectOne-ticketChamado" @change="setChamado()" v-model="chamado" required>
             <option value="0">Selecione o Ticket</option>
@@ -52,13 +51,16 @@
             <option v-for="emailTemplate in emailTemplates" :value="emailTemplate" :key="emailTemplate.id">{{ emailTemplate.descricao }}</option>
         </select>
 <br>
-
         <label style="font-weight: bold;" class="form-label"   for="inputText-assunto">Assunto: </label>
         <input class="form-control" id="inputText-assunto" v-model="solicitacao.assunto" placeholder="" required>
 <br>
 
         <label style="font-weight: bold;" class="form-label"   for="textArea-corpoDoEmail">Corpo do Email: </label>
         <textarea rows="10" class="form-control" id="textArea-corpoDoEmail" v-model="solicitacao.corpo_do_email" placeholder="Prezados, falamos da empresa XPTO, equipamento de número de série AVCLX486 está ..." required></textarea>
+<br>
+
+        <label style="font-weight: bold;" class="form-label" for="inputFile-videoOuFotoProblema">(Opcional) Vídeo ou Foto do Problema: </label>
+        <input type="file" class="form-control form-control-sm" id="inputFile-videoOuFotoProblema" @change="setAnexo">
 <br>
 
         <label style="font-weight: bold;" class="form-label"   for="inputText-copiaPara">Copia Para: </label>
@@ -70,7 +72,7 @@
 <br>
 
         <!-- Button trigger modal -->
-        <button :disabled="dadosObrigatoriosFaltantes()" type="button" class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
+        <button :disabled="dadosObrigatoriosFaltantes()" id="botaoSolicitarGarantia" type="button" class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
         Solicitar Garantia
         </button>
 
@@ -146,7 +148,8 @@ export default {
                 assunto: null,
                 corpo_do_email: null,
                 copia_para: null,
-                copia_oculta: null
+                copia_oculta: null,
+                anexo: null
             }
         }
     },
@@ -192,13 +195,17 @@ export default {
             }
         },
 
-        solicitarGarantia() {
+        async solicitarGarantia() {
+            const botaoSolicitarGarantia = document.getElementById('botaoSolicitarGarantia')
+            const botaoSolicitarGarantiaTextoOriginal = botaoSolicitarGarantia.innerText
+            botaoSolicitarGarantia.innerText = 'Solicitação em Andamento...'
+            botaoSolicitarGarantia.disabled = true
             if (this.solicitacaoJaRealizada) {
                 this.showToast('warning', 'Solicitação de Garantia Já Realizada')
                 return
             }
             this.errors.clear()
-            axios.post('/solicitacaoGarantia', this.solicitacao, {
+            await axios.postForm('/solicitacaoGarantia', this.solicitacao, {
                 headers: { 'Content-Type': 'multipart/form-data' }
             })
                 .then(() => {
@@ -211,6 +218,9 @@ export default {
                     } else {
                         throw error
                     }
+            }).finally(() => {
+                botaoSolicitarGarantia.innerText = botaoSolicitarGarantiaTextoOriginal
+                botaoSolicitarGarantia.disabled = false
             })
         },
 
@@ -278,6 +288,12 @@ export default {
         setDescricaoProblema() {
             this.solicitacao.descricao_problema_id = this.descricaoProblema.id
         },
+
+        setAnexo(event) {
+            const anexo = event.target.files[0]
+            this.solicitacao.anexo = anexo
+        },
+
         setChamado() {
             this.solicitacao.chamado_id = this.chamado.id
         },
@@ -290,9 +306,9 @@ export default {
         async listarChamadosDoFornecedor() {
             this.solicitacao.chamado_id = 0
             if (this.fornecedor.idsDosServicosDoFornecedorNoSistemaDeChamados.length > 0) {
-                axios
-                    .post('/sistemaDeChamados/chamados', this.fornecedor.idsDosServicosDoFornecedorNoSistemaDeChamados)
-                    .then(response => this.chamados = response.data)
+                await axios
+                        .post('/sistemaDeChamados/chamados', this.fornecedor.idsDosServicosDoFornecedorNoSistemaDeChamados)
+                        .then(response => this.chamados = response.data)
             }
         },
 

@@ -1,5 +1,7 @@
 package br.albatross.sysgarantia.dto.garantia;
 
+import org.jboss.resteasy.plugins.providers.multipart.InputPart;
+
 import io.quarkus.runtime.annotations.RegisterForReflection;
 
 import jakarta.validation.constraints.NotBlank;
@@ -53,6 +55,9 @@ public class DadosParaNovaSolicitacaoDeGarantia {
 
     @FormParam("copia_oculta")
     private String copiaOculta;    
+
+    @FormParam("anexo")
+    private InputPart anexo;
 
     public DadosParaNovaSolicitacaoDeGarantia() {
 
@@ -128,6 +133,14 @@ public class DadosParaNovaSolicitacaoDeGarantia {
 
     public String getCopiaOculta() {
         return copiaOculta;
+    }
+
+    public InputPart getAnexo() {
+        return anexo;
+    }
+
+    public void setAnexo(InputPart anexo) {
+        this.anexo = anexo;
     }    
 
 }

@@ -1,5 +1,6 @@
 package br.albatross.sysgarantia.models;
 
+import java.sql.Blob;
 import java.util.Objects;
 
 import jakarta.persistence.Column;
@@ -24,7 +25,7 @@ public class Anexo {
     private String nome;
 
     @Column(nullable = false)
-    private String path;
+    private Blob arquivo;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "fk_email_id", nullable = false)
@@ -34,9 +35,9 @@ public class Anexo {
 
     }
 
-    public Anexo(String nome, String path, Email email) {
+    public Anexo(String nome, Blob arquivo, Email email) {
         this.nome = nome;
-        this.path = path;
+        this.arquivo = arquivo;
         this.email = email;
     }
 
@@ -56,12 +57,12 @@ public class Anexo {
         this.nome = nome;
     }
 
-    public String getPath() {
-        return path;
+    public Blob getArquivo() {
+        return arquivo;
     }
 
-    public void setPath(String path) {
-        this.path = path;
+    public void setArquivo(Blob arquivo) {
+        this.arquivo = arquivo;
     }
 
     public Email getEmail() {

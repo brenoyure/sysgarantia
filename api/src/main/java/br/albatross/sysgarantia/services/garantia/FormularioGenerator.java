@@ -1,11 +1,6 @@
 package br.albatross.sysgarantia.services.garantia;
 
-import java.io.File;
-
-import br.albatross.sysgarantia.domain.models.garantia.apis.solicitacao.SolicitacaoDeGarantia;
-import jakarta.enterprise.context.RequestScoped;
-
-@RequestScoped
+//@RequestScoped
 public class FormularioGenerator {
 
 //	private static final int CURRENT_YEAR = now().getYear();
@@ -19,9 +14,9 @@ public class FormularioGenerator {
 //
 //	private static final int STRING_BUILDER_SIZE = 5;
 
-	public File getFormulario(SolicitacaoDeGarantia solicitacao) {
-	    return null;
-	}
+//	public File getFormulario(SolicitacaoDeGarantia solicitacao) {
+//	    return null;
+//	}
 //		try (XWPFDocument doc = new XWPFDocument(new BufferedInputStream(new FileInputStream(new File(ARQUIVOS_FOLDER + File.separator + FORMULARIOS_FOLDER, FORMULARIO_GARANTIA_DOCX))))) {
 //
 //            String numeroDeSerie = solicitacao.getNumeroDeSerie();

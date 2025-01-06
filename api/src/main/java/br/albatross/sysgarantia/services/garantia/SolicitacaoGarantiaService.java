@@ -32,7 +32,7 @@ import jakarta.validation.ValidationException;
 public class SolicitacaoGarantiaService {
 
     @Inject
-    EmailRepository emailRepository;    
+    EmailGarantiaService emailGarantiaService;
 
     @Inject
     ClienteRepository clienteRepository;
@@ -50,7 +50,6 @@ public class SolicitacaoGarantiaService {
     public void solicitarGarantia(@Valid DadosParaNovaSolicitacaoDeGarantia dadosSolicitacao) {
         validaExistenciaDoClienteFornecedorEDescricaoProblema(dadosSolicitacao);
         SolicitacaoGarantia solicitacaoGarantia = criaSolicitacaoGarantiaAPartirDeDtoEPersiste(dadosSolicitacao);
-        criaEmailAPartirDeDtoESolicitacaoExistenteEPersiste(dadosSolicitacao, solicitacaoGarantia); 
     }
 
     /**
@@ -92,15 +91,16 @@ public class SolicitacaoGarantiaService {
                         Status.CRIADA));                                                                         /* Status da Solicitação */
     }
 
-    private Email criaEmailAPartirDeDtoESolicitacaoExistenteEPersiste(DadosParaNovaSolicitacaoDeGarantia dadosSolicitacao, SolicitacaoGarantia solicitacaoGarantia) {
-        return emailRepository.persist(new Email(
-                                            solicitacaoGarantia.getCliente().getEmailsParaContato(), 
-                                            solicitacaoGarantia.getFornecedor().getEmails(), 
-                                            dadosSolicitacao.getAssunto(),
-                                            dadosSolicitacao.getCorpoDoEmail(),
-                                            dadosSolicitacao.getCopiaPara(), 
-                                            dadosSolicitacao.getCopiaOculta(), 
-                                            solicitacaoGarantia));
+    private Email criaEmailAPartirDeDtoESolicitacaoExistente(DadosParaNovaSolicitacaoDeGarantia dadosSolicitacao, SolicitacaoGarantia solicitacaoGarantia) {
+        Email email = new Email(
+               solicitacaoGarantia.getCliente().getEmailsParaContato(), 
+               solicitacaoGarantia.getFornecedor().getEmails(), 
+               dadosSolicitacao.getAssunto(),
+               dadosSolicitacao.getCorpoDoEmail(),
+               dadosSolicitacao.getCopiaPara(), 
+               dadosSolicitacao.getCopiaOculta(), 
+               solicitacaoGarantia);
+        return email;
     }
 
 }

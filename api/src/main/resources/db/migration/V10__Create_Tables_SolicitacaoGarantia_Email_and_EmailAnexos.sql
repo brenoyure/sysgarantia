@@ -42,7 +42,7 @@ DESC email;
 CREATE TABLE IF NOT EXISTS email_anexos (
     id   BIGINT       PRIMARY KEY AUTO_INCREMENT,
     nome VARCHAR(255) NOT NULL,
-    path VARCHAR(255) NOT NULL,
+    arquivo MEDIUMBLOB NOT NULL,
     fk_email_id BIGINT NOT NULL,
 
     FOREIGN KEY (fk_email_id) REFERENCES email(id)
