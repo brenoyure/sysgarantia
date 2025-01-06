@@ -2,13 +2,11 @@ package br.albatross.sysgarantia.services.garantia;
 
 import br.albatross.sysgarantia.dto.garantia.DadosParaNovaSolicitacaoDeGarantia;
 
-import br.albatross.sysgarantia.models.Email;
 import br.albatross.sysgarantia.models.SolicitacaoGarantia;
 import br.albatross.sysgarantia.models.SolicitacaoGarantia.Status;
 
 import br.albatross.sysgarantia.repositories.ClienteRepository;
 import br.albatross.sysgarantia.repositories.DescricaoProblemaRepository;
-import br.albatross.sysgarantia.repositories.EmailRepository;
 import br.albatross.sysgarantia.repositories.FornecedorRepository;
 import br.albatross.sysgarantia.repositories.SolicitacaoGarantiaRepository;
 
@@ -50,6 +48,7 @@ public class SolicitacaoGarantiaService {
     public void solicitarGarantia(@Valid DadosParaNovaSolicitacaoDeGarantia dadosSolicitacao) {
         validaExistenciaDoClienteFornecedorEDescricaoProblema(dadosSolicitacao);
         SolicitacaoGarantia solicitacaoGarantia = criaSolicitacaoGarantiaAPartirDeDtoEPersiste(dadosSolicitacao);
+        emailGarantiaService.enviarEmail(dadosSolicitacao, solicitacaoGarantia);
     }
 
     /**
@@ -84,23 +83,11 @@ public class SolicitacaoGarantiaService {
     private SolicitacaoGarantia criaSolicitacaoGarantiaAPartirDeDtoEPersiste(DadosParaNovaSolicitacaoDeGarantia dadosSolicitacao) {
         return solicitacaoGarantiaRepository.persist(
                 new SolicitacaoGarantia(
-                        dadosSolicitacao.getNumeroDeSerie(),                                                     /* Número de Série do Equipamento */
-                        clienteRepository.getReferenceById(dadosSolicitacao.getClienteId()),                     /* Cliente */
-                        fornecedorRepository.getReferenceById(dadosSolicitacao.getFornecedorId()),               /* Fornecedor */
-                        descricaoProblemaRepository.getReferenceById(dadosSolicitacao.getDescricaoProblemaId()), /* Descrição do Problema */
-                        Status.CRIADA));                                                                         /* Status da Solicitação */
-    }
-
-    private Email criaEmailAPartirDeDtoESolicitacaoExistente(DadosParaNovaSolicitacaoDeGarantia dadosSolicitacao, SolicitacaoGarantia solicitacaoGarantia) {
-        Email email = new Email(
-               solicitacaoGarantia.getCliente().getEmailsParaContato(), 
-               solicitacaoGarantia.getFornecedor().getEmails(), 
-               dadosSolicitacao.getAssunto(),
-               dadosSolicitacao.getCorpoDoEmail(),
-               dadosSolicitacao.getCopiaPara(), 
-               dadosSolicitacao.getCopiaOculta(), 
-               solicitacaoGarantia);
-        return email;
+                        dadosSolicitacao.getNumeroDeSerie(),                                                           /* Número de Série do Equipamento */
+                        clienteRepository.findById(dadosSolicitacao.getClienteId()).orElseThrow(),                     /* Cliente */
+                        fornecedorRepository.findById(dadosSolicitacao.getFornecedorId()).orElseThrow(),               /* Fornecedor */
+                        descricaoProblemaRepository.findById(dadosSolicitacao.getDescricaoProblemaId()).orElseThrow(), /* Descrição do Problema */
+                        Status.CRIADA));                                                                               /* Status da Solicitação */
     }
 
 }

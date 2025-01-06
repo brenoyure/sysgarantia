@@ -49,3 +49,5 @@ public class SistemaDeChamadosResource {
     }
 
 }
+
+//return Response.ok(List.of(new Chamado(486L, "2025010682000486", "Monitor com Tela Piscando", 100, "Monitor DATEN", "usuario@example.com"))).build();

@@ -1,20 +1,25 @@
 package br.albatross.sysgarantia.services.garantia;
 
 import java.io.BufferedInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.sql.Blob;
+import java.io.File;
+import java.io.FileInputStream;
+import java.util.Set;
 
 import org.eclipse.microprofile.config.inject.ConfigProperty;
+import org.eclipse.microprofile.context.ManagedExecutor;
+
 import org.hibernate.engine.jdbc.BlobProxy;
+
 import org.jboss.resteasy.plugins.providers.multipart.InputPart;
 
 import br.albatross.sysgarantia.dto.garantia.DadosParaNovaSolicitacaoDeGarantia;
+
 import br.albatross.sysgarantia.models.Anexo;
 import br.albatross.sysgarantia.models.Email;
 import br.albatross.sysgarantia.models.SolicitacaoGarantia;
+
 import br.albatross.sysgarantia.repositories.EmailRepository;
-import io.quarkus.mailer.Mailer;
+
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 
@@ -22,7 +27,7 @@ import jakarta.inject.Inject;
 public class EmailGarantiaService {
 
     @Inject
-    Mailer mailer;    
+    ManagedExecutor executorService;    
 
     @Inject
     @ConfigProperty(name = "quarkus.mailer.from")
@@ -31,88 +36,69 @@ public class EmailGarantiaService {
     @Inject
     EmailRepository emailRepository;
 
-    public void enviarEmail(Email email) {
-        
+    @Inject
+    QuarkusMailerService quarkusMailerService;    
+
+    @Inject
+    FormularioGenerator formularioGenerator;
+
+    public void enviarEmail(DadosParaNovaSolicitacaoDeGarantia dadosSolicitacao, SolicitacaoGarantia solicitacaoGarantia) {
+        Email emailDeGarantia = criarNovoEmailDeGarantia(dadosSolicitacao, solicitacaoGarantia);
+        quarkusMailerService.enviar(emailDeGarantia);
+        solicitacaoGarantia.marcarEnviada();
     }
 
-    public Email criarNovoEmailDeGarantia(DadosParaNovaSolicitacaoDeGarantia dadosSolicitacao, SolicitacaoGarantia solicitacaoGarantia) {
-        try {
-            Email email = 
-                    new Email(remetente, 
-                              solicitacaoGarantia.getFornecedor().getEmails(), 
-                              dadosSolicitacao.getAssunto(),
-                              dadosSolicitacao.getCorpoDoEmail(),
-                              dadosSolicitacao.getCopiaPara(), 
-                              dadosSolicitacao.getCopiaOculta(), 
-                              solicitacaoGarantia);
+    private Email criarNovoEmailDeGarantia(DadosParaNovaSolicitacaoDeGarantia dadosSolicitacao, SolicitacaoGarantia solicitacaoGarantia) {
+        Email email = 
+                new Email(remetente, 
+                          solicitacaoGarantia.getFornecedor().getEmails(), 
+                          dadosSolicitacao.getAssunto(),
+                          dadosSolicitacao.getCorpoDoEmail(),
+                          dadosSolicitacao.getCopiaPara(), 
+                          dadosSolicitacao.getCopiaOculta(), 
+                          solicitacaoGarantia);
 
-            if (dadosSolicitacao.getAnexo() != null) {
-                Anexo anexoDaSolicitacao = getAnexoFromInputPart(dadosSolicitacao.getAnexo(), email);
-                email.getAnexos().add(anexoDaSolicitacao);
-            }
+        Set<Anexo> anexos = email.getAnexos();
 
-            emailRepository.persist(email);
+        executorService
+            .supplyAsync(() -> gerarAnexoDoFormulario(formularioGenerator.getFormulario(solicitacaoGarantia), email))
+            .thenAccept(anexos::add)
+            .join();
 
-        } catch(IOException e) { throw new RuntimeException(e); }
-
-    }
-
-    private Anexo getAnexoFromInputPart(InputPart submittedFile, Email email) throws IOException {
-        Anexo anexo = new Anexo();
-        anexo.setNome(submittedFile.getFileName());
-        anexo.setArquivo(getBlobFromInputStream(submittedFile.getBody()));
-        anexo.setEmail(email);
-        return anexo;
-    }
-
-    private Blob getBlobFromInputStream(InputStream inputStream) throws IOException {
-        int offset = 0;
-        int read = 9;
-        byte[] buffer = new byte[1024 * 10];
-        try (BufferedInputStream bis = new BufferedInputStream(inputStream)) {
-            Blob blob = BlobProxy.generateProxy(bis.readNBytes(buffer.length));
-            while(bis.available() > 0) {
-                read = bis.read(buffer, offset, buffer.length - offset);
-                offset = buffer.length - 1;
-            }
-        
+        if (dadosSolicitacao.getAnexo() != null) {
+            executorService
+                .supplyAsync(() -> getAnexoFromInputPart(dadosSolicitacao.getAnexo(), email))
+                .thenAccept(anexos::add)
+                .join();
         }
 
+        emailRepository.persist(email);
+        email.getSolicitacaoGarantia().marcarAgendada();
+
+        return email;
+
+    }
+
+    private Anexo gerarAnexoDoFormulario(File formularioFile, Email email) {
+        Anexo anexo = new Anexo();
+        anexo.setNome(formularioFile.getName());
+        anexo.setEmail(email);
+        try (BufferedInputStream bis = new BufferedInputStream(new FileInputStream(formularioFile))) {
+            anexo.setArquivo(BlobProxy.generateProxy(bis.readAllBytes()));
+            return anexo;
+        }
+        catch (Exception e) { throw new RuntimeException(e); }
+    }
+
+    private Anexo getAnexoFromInputPart(InputPart submittedFile, Email email) {
+        Anexo anexo = new Anexo();
+        anexo.setNome(submittedFile.getFileName());
+        anexo.setEmail(email);
+        try (BufferedInputStream bis = new BufferedInputStream(submittedFile.getBody())) {
+            anexo.setArquivo(BlobProxy.generateProxy(submittedFile.getBody().readAllBytes()));
+            return anexo;
+        }
+        catch (Exception e) { throw new RuntimeException(e); }
     }
 
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
