@@ -4,16 +4,11 @@ import org.jboss.resteasy.annotations.providers.multipart.MultipartForm;
 
 import br.albatross.sysgarantia.dto.garantia.DadosParaNovaSolicitacaoDeGarantia;
 import br.albatross.sysgarantia.services.garantia.SolicitacaoGarantiaService;
-
 import jakarta.inject.Inject;
-
 import jakarta.validation.Valid;
-
 import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.POST;
 import jakarta.ws.rs.Path;
-import jakarta.ws.rs.container.AsyncResponse;
-import jakarta.ws.rs.container.Suspended;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.Response.Status;
@@ -30,10 +25,9 @@ public class SolicitacaoDeGarantiaResource {
 
     @POST
     @Consumes(MediaType.MULTIPART_FORM_DATA)
-    public void solicitar(@Suspended AsyncResponse asyncResponse, 
-                          @Valid @MultipartForm DadosParaNovaSolicitacaoDeGarantia dadosSolicitacao) {
-        solicitacaoGarantiaService.solicitarGarantia(dadosSolicitacao);
-        asyncResponse.resume(Response.status(Status.CREATED).build());
+    public Response solicitar(@Valid @MultipartForm DadosParaNovaSolicitacaoDeGarantia dadosSolicitacao) {
+//        solicitacaoGarantiaService.solicitarGarantia(dadosSolicitacao);
+        return Response.status(Status.CREATED).build();
 
     }
 

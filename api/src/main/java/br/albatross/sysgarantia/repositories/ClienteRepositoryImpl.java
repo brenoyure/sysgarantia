@@ -1,24 +1,11 @@
 package br.albatross.sysgarantia.repositories;
 
-import java.util.List;
-
-import br.albatross.sysgarantia.dto.cliente.ClienteComboBox;
 import br.albatross.sysgarantia.models.Cliente;
-import io.quarkus.hibernate.orm.PersistenceUnit;
 import jakarta.enterprise.context.ApplicationScoped;
-import jakarta.inject.Inject;
-import jakarta.persistence.EntityManager;
 import jakarta.persistence.NoResultException;
-import jakarta.persistence.criteria.CriteriaBuilder;
-import jakarta.persistence.criteria.CriteriaQuery;
-import jakarta.persistence.criteria.Root;
 
 @ApplicationScoped
 public class ClienteRepositoryImpl extends RepositoryImpl<Cliente, Integer> implements ClienteRepository {
-
-    @Inject
-    @PersistenceUnit("sysgarantia-pu")
-    EntityManager entityManager;
 
     public ClienteRepositoryImpl() {
         super(Cliente.class);
@@ -72,23 +59,6 @@ public class ClienteRepositoryImpl extends RepositoryImpl<Cliente, Integer> impl
                     .getSingleResult();
 
         } catch (NoResultException e) { return false; }
-    }
-
-    @Override
-    public List<ClienteComboBox> findAllAsComboboxOrderByNome() {
-        CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
-        CriteriaQuery<ClienteComboBox> query = criteriaBuilder.createQuery(ClienteComboBox.class);
-        Root<Cliente> cliente = query.from(Cliente.class);
-        
-        query
-            .select(criteriaBuilder
-                    .construct(ClienteComboBox.class, 
-                            cliente.get("id"), 
-                            cliente.get("nome"), 
-                            cliente.get("descricao")))
-            .orderBy(criteriaBuilder.asc(cliente.get("nome")));
-
-        return entityManager.createQuery(query).getResultList();
     }
 
 }

@@ -5,18 +5,17 @@ import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-
 import java.sql.SQLException;
-
 import java.util.List;
+import java.util.concurrent.CompletionStage;
 import java.util.stream.Stream;
+
+import org.eclipse.microprofile.context.ManagedExecutor;
 
 import br.albatross.sysgarantia.models.Anexo;
 import br.albatross.sysgarantia.models.Email;
-
 import io.quarkus.mailer.Mail;
 import io.quarkus.mailer.Mailer;
-
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 
@@ -24,11 +23,13 @@ import jakarta.inject.Inject;
 public class QuarkusMailerService {
 
     @Inject
-    Mailer mailer;    
+    Mailer mailer;
 
-    public void enviar(Email email) {
-        Mail mailerMail = criarMailerMailAPartirDoEmail(email);
-        mailer.send(mailerMail);
+    @Inject
+    ManagedExecutor executorService;
+
+    public CompletionStage<Void> enviar(Email email) {
+        return executorService.runAsync(() -> mailer.send(criarMailerMailAPartirDoEmail(email)));
     }
 
     private Mail criarMailerMailAPartirDoEmail(Email email) {

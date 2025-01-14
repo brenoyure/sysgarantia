@@ -4,14 +4,13 @@ import java.lang.reflect.Field;
 import java.util.List;
 import java.util.Optional;
 
-import io.quarkus.hibernate.orm.PersistenceUnit;
 import jakarta.enterprise.context.Dependent;
-import jakarta.inject.Inject;
 import jakarta.persistence.EmbeddedId;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.Id;
 import jakarta.persistence.NoResultException;
+import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.CriteriaDelete;
 import jakarta.persistence.criteria.CriteriaQuery;
@@ -21,8 +20,7 @@ import jakarta.persistence.criteria.Root;
 @Dependent
 public abstract class RepositoryImpl<T, K> implements Repository<T, K> {
 
-    @Inject
-    @PersistenceUnit("sysgarantia-pu")
+    @PersistenceContext(unitName = "sysgarantia-pu")
     EntityManager entityManager;
 
     private final Class<T> entityClazz;

@@ -4,7 +4,6 @@ import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
 
-import jakarta.persistence.Basic;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -36,7 +35,6 @@ public class Email {
     private String assunto;
 
     @Lob
-    @Basic(fetch = FetchType.LAZY)
     @Column(nullable = false)
     private String corpo;
 

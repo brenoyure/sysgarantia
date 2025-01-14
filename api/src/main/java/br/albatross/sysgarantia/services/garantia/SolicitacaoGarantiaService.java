@@ -1,33 +1,30 @@
 package br.albatross.sysgarantia.services.garantia;
 
 import br.albatross.sysgarantia.dto.garantia.DadosParaNovaSolicitacaoDeGarantia;
-
+import br.albatross.sysgarantia.messaging.MessagesProducerService;
+import br.albatross.sysgarantia.models.Email;
 import br.albatross.sysgarantia.models.SolicitacaoGarantia;
 import br.albatross.sysgarantia.models.SolicitacaoGarantia.Status;
-
 import br.albatross.sysgarantia.repositories.ClienteRepository;
 import br.albatross.sysgarantia.repositories.DescricaoProblemaRepository;
 import br.albatross.sysgarantia.repositories.FornecedorRepository;
 import br.albatross.sysgarantia.repositories.SolicitacaoGarantiaRepository;
-
 import jakarta.enterprise.context.ApplicationScoped;
-
 import jakarta.inject.Inject;
-
 import jakarta.transaction.Transactional;
-
 import jakarta.validation.Valid;
 import jakarta.validation.ValidationException;
+import jakarta.validation.constraints.Positive;
 
 /**
- *
- * CDI Bean responsável por colocar os <code>Email</code>s de Garantia na fila
- * de mensagens
  *
  * @author breno.brito
  */
 @ApplicationScoped
 public class SolicitacaoGarantiaService {
+
+    @Inject
+    MessagesProducerService messagingService;
 
     @Inject
     EmailGarantiaService emailGarantiaService;
@@ -47,8 +44,17 @@ public class SolicitacaoGarantiaService {
     @Transactional
     public void solicitarGarantia(@Valid DadosParaNovaSolicitacaoDeGarantia dadosSolicitacao) {
         validaExistenciaDoClienteFornecedorEDescricaoProblema(dadosSolicitacao);
-        SolicitacaoGarantia solicitacaoGarantia = criaSolicitacaoGarantiaAPartirDeDtoEPersiste(dadosSolicitacao);
-        emailGarantiaService.enviarEmail(dadosSolicitacao, solicitacaoGarantia);
+        SolicitacaoGarantia solicitacaoGarantia = 
+                criaSolicitacaoGarantiaAPartirDeDtoEPersiste(dadosSolicitacao);
+        Email emailDeGarantia = 
+                emailGarantiaService.criarNovoEmailDeGarantia(dadosSolicitacao, solicitacaoGarantia);
+
+        messagingService.send(emailDeGarantia);
+    }
+
+    @Transactional
+    public void marcarComoEnviada(@Positive long solicitacaoId) {
+        solicitacaoGarantiaRepository.getReferenceById(solicitacaoId).marcarEnviada();
     }
 
     /**

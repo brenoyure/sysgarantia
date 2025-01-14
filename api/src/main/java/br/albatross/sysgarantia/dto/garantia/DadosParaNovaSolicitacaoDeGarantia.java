@@ -59,10 +59,6 @@ public class DadosParaNovaSolicitacaoDeGarantia {
     @FormParam("anexo")
     private InputPart anexo;
 
-    public DadosParaNovaSolicitacaoDeGarantia() {
-
-    }
-
     public int getClienteId() {
         return clienteId;
     }
@@ -119,20 +115,20 @@ public class DadosParaNovaSolicitacaoDeGarantia {
         this.corpoDoEmail = corpoDoEmail;
     }
 
-    public void setCopiaPara(String copiaPara) {
-        this.copiaPara = copiaPara;
-    }
-
     public String getCopiaPara() {
         return copiaPara;
     }
 
-    public void setCopiaOculta(String copiaOculta) {
-        this.copiaOculta = copiaOculta;
+    public void setCopiaPara(String copiaPara) {
+        this.copiaPara = copiaPara;
     }
 
     public String getCopiaOculta() {
         return copiaOculta;
+    }
+
+    public void setCopiaOculta(String copiaOculta) {
+        this.copiaOculta = copiaOculta;
     }
 
     public InputPart getAnexo() {
@@ -141,6 +137,6 @@ public class DadosParaNovaSolicitacaoDeGarantia {
 
     public void setAnexo(InputPart anexo) {
         this.anexo = anexo;
-    }    
+    }
 
 }

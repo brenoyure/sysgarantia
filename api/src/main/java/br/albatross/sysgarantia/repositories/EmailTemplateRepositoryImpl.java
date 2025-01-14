@@ -11,10 +11,7 @@ import br.albatross.sysgarantia.dto.emailtemplate.DadosDoEmailTemplateDto;
 import br.albatross.sysgarantia.dto.emailtemplate.DadosParaAtualizacaoDeEmailTemplate;
 import br.albatross.sysgarantia.dto.emailtemplate.EmailTemplateComboBox;
 import br.albatross.sysgarantia.models.EmailTemplate;
-import io.quarkus.hibernate.orm.PersistenceUnit;
 import jakarta.enterprise.context.ApplicationScoped;
-import jakarta.inject.Inject;
-import jakarta.persistence.EntityManager;
 import jakarta.persistence.NoResultException;
 import jakarta.persistence.criteria.CompoundSelection;
 import jakarta.persistence.criteria.CriteriaBuilder;
@@ -27,10 +24,6 @@ import jakarta.persistence.criteria.Root;
 @ApplicationScoped
 public class EmailTemplateRepositoryImpl extends RepositoryImpl<EmailTemplate, Integer>
         implements EmailTemplateRepository {
-
-    @Inject
-    @PersistenceUnit("sysgarantia-pu")
-    EntityManager entityManager;
 
     public EmailTemplateRepositoryImpl() {
         super(EmailTemplate.class);

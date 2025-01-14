@@ -7,14 +7,7 @@ import java.util.Optional;
 
 import br.albatross.sysgarantia.models.Fornecedor;
 import br.albatross.sysgarantia.models.Fornecedor_;
-
-import io.quarkus.hibernate.orm.PersistenceUnit;
-
 import jakarta.enterprise.context.ApplicationScoped;
-
-import jakarta.inject.Inject;
-
-import jakarta.persistence.EntityManager;
 import jakarta.persistence.NoResultException;
 import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.CriteriaQuery;
@@ -24,10 +17,6 @@ import jakarta.persistence.criteria.Root;
 
 @ApplicationScoped
 public class FornecedoresRepositoryImpl extends RepositoryImpl<Fornecedor, Integer> implements FornecedorRepository {
-
-    @Inject
-    @PersistenceUnit("sysgarantia-pu")
-    EntityManager entityManager;
 
     public FornecedoresRepositoryImpl() {
         super(Fornecedor.class);

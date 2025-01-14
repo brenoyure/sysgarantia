@@ -5,10 +5,8 @@ import java.util.Objects;
 
 import br.albatross.sysgarantia.dto.cliente.DadosParaCadastroDeCliente;
 
-import jakarta.persistence.Basic;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -33,7 +31,6 @@ public class Cliente {
     private String numerosParaContato;
 
     @Lob
-    @Basic(fetch = FetchType.LAZY)
     @Column(name = "emails_para_contato", unique = false, nullable = false)
     private String emailsParaContato;
 

@@ -6,19 +6,12 @@ import java.util.List;
 
 import br.albatross.sysgarantia.models.DescricaoProblema;
 import br.albatross.sysgarantia.models.Problema_;
-import io.quarkus.hibernate.orm.PersistenceUnit;
 import jakarta.enterprise.context.ApplicationScoped;
-import jakarta.inject.Inject;
-import jakarta.persistence.EntityManager;
 import jakarta.persistence.NoResultException;
 import jakarta.persistence.criteria.JoinType;
 
 @ApplicationScoped
 public class DescricaoProblemaRepositoryImpl extends RepositoryImpl<DescricaoProblema, Integer> implements DescricaoProblemaRepository {
-
-    @Inject
-    @PersistenceUnit("sysgarantia-pu")
-    EntityManager entityManager;
 
     public DescricaoProblemaRepositoryImpl() {
         super(DescricaoProblema.class);

@@ -3,6 +3,7 @@ package br.albatross.sysgarantia.externos.resource;
 import java.util.List;
 
 import br.albatross.sysgarantia.externos.SistemaDeChamados;
+
 import jakarta.inject.Inject;
 
 import jakarta.validation.constraints.NotBlank;
@@ -51,3 +52,4 @@ public class SistemaDeChamadosResource {
 }
 
 //return Response.ok(List.of(new Chamado(486L, "2025010682000486", "Monitor com Tela Piscando", 100, "Monitor DATEN", "usuario@example.com"))).build();
+//return Response.ok(sistemaDeChamados.findByService(ids)).build();

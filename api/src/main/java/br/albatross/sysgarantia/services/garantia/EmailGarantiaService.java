@@ -7,19 +7,14 @@ import java.util.Set;
 
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 import org.eclipse.microprofile.context.ManagedExecutor;
-
 import org.hibernate.engine.jdbc.BlobProxy;
-
 import org.jboss.resteasy.plugins.providers.multipart.InputPart;
 
 import br.albatross.sysgarantia.dto.garantia.DadosParaNovaSolicitacaoDeGarantia;
-
 import br.albatross.sysgarantia.models.Anexo;
 import br.albatross.sysgarantia.models.Email;
 import br.albatross.sysgarantia.models.SolicitacaoGarantia;
-
 import br.albatross.sysgarantia.repositories.EmailRepository;
-
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 
@@ -45,10 +40,9 @@ public class EmailGarantiaService {
     public void enviarEmail(DadosParaNovaSolicitacaoDeGarantia dadosSolicitacao, SolicitacaoGarantia solicitacaoGarantia) {
         Email emailDeGarantia = criarNovoEmailDeGarantia(dadosSolicitacao, solicitacaoGarantia);
         quarkusMailerService.enviar(emailDeGarantia);
-        solicitacaoGarantia.marcarEnviada();
     }
 
-    private Email criarNovoEmailDeGarantia(DadosParaNovaSolicitacaoDeGarantia dadosSolicitacao, SolicitacaoGarantia solicitacaoGarantia) {
+    public Email criarNovoEmailDeGarantia(DadosParaNovaSolicitacaoDeGarantia dadosSolicitacao, SolicitacaoGarantia solicitacaoGarantia) {
         Email email = 
                 new Email(remetente, 
                           solicitacaoGarantia.getFornecedor().getEmails(), 
