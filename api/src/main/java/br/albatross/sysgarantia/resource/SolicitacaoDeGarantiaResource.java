@@ -26,7 +26,7 @@ public class SolicitacaoDeGarantiaResource {
     @POST
     @Consumes(MediaType.MULTIPART_FORM_DATA)
     public Response solicitar(@Valid @MultipartForm DadosParaNovaSolicitacaoDeGarantia dadosSolicitacao) {
-//        solicitacaoGarantiaService.solicitarGarantia(dadosSolicitacao);
+        solicitacaoGarantiaService.solicitarGarantia(dadosSolicitacao);
         return Response.status(Status.CREATED).build();
 
     }

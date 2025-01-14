@@ -1,18 +1,21 @@
 <template>
 
-    <h2>Serviço de Garantia</h2>
+    <div>
+        <h2>Serviço de Garantia</h2>
+        <LoadingFromApi v-if="isFetchingFromApi"  />
+    </div>
 
     <form style="display: grid;" @submit.prevent="solicitarGarantia">
 
         <label style="font-weight: bold;" class="form-label" for="selectOne-cliente">Selecione o Cliente: </label>
-        <select class="form-select" id="selectOne-cliente" @change="setCliente()" v-model="cliente" required autofocus >
+        <select class="form-select" id="selectOne-cliente" @change="setCliente()" v-model="cliente" required autofocus :disabled="isFetchingFromApi" >
             <option value="0">Selecione o Cliente</option>
             <option v-for="cliente in clientes" :value="cliente" :key="cliente.id">{{ cliente.nome }} - {{ cliente.descricao }}</option>
         </select>
 <br>
 
         <label style="font-weight: bold;" class="form-label" for="selectOne-fornecedor">Selecione o Fornecedor: </label>
-        <select class="form-select" id="selectOne-fornecedor" v-model="fornecedor" @change="setFornecedor()" required>
+        <select class="form-select" id="selectOne-fornecedor" v-model="fornecedor" @change="setFornecedor()" required :disabled="isFetchingFromApi">
             <option value="0">Selecione o Fornecedor</option>
             <option v-for="fornecedor in fornecedores" :value="fornecedor" :key="fornecedor.id">{{ fornecedor.nome }}</option>
         </select>
@@ -29,7 +32,7 @@
 <br>
 
         <label style="font-weight: bold;" class="form-label" for="selectOne-descricaoProblema">Selecione o Problema: </label>
-        <select class="form-select" id="selectOne-descricaoProblema" @change="setDescricaoProblema()" v-model="descricaoProblema" required>
+        <select class="form-select" id="selectOne-descricaoProblema" @change="setDescricaoProblema()" v-model="descricaoProblema" required :disabled="isFetchingFromApi">
             <option value="0">Selecione o Problema</option>
             <option v-for="descricaoProblema in descricaoProblemas" :title="descricaoProblema.descricaoDetalhada" :value="descricaoProblema" :key="descricaoProblema.id">{{ descricaoProblema.problema.tipo }} | {{ descricaoProblema.descricaoResumida }}</option>
         </select>
@@ -46,7 +49,7 @@
 <br>
 
         <label style="font-weight: bold;" class="form-label" for="selectOne-emailTemplate">(Opcional) Utilizar modelo de e-mail pronto: </label>
-        <select class="form-select" id="selectOne-emailTemplate" :disabled="dadosObrigatoriosFaltantesParaGerarOTemplate()" v-model="emailTemplateSelecionado" required @change="setAssuntoECorpoDoEmail">
+        <select class="form-select" id="selectOne-emailTemplate" :disabled="dadosObrigatoriosFaltantesParaGerarOTemplate()" v-model="emailTemplateSelecionado" required @change="setAssuntoECorpoDoEmail" >
             <option value="0">(Opcional) Selecione um Modelo</option>
             <option v-for="emailTemplate in emailTemplates" :value="emailTemplate" :key="emailTemplate.id">{{ emailTemplate.descricao }}</option>
         </select>
@@ -120,10 +123,13 @@
 
 <script>
 import axios from '@/axios'
+import LoadingFromApi from '@/components/LoadingFromApi.vue';
 export default {
+    components: { LoadingFromApi },
     name: 'IndexView',
     data() {
         return {
+            isFetchingFromApi: false,
             solicitacaoJaRealizada: false,
             errors: new Set(),
             cliente: 0,
@@ -364,17 +370,22 @@ export default {
             title: title,
             text: message
             });
+        },
+
+        async apiFetch() {
+            this.isFetchingFromApi = true
+            await this.fetchClientes()
+            await this.fetchFornecedores()
+            await this.fetchDescricaoProblemas()
+            await this.fetchEmailsTemplates()
+
+            document.getElementById('selectOne-cliente').focus()
         }
 
     },
+
     async created() {
-        await this.fetchClientes()
-        await this.fetchFornecedores()
-        await this.fetchDescricaoProblemas()
-        await this.fetchEmailsTemplates()
-
-        document.getElementById('selectOne-cliente').focus()
-
+        await this.apiFetch().finally(() =>  this.isFetchingFromApi = false )
     }
 
 }
