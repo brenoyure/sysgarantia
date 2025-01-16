@@ -43,7 +43,7 @@
 <br>
         <label style="font-weight: bold;" for="selectOne-ticketChamado">Selecione o Ticket: </label>
         <select class="form-select" id="selectOne-ticketChamado" @change="setChamado()" v-model="chamado" required>
-            <option value="0">Selecione o Ticket</option>
+            <option value="0">{{ solicitacao.fornecedor_id == 0 ? 'Para exibir os chamados disponíveis, primeiro selecione o Fornecedor' : 'Selecione o Ticket' }}</option>
             <option :value="chamado" v-for="chamado in chamados" :key="chamado.id">Nº do Ticket: {{ chamado.numero }} | Título: {{ chamado.titulo }} | Serviço: {{ chamado.servico }} | Usuário: {{ chamado.usuario }}</option>
         </select>
 <br>
@@ -314,7 +314,15 @@ export default {
             if (this.fornecedor.idsDosServicosDoFornecedorNoSistemaDeChamados.length > 0) {
                 await axios
                         .post('/sistemaDeChamados/chamados', this.fornecedor.idsDosServicosDoFornecedorNoSistemaDeChamados)
-                        .then(response => this.chamados = response.data)
+                        .then(response => {
+                            this.chamados = response.data
+                            if (this.chamados.length == 0) {
+                                this.showToast(
+                                    'warning', 
+                                    'Nâo há chamados disponíveis para o fornecedor selecionado',
+                                    'Caso tenha certeza que o(s) chamado(s) existe(m) e que está(ão) aberto(s), verifique se você definiu o serviço do chamado corretamente no Sistema de Chamados, ou se, o Serviço está corretamente associado ao fornecedor, consultando através da aba Fornecedores > Listagem, e clicando em Informações no Fornecedor desejado.')
+                            }
+                        })
             }
         },
 

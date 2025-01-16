@@ -11,6 +11,8 @@ import br.albatross.sysgarantia.services.garantia.QuarkusMailerService;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.json.Json;
+import jakarta.transaction.Transactional;
+import jakarta.transaction.Transactional.TxType;
 
 @ApplicationScoped
 public class MessagesProducerService {
@@ -25,6 +27,7 @@ public class MessagesProducerService {
     @Inject
     QuarkusMailerService emailService; 
 
+    @Transactional(TxType.NOT_SUPPORTED)
     public void send(Email emailGarantia) {
         SolicitacaoGarantia solicitacao = emailGarantia.getSolicitacaoGarantia();
         String emailGarantiaJson = 
@@ -38,7 +41,12 @@ public class MessagesProducerService {
                 .build().toString();
 
         novasSolicitacoesMessageProducer.send(Message.of(emailGarantiaJson));
+        marcarComoAgendada(solicitacao);
+    }
 
+    @Transactional
+    void marcarComoAgendada(SolicitacaoGarantia solicitacaoGarantia) {
+        solicitacaoGarantia.marcarAgendada();
     }
 
 }
