@@ -60,15 +60,11 @@ public class MessagingConsumerService {
             return emailGarantiaAsJson.ack();
         }
 
-        return emailService
-                .enviar(email)
-                .thenRun(() -> {
-                    marcarSolicitacaoComoEnviada(email.getSolicitacaoGarantia().getId());
-                    emailGarantiaAsJson.ack();
-                })
+        return emailService.enviar(email)
+                .thenRun(emailGarantiaAsJson::ack)
+                  .thenRun(() -> marcarSolicitacaoComoEnviada(email.getSolicitacaoGarantia()))
                 .exceptionally(e -> {
-                    emailGarantiaAsJson.nack(e);
-                    e.printStackTrace();
+                    emailGarantiaAsJson.nack(e).thenRun(() -> e.printStackTrace());
                     return null;
                 });
     }
@@ -79,8 +75,8 @@ public class MessagingConsumerService {
     }
 
     @Transactional
-    void marcarSolicitacaoComoEnviada(long solicitacaoGarantiaId) {
-        solicitacaoGarantiaService.marcarComoEnviada(solicitacaoGarantiaId);
+    void marcarSolicitacaoComoEnviada(SolicitacaoGarantia solicitacaoGarantia) {
+        solicitacaoGarantiaService.marcarComoEnviada(solicitacaoGarantia.getId());
     }
 
     boolean solicitacaoJaFoiEnviada(SolicitacaoGarantia solicitacaoGarantia) {
@@ -88,17 +84,3 @@ public class MessagingConsumerService {
     }
 
 }
-
-//String solicitacaoGarantiaOutputJsonMessage(Email email) {
-//return  
-//Json
-// .createObjectBuilder()
-//   .add("email_id",                email.getId())
-//   .add("solicitacao_garantia_id", email.getSolicitacaoGarantia().getId())
-//   .add("assunto",                 email.getAssunto())
-//   .add("numero_de_serie",         email.getSolicitacaoGarantia().getNumeroDeSerie())
-//   .add("cliente",                 email.getSolicitacaoGarantia().getCliente().getNome())
-//   .add("fornecedor",              email.getSolicitacaoGarantia().getFornecedor().getNome())
-// .build()
-// .toString();
-//}

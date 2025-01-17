@@ -12,13 +12,9 @@ import jakarta.ws.rs.Path;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.Response.Status;
-import jakarta.ws.rs.core.UriInfo;
 
 @Path("/solicitacaoGarantia")
 public class SolicitacaoDeGarantiaResource {
-
-    @Inject
-    UriInfo uriInfo;
 
     @Inject
     SolicitacaoGarantiaService solicitacaoGarantiaService;
@@ -28,7 +24,6 @@ public class SolicitacaoDeGarantiaResource {
     public Response solicitar(@Valid @MultipartForm DadosParaNovaSolicitacaoDeGarantia dadosSolicitacao) {
         solicitacaoGarantiaService.solicitarGarantia(dadosSolicitacao);
         return Response.status(Status.CREATED).build();
-
     }
 
 }
