@@ -3,23 +3,18 @@ package br.albatross.sysgarantia.messaging;
 import java.io.StringReader;
 import java.util.concurrent.CompletionStage;
 
+import org.eclipse.microprofile.context.ManagedExecutor;
 import org.eclipse.microprofile.reactive.messaging.Incoming;
 import org.eclipse.microprofile.reactive.messaging.Message;
 
 import br.albatross.sysgarantia.models.Email;
-import br.albatross.sysgarantia.models.SolicitacaoGarantia;
-import br.albatross.sysgarantia.models.SolicitacaoGarantia.Status;
 import br.albatross.sysgarantia.repositories.EmailRepository;
 import br.albatross.sysgarantia.services.garantia.QuarkusMailerService;
-import br.albatross.sysgarantia.services.garantia.SolicitacaoGarantiaService;
 import jakarta.enterprise.context.ApplicationScoped;
-
 import jakarta.inject.Inject;
-
 import jakarta.json.Json;
-
+import jakarta.json.JsonReader;
 import jakarta.transaction.Transactional;
-import jakarta.transaction.Transactional.TxType;
 
 /**
  * <p>CDI Responsável por receber as mensagens de novas solicitações de garantia.</p>
@@ -40,47 +35,38 @@ import jakarta.transaction.Transactional.TxType;
 @ApplicationScoped
 public class MessagingConsumerService {
 
+    private static final String EMAIL_ID_JSON_FIELD = "email_id";
+
+    @Inject
+    ManagedExecutor executor;    
+
     @Inject
     EmailRepository emailRepository;    
 
     @Inject
     QuarkusMailerService emailService;
 
-    @Inject
-    SolicitacaoGarantiaService solicitacaoGarantiaService;
-
-    @Transactional(value = TxType.NOT_SUPPORTED)
     @Incoming("in-sysgarantia-novas-solicitacoes-channel")
     public CompletionStage<Void> enviarEmailDeGarantia(Message<String> emailGarantiaAsJson) {
-        long emailId = Long.parseLong(Json.createReader(new StringReader(emailGarantiaAsJson.getPayload())).readObject().get("email_id").toString());
+        return executor.supplyAsync(() -> this.obterIdDoEmailAPartirDoMessagePayload(emailGarantiaAsJson))
+                 .thenApplyAsync(this::buscarEmailPorId)
+                 .thenAcceptAsync(emailService::enviar)
+                 .thenRunAsync(emailGarantiaAsJson::ack)
+                 .exceptionally(e -> {
+                     emailGarantiaAsJson.nack(e).thenRunAsync(e::printStackTrace);
+                     return null;
+                 });
+    }
 
-        Email email = obterEmailPorId(emailId);
-
-        if (solicitacaoJaFoiEnviada(email.getSolicitacaoGarantia())) {
-            return emailGarantiaAsJson.ack();
+    long obterIdDoEmailAPartirDoMessagePayload(Message<String> message) {
+        try (JsonReader jsonReader = Json.createReader(new StringReader(message.getPayload()))) {
+            return jsonReader.readObject().getJsonNumber(EMAIL_ID_JSON_FIELD).longValueExact();          
         }
-
-        return emailService.enviar(email)
-                .thenRun(emailGarantiaAsJson::ack)
-                  .thenRun(() -> marcarSolicitacaoComoEnviada(email.getSolicitacaoGarantia()))
-                .exceptionally(e -> {
-                    emailGarantiaAsJson.nack(e).thenRun(() -> e.printStackTrace());
-                    return null;
-                });
     }
 
     @Transactional
-    Email obterEmailPorId(long emailId) {
-        return emailRepository.findById(emailId).orElseThrow();
-    }
-
-    @Transactional
-    void marcarSolicitacaoComoEnviada(SolicitacaoGarantia solicitacaoGarantia) {
-        solicitacaoGarantiaService.marcarComoEnviada(solicitacaoGarantia.getId());
-    }
-
-    boolean solicitacaoJaFoiEnviada(SolicitacaoGarantia solicitacaoGarantia) {
-        return solicitacaoGarantia.getStatus().equals(Status.ENVIADA);
+    Email buscarEmailPorId(Long id) {
+        return emailRepository.getById((id));
     }
 
 }

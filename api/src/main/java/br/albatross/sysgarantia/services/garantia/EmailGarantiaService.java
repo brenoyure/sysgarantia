@@ -67,7 +67,6 @@ public class EmailGarantiaService {
         }
 
         emailRepository.persist(email);
-        email.getSolicitacaoGarantia().marcarAgendada();
 
         return email;
 

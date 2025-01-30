@@ -9,12 +9,15 @@ import br.albatross.sysgarantia.repositories.ClienteRepository;
 import br.albatross.sysgarantia.repositories.DescricaoProblemaRepository;
 import br.albatross.sysgarantia.repositories.FornecedorRepository;
 import br.albatross.sysgarantia.repositories.SolicitacaoGarantiaRepository;
+
 import jakarta.enterprise.context.ApplicationScoped;
+
 import jakarta.inject.Inject;
+
 import jakarta.transaction.Transactional;
+
 import jakarta.validation.Valid;
 import jakarta.validation.ValidationException;
-import jakarta.validation.constraints.Positive;
 
 /**
  *
@@ -43,18 +46,15 @@ public class SolicitacaoGarantiaService {
 
     @Transactional
     public void solicitarGarantia(@Valid DadosParaNovaSolicitacaoDeGarantia dadosSolicitacao) {
+
         validaExistenciaDoClienteFornecedorEDescricaoProblema(dadosSolicitacao);
-        SolicitacaoGarantia solicitacaoGarantia = 
-                criaSolicitacaoGarantiaAPartirDeDtoEPersiste(dadosSolicitacao);
-        Email emailDeGarantia = 
-                emailGarantiaService.criarNovoEmailDeGarantia(dadosSolicitacao, solicitacaoGarantia);
+
+        SolicitacaoGarantia solicitacaoGarantia = criaSolicitacaoGarantiaAPartirDeDtoEPersiste(dadosSolicitacao);
+
+        Email emailDeGarantia = emailGarantiaService.criarNovoEmailDeGarantia(dadosSolicitacao, solicitacaoGarantia);
 
         messagingService.send(emailDeGarantia);
-    }
 
-    @Transactional
-    public void marcarComoEnviada(@Positive long solicitacaoId) {
-        solicitacaoGarantiaRepository.getReferenceById(solicitacaoId).marcarEnviada();
     }
 
     /**

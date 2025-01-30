@@ -6,18 +6,17 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.sql.SQLException;
+import java.time.Duration;
 import java.util.List;
 import java.util.concurrent.CompletionStage;
-import java.util.concurrent.TimeUnit;
 import java.util.stream.Stream;
 
 import org.eclipse.microprofile.config.inject.ConfigProperty;
-import org.eclipse.microprofile.context.ManagedExecutor;
 
 import br.albatross.sysgarantia.models.Anexo;
 import br.albatross.sysgarantia.models.Email;
 import io.quarkus.mailer.Mail;
-import io.quarkus.mailer.Mailer;
+import io.quarkus.mailer.reactive.ReactiveMailer;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 
@@ -25,19 +24,16 @@ import jakarta.inject.Inject;
 public class QuarkusMailerService {
 
     @Inject
-    Mailer mailer;
-
-    @Inject
-    ManagedExecutor executorService;
+    ReactiveMailer mailer;
 
     @Inject
     @ConfigProperty(name="quarkus-mailer-service-timeout-seconds", defaultValue="30")
     long timeOutSeconds;
 
     public CompletionStage<Void> enviar(Email email) {
-        return executorService
-                .runAsync(() -> mailer.send(criarMailerMailAPartirDoEmail(email)))
-                .orTimeout(timeOutSeconds, TimeUnit.SECONDS);
+        return mailer.send(criarMailerMailAPartirDoEmail(email))
+                .ifNoItem().after(Duration.ofSeconds(timeOutSeconds)).fail()
+                .subscribeAsCompletionStage();
     }
 
     private Mail criarMailerMailAPartirDoEmail(Email email) {
