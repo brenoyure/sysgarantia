@@ -5,7 +5,7 @@ import userdetails from '@/userdetails';
 </script>
 
 <template>
-    <nav class="navbar navbar-expand-md navbar-dark bg-dark mb-4">
+    <nav class="navbar navbar-expand-md sticky-top navbar-dark bg-dark mb-4">
       <div class="container-fluid">
         <RouterLink class="navbar-brand" to="/">
           <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-tools" viewBox="0 0 16 16">

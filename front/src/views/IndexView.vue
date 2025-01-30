@@ -208,6 +208,8 @@ export default {
             botaoSolicitarGarantia.disabled = true
             if (this.solicitacaoJaRealizada) {
                 this.showToast('warning', 'Solicitação de Garantia Já Realizada')
+                botaoSolicitarGarantia.innerText = botaoSolicitarGarantiaTextoOriginal
+                botaoSolicitarGarantia.disabled = false
                 return
             }
             this.errors.clear()
