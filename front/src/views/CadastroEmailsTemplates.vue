@@ -15,7 +15,7 @@ como $cliente.endereco.cidade, é possível conferir nos campos de cidade, seu v
 <br><br>
 </div>
 
-<form style="display: grid;">
+<form style="display: grid;" @submit.prevent="salvar">
 
 <label class="form-label" style="font-weight: bold" for="inputText-descricaoDoEmailTemplate">Descrição do Tipo do E-mail: </label>
 <input class="form-control" id="inputText-descricaoDoEmailTemplate" type="text" placeholder="Email Pronto para quando acontecer o problema X ..." maxlength="255" >
@@ -25,6 +25,9 @@ como $cliente.endereco.cidade, é possível conferir nos campos de cidade, seu v
 
 <label class="form-label" value="Corpo do Email: " for="textArea-corpoDoEmailTemplate" style="font-weight: bold;">Corpo do E-mail: </label>
 <textarea class="form-control" id="textArea-corpoDoEmailTemplate" rows="10" cols="50" @input="imprimeTemplateNoTextAreaResultado" placeholder="Prezado atendente da $fornecedor.nome, solicitamos garantia para o equipamento $numeroDeSerie..." ></textarea>
+
+<br>
+<button class="btn btn-outline-primary">Salvar</button>
 
 </form>
 
@@ -157,6 +160,29 @@ export default {
     },
 
     methods: {
+        async salvar() {
+            this.showToast('info', 'Modelo de E-mail cadastrado com sucesso')
+        },
+
+        showToast(icon, title, message) {
+            const Toast = this.$swal.mixin({
+            toast: true,
+            position: "top-end",
+            showConfirmButton: false,
+            timer: 5000,
+            timerProgressBar: true,
+            didOpen: (toast) => {
+                toast.onmouseenter = this.$swal.stopTimer;
+                toast.onmouseleave = this.$swal.resumeTimer;
+            }
+            });
+            Toast.fire({
+            icon: icon,
+            title: title,
+            text: message
+            });
+        },
+
         fromTemplateToRealString(templateString) {
             let replaced = templateString
             .replaceAll("$numeroDeSerie", 
