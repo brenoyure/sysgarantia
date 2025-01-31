@@ -7,6 +7,8 @@ import ListaClientesView from '@/views/ListaClientesView.vue'
 import CategoriasProblemas from '@/views/CategoriasProblemas.vue'
 import TextosProntos from '@/views/TextosProntos.vue'
 import PageNotFound from '@/views/PageNotFound.vue'
+import RelatoriosGarantia from '@/views/RelatoriosGarantia.vue'
+import CadastroEmailsTemplates from '@/views/CadastroEmailsTemplates.vue'
 
 const routes = [
 
@@ -48,6 +50,16 @@ const routes = [
   {
     path: '/administracao/clientes/listagem',
     component: ListaClientesView
+  },
+
+  {
+    path: '/administracao/relatorios',
+    component: RelatoriosGarantia
+  },
+
+  {
+    path: '/administracao/emailsTemplates/cadastro',
+    component: CadastroEmailsTemplates
   }
 
 ]
