@@ -1,7 +1,9 @@
 package br.albatross.sysgarantia.dto.emailtemplate;
 
+import io.quarkus.runtime.annotations.RegisterForReflection;
 import jakarta.validation.constraints.NotBlank;
 
+@RegisterForReflection
 public class DadosParaCadastroDeEmailTemplate {
 
     @NotBlank(message = "Descrição do Template Obrigatória")

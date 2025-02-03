@@ -2,14 +2,14 @@ package br.albatross.sysgarantia.models;
 
 import java.util.Objects;
 
-import jakarta.persistence.Basic;
+//import jakarta.persistence.Basic;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
+//import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.Lob;
+//import jakarta.persistence.Lob;
 import jakarta.persistence.Table;
 
 @Entity
@@ -26,13 +26,20 @@ public class EmailTemplate {
     @Column(name = "assunto", unique = false, nullable = false)
     private String assunto;
 
-    @Lob
-    @Basic(fetch = FetchType.LAZY)
+//    @Lob
+//    @Basic(fetch = FetchType.LAZY)
     @Column(name = "corpo_do_email", unique = false, nullable = false)
     private String corpoDoEmail;
 
     public EmailTemplate() {
 
+    }
+
+    public EmailTemplate(Integer id, String descricao, String assunto, String corpoDoEmail) {
+        this.id = id;
+        this.descricao = descricao;
+        this.assunto = assunto;
+        this.corpoDoEmail = corpoDoEmail;
     }
 
     public EmailTemplate(String descricao, String assunto, String corpoDoEmail) {

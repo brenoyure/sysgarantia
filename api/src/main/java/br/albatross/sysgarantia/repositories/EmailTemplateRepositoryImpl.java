@@ -1,14 +1,12 @@
 package br.albatross.sysgarantia.repositories;
 
 import static br.albatross.sysgarantia.models.EmailTemplate_.assunto;
-import static br.albatross.sysgarantia.models.EmailTemplate_.corpoDoEmail;
 import static br.albatross.sysgarantia.models.EmailTemplate_.descricao;
 import static br.albatross.sysgarantia.models.EmailTemplate_.id;
 
 import java.util.List;
 
 import br.albatross.sysgarantia.dto.emailtemplate.DadosDoEmailTemplateDto;
-import br.albatross.sysgarantia.dto.emailtemplate.DadosParaAtualizacaoDeEmailTemplate;
 import br.albatross.sysgarantia.dto.emailtemplate.EmailTemplateComboBox;
 import br.albatross.sysgarantia.models.EmailTemplate;
 import jakarta.enterprise.context.ApplicationScoped;
@@ -16,9 +14,7 @@ import jakarta.persistence.NoResultException;
 import jakarta.persistence.criteria.CompoundSelection;
 import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.CriteriaQuery;
-import jakarta.persistence.criteria.CriteriaUpdate;
 import jakarta.persistence.criteria.Order;
-import jakarta.persistence.criteria.ParameterExpression;
 import jakarta.persistence.criteria.Root;
 
 @ApplicationScoped
@@ -79,37 +75,6 @@ public class EmailTemplateRepositoryImpl extends RepositoryImpl<EmailTemplate, I
                     .getSingleResult();
 
         } catch (NoResultException e) { return false; }
-
-    }
-
-    @Override
-    public void update(DadosParaAtualizacaoDeEmailTemplate dadosAtualizados) {
-        CriteriaBuilder builder = 
-                entityManager.getCriteriaBuilder();
-        CriteriaUpdate<EmailTemplate> criteriaUpdate = 
-                builder.createCriteriaUpdate(EmailTemplate.class);
-        Root<EmailTemplate> emailTemplate = 
-                criteriaUpdate.from(EmailTemplate.class);
-
-        ParameterExpression<Integer> parameterId = builder.parameter(Integer.class);
-        ParameterExpression<String> parameterDescricao = builder.parameter(String.class);
-        ParameterExpression<String> parameterAssunto = builder.parameter(String.class);
-        ParameterExpression<String> parameterCorpoDoEmail = builder.parameter(String.class);
-
-        criteriaUpdate
-            .set(emailTemplate.get(descricao), parameterDescricao)
-            .set(emailTemplate.get(assunto), parameterAssunto)
-            .set(emailTemplate.get(corpoDoEmail), parameterCorpoDoEmail)
-
-            .where(builder.equal(emailTemplate.get(id), parameterId));
-
-        entityManager
-            .createQuery(criteriaUpdate)
-            .setParameter(parameterId, dadosAtualizados.getId())
-            .setParameter(parameterDescricao, dadosAtualizados.getDescricao())
-            .setParameter(parameterAssunto, dadosAtualizados.getAssunto())
-            .setParameter(parameterCorpoDoEmail, dadosAtualizados.getCorpoDoEmail())
-            .executeUpdate();
 
     }
 

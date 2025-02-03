@@ -8,6 +8,7 @@ import br.albatross.sysgarantia.models.EmailTemplate;
 import br.albatross.sysgarantia.repositories.EmailTemplateRepository;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
+import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import jakarta.validation.ValidationException;
 
@@ -42,35 +43,34 @@ public class EmailTemplateService {
     @Inject
     private EmailTemplateRepository repository;
 
-    public void cadastrar(@Valid DadosParaCadastroDeEmailTemplate dados) {
+    @Transactional
+    public EmailTemplate cadastrar(@Valid DadosParaCadastroDeEmailTemplate dados) {
 
         if (repository.existsByDescricao(dados.getDescricao())) {
             throw new ValidationException("Já existe outro Email Modelo cadastrado com a descrição informada");
         }
 
-        EmailTemplate email = 
-                new EmailTemplate(dados.getDescricao(), dados.getAssunto(), dados.getCorpoDoEmail());
-        repository.persist(email);
+        return repository.persist(new EmailTemplate(dados.getDescricao(), dados.getAssunto(), dados.getCorpoDoEmail()));
     }
 
+    @Transactional
     public void atualizar(@Valid DadosParaAtualizacaoDeEmailTemplate dadosAtualizados) {
-
-        if (!repository.existsById(dadosAtualizados.getId())) {
-            throw new ValidationException("Email Modelo com o Id informado não existe");
-        }
 
         if (repository.existsByDescricaoAndNotById(dadosAtualizados.getDescricao(), dadosAtualizados.getId())) {
             throw new ValidationException("Já existe outro Email Modelo cadastrado com a descrição informada");
         }
 
-        repository.update(dadosAtualizados);
-
+        repository.merge(new EmailTemplate(dadosAtualizados.getId(), 
+                                           dadosAtualizados.getDescricao(), 
+                                           dadosAtualizados.getAssunto(), 
+                                           dadosAtualizados.getCorpoDoEmail()));
     }
 
     public Optional<EmailTemplate> buscarPorId(Integer id) {
         return repository.findById(id);
     }
 
+    @Transactional
     public boolean excluirPorId(Integer id) {
 
         if (id.equals(1) || id == 1) {

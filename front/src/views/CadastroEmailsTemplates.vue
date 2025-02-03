@@ -1,6 +1,6 @@
 <template>
 
-<h2>Administração / Modelos de E-mails / Cadastro</h2>
+<h2>Administração / Modelos de E-mails / {{ modeloDeEmailCadastroDto.id == null ? 'Cadastro' : 'Atualização' }} </h2>
 
 <div>
     <label id="label-dica" style="font-weight: bold; text-align: justify;" >
@@ -18,13 +18,13 @@ como $cliente.endereco.cidade, é possível conferir nos campos de cidade, seu v
 <form style="display: grid;" @submit.prevent="salvar">
 
 <label class="form-label" style="font-weight: bold" for="inputText-descricaoDoEmailTemplate">Descrição do Tipo do E-mail: </label>
-<input class="form-control" id="inputText-descricaoDoEmailTemplate" type="text" placeholder="Email Pronto para quando acontecer o problema X ..." maxlength="255" >
+<input class="form-control" v-model="modeloDeEmailCadastroDto.descricao" id="inputText-descricaoDoEmailTemplate" type="text" placeholder="Email Pronto para quando acontecer o problema X ..." maxlength="255" >
 
 <label class="form-label" style="font-weight: bold" for="inputText-assuntoDoEmailTemplate">Assunto do E-mail: </label>
-<input class="form-control" id="inputText-assuntoDoEmailTemplate" type="text" @input="imprimeAssuntoTemplateNoInputTextResultado" placeholder="Solicitação de $problema.tipo no equipamento do fornecedor $fornecedor.nome " maxlength="255" >
+<input class="form-control" v-model="modeloDeEmailCadastroDto.assunto" id="inputText-assuntoDoEmailTemplate" type="text" @input="imprimeAssuntoTemplateNoInputTextResultado" placeholder="Solicitação de $problema.tipo no equipamento do fornecedor $fornecedor.nome " maxlength="255" >
 
 <label class="form-label" value="Corpo do Email: " for="textArea-corpoDoEmailTemplate" style="font-weight: bold;">Corpo do E-mail: </label>
-<textarea class="form-control" id="textArea-corpoDoEmailTemplate" rows="10" cols="50" @input="imprimeTemplateNoTextAreaResultado" placeholder="Prezado atendente da $fornecedor.nome, solicitamos garantia para o equipamento $numeroDeSerie..." ></textarea>
+<textarea class="form-control" v-model="modeloDeEmailCadastroDto.corpoDoEmail" id="textArea-corpoDoEmailTemplate" rows="10" cols="50" @input="imprimeTemplateNoTextAreaResultado" placeholder="Prezado atendente da $fornecedor.nome, solicitamos garantia para o equipamento $numeroDeSerie..." ></textarea>
 
 <br>
 <button class="btn btn-outline-primary">Salvar</button>
@@ -111,14 +111,22 @@ como $cliente.endereco.cidade, é possível conferir nos campos de cidade, seu v
 </template>
 
 <script>
-import { Fieldset } from 'primevue';
+import axios from '@/axios'
+import { Fieldset } from 'primevue'
+import { useRoute } from 'vue-router';
 
 export default {
-    components: {
-        Fieldset
-    },
+    components: { Fieldset },
     data() {
         return {
+
+            modeloDeEmailCadastroDto: {
+                id: null,
+                descricao: '',
+                assunto: '',
+                corpoDoEmail: ''
+            },
+            
             solicitacaoDeGarantia: {
                 numeroDeSerie: 'AVCLX486',
                 problema: {
@@ -154,14 +162,51 @@ export default {
                     nome: 'Fornecedor LTDA',
                     emailsParaContato: 'suporte.garantia@mail.fornecedor.br, atendimento.empresas@fornecedor.br'
                 }
-
             }
         }
     },
 
     methods: {
         async salvar() {
-            this.showToast('info', 'Modelo de E-mail cadastrado com sucesso')
+            if (this.modeloDeEmailCadastroDto.id == undefined || this.modeloDeEmailCadastroDto.id == null ) {
+                await this.cadastrarNovoModeloDeEmail(this.modeloDeEmailCadastroDto)
+            } else {
+                await this.atualizarModeloDeEmail(this.modeloDeEmailCadastroDto)
+            }
+        },
+
+        async cadastrarNovoModeloDeEmail(novoModeloDeEmailDto) {
+            await axios.post('/emailstemplates', novoModeloDeEmailDto)
+                    .then(response => {
+                        novoModeloDeEmailDto.id = response.data.id
+                        this.showToast('success', 'Novo Modelo de E-mail Pronto cadastrado com sucesso')
+                    }).catch(error => {
+                        if (error.status == 400) {
+                            this.tratarErro400(error)
+                        } else throw error
+                    })
+        },
+
+        async atualizarModeloDeEmail(atualizacaoModeloDeEmailDto) {
+            await axios.patch('/emailstemplates', atualizacaoModeloDeEmailDto)
+                    .then(() => {
+                        this.showToast('success', 'Modelo de E-mail atualizado com sucesso')
+                    }).catch(error => {
+                        if (error.status == 400) {
+                            this.tratarErro400(error)
+                        } else throw error
+                    })
+        },
+
+        tratarErro400(error) {
+            const messages = error.response.data
+            if (Array.isArray(messages)) {
+                messages.forEach(message => {
+                    this.showToast('error', message)
+                })
+            } else {
+                this.showToast('error', messages.error)
+            }
         },
 
         showToast(icon, title, message) {
@@ -237,6 +282,15 @@ export default {
             let templateTextArea = document.getElementById('textArea-corpoDoEmailTemplate')
             let resultadoTextArea = document.getElementById('textArea-resultado-corpoDoEmailTemplate')
             resultadoTextArea.value = this.fromTemplateToRealString(templateTextArea.value)
+        }
+    },
+
+    async created() {
+        const modeloDeEmailId = parseInt(useRoute().query.id)
+        if (Number.isInteger(modeloDeEmailId) && modeloDeEmailId > 0) {
+            await axios
+                    .get(`/emailstemplates/${modeloDeEmailId}`)
+                    .then(response => this.modeloDeEmailCadastroDto = response.data)
         }
     },
 
