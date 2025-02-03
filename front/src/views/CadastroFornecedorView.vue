@@ -48,7 +48,9 @@
 <br>
 
     <button class="btn btn-outline-primary">Salvar</button>
-    <button v-if="fornecedor.id" type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#exclueFornecedorModal">Excluir</button>
+<br>
+
+    <button v-if="fornecedor.id" type="button" class="btn btn-outline-danger" data-bs-toggle="modal" data-bs-target="#exclueFornecedorModal">Excluir</button>
     <div class="modal fade" id="exclueFornecedorModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">

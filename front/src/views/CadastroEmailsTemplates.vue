@@ -28,7 +28,8 @@ como $cliente.endereco.cidade, é possível conferir nos campos de cidade, seu v
 
 <br>
 <button class="btn btn-outline-primary">Salvar</button>
-<button v-if="modeloDeEmailCadastroDto.id" type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#exclueEmailTemplateModal">Excluir</button>
+<br>
+<button v-if="modeloDeEmailCadastroDto.id" type="button" class="btn btn-outline-danger" data-bs-toggle="modal" data-bs-target="#exclueEmailTemplateModal">Excluir</button>
         <div class="modal fade" id="exclueEmailTemplateModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
             <div class="modal-dialog">
                 <div class="modal-content">
