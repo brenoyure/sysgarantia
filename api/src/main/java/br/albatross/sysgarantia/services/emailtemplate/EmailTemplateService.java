@@ -73,10 +73,6 @@ public class EmailTemplateService {
     @Transactional
     public boolean excluirPorId(Integer id) {
 
-        if (id.equals(1) || id == 1) {
-            throw new ValidationException("Para manter a integridade do sistema, não será permitida a exclusão do email modelo padrão");
-        }
-
         return repository.deleteById(id);
 
     }

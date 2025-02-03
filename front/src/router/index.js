@@ -9,6 +9,7 @@ import TextosProntos from '@/views/TextosProntos.vue'
 import PageNotFound from '@/views/PageNotFound.vue'
 import RelatoriosGarantia from '@/views/RelatoriosGarantia.vue'
 import CadastroEmailsTemplates from '@/views/CadastroEmailsTemplates.vue'
+import ListaEmailsTemplatesView from '@/views/ListaEmailsTemplatesView.vue'
 
 const routes = [
 
@@ -60,6 +61,11 @@ const routes = [
   {
     path: '/administracao/emailsTemplates/cadastro',
     component: CadastroEmailsTemplates
+  },
+
+  {
+    path: '/administracao/emailsTemplates/listagem',
+    component: ListaEmailsTemplatesView
   }
 
 ]

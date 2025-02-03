@@ -28,6 +28,24 @@ como $cliente.endereco.cidade, é possível conferir nos campos de cidade, seu v
 
 <br>
 <button class="btn btn-outline-primary">Salvar</button>
+<button v-if="modeloDeEmailCadastroDto.id" type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#exclueEmailTemplateModal">Excluir</button>
+        <div class="modal fade" id="exclueEmailTemplateModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h1 class="modal-title fs-5" id="exampleModalLabel">Confirmação de Exclusão</h1>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <label>Confirmar Exclusão do Modelo: <span style="text-transform: capitalize; font-weight: bold;">{{ modeloDeEmailCadastroDto.descricao }}</span> ?</label>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-danger" data-bs-dismiss="modal" @click="excluirEmailTemplate">Confirmar Exclusão</button>
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    </div>
+                </div>
+            </div>
+        </div>
 
 </form>
 
@@ -113,7 +131,7 @@ como $cliente.endereco.cidade, é possível conferir nos campos de cidade, seu v
 <script>
 import axios from '@/axios'
 import { Fieldset } from 'primevue'
-import { useRoute } from 'vue-router';
+import { useRoute, useRouter } from 'vue-router';
 
 export default {
     components: { Fieldset },
@@ -195,6 +213,22 @@ export default {
                         if (error.status == 400) {
                             this.tratarErro400(error)
                         } else throw error
+                    })
+        },
+
+        async excluirEmailTemplate() {
+            await axios
+                    .delete(`/emailstemplates/${this.modeloDeEmailCadastroDto.id}`)
+                    .then(async () => {
+                        useRouter().push('/administracao/emailsTemplates/listagem').then(() => {
+                            this.showToast('info', 
+                                           'Modelo Excluído com sucesso', 
+                                           `O Modelo ${this.modeloDeEmailCadastroDto.descricao} foi excluído com sucesso`)
+                        })
+                    }).catch(error => {
+                        if (error.status == 400) {
+                            this.tratarErro400(error)
+                        }
                     })
         },
 
@@ -291,6 +325,14 @@ export default {
             await axios
                     .get(`/emailstemplates/${modeloDeEmailId}`)
                     .then(response => this.modeloDeEmailCadastroDto = response.data)
+                    .catch(error => {
+                        if (error.status == 404) {
+                            this.showToast(
+                                'warning', 
+                                'Modelo de E-mail com o id informado não encontrado', 
+                                'Redirecionando para a página de criação de novo Modelo')
+                        }
+                    })
         }
     },
 
