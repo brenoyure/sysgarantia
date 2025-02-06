@@ -1,0 +1,44 @@
+{
+  "realm" : "br.albatross.sysgarantia",
+  "users" : [ {
+    "id" : "8805bf94-c190-49f4-9083-9ef3b819a16e",
+    "username" : "administrador",
+    "firstName" : "Admin",
+    "lastName" : "Admin",
+    "email" : "admin@example.com",
+    "emailVerified" : true,
+    "createdTimestamp" : 1738869231575,
+    "enabled" : true,
+    "totp" : false,
+    "credentials" : [ {
+      "id" : "2a3ac1e4-50a6-4db6-bb55-01731e97cd6d",
+      "type" : "password",
+      "userLabel" : "My password",
+      "createdDate" : 1738869245559,
+      "secretData" : "{\"value\":\"HTriN09n0b1jvR1v1deSDASjEMZV5pziLLpBPwKftFw=\",\"salt\":\"wVdVm/F47+xp1OpQo/mCJw==\",\"additionalParameters\":{}}",
+      "credentialData" : "{\"hashIterations\":5,\"algorithm\":\"argon2\",\"additionalParameters\":{\"hashLength\":[\"32\"],\"memory\":[\"7168\"],\"type\":[\"id\"],\"version\":[\"1.3\"],\"parallelism\":[\"1\"]}}"
+    } ],
+    "disableableCredentialTypes" : [ ],
+    "requiredActions" : [ ],
+    "realmRoles" : [ "default-roles-br.albatross.sysgarantia", "ADMIN" ],
+    "notBefore" : 0,
+    "groups" : [ ]
+  }, {
+    "id" : "b9162936-e06b-4111-a39b-f4f6cc1ffe39",
+    "username" : "service-account-sysgarantia-api-quarkus",
+    "emailVerified" : false,
+    "createdTimestamp" : 1738868906474,
+    "enabled" : true,
+    "totp" : false,
+    "serviceAccountClientId" : "sysgarantia-api-quarkus",
+    "credentials" : [ ],
+    "disableableCredentialTypes" : [ ],
+    "requiredActions" : [ ],
+    "realmRoles" : [ "default-roles-br.albatross.sysgarantia" ],
+    "clientRoles" : {
+      "sysgarantia-api-quarkus" : [ "uma_protection" ]
+    },
+    "notBefore" : 0,
+    "groups" : [ ]
+  } ]
+}
