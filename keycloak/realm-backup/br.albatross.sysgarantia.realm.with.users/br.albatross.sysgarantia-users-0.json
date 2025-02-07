@@ -20,7 +20,10 @@
     } ],
     "disableableCredentialTypes" : [ ],
     "requiredActions" : [ ],
-    "realmRoles" : [ "default-roles-br.albatross.sysgarantia", "ADMIN" ],
+    "realmRoles" : [ "default-roles-br.albatross.sysgarantia" ],
+    "clientRoles" : {
+      "sysgarantia-api-quarkus" : [ "ADMIN" ]
+    },
     "notBefore" : 0,
     "groups" : [ ]
   }, {

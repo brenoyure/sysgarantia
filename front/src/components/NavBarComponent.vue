@@ -2,6 +2,15 @@
 import keycloak from '@/keycloak';
 import userdetails from '@/userdetails';
 
+const isUserInRole = (role => {
+  if (keycloak && userdetails && userdetails.roles.length > 0) {
+    return userdetails.roles.includes(role)
+  }
+  return true
+})
+
+const hasAdminRole = isUserInRole('ADMIN')
+
 </script>
 
 <template>
@@ -21,8 +30,8 @@ import userdetails from '@/userdetails';
             <!-- <li class="nav-item">
               <a class="nav-link active" aria-current="page" href="#">Home</a>
             </li> -->
-            <li class="nav-item dropdown">
-              <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+            <li class="nav-item dropdown" :style="{ cursor: hasAdminRole ? 'inherit' : 'not-allowed' }">
+              <a :class="[!hasAdminRole ? 'disabled' : '', 'nav-link', 'dropdown-toggle']" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                 <i class="bi bi-text-left"></i>
                 Textos Prontos
               </a>
@@ -43,8 +52,8 @@ import userdetails from '@/userdetails';
                 </li>
               </ul>
             </li>
-            <li class="nav-item dropdown">
-              <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+            <li class="nav-item dropdown" :style="{ cursor: hasAdminRole ? 'inherit' : 'not-allowed' }" >
+              <a :class="[!hasAdminRole ? 'disabled' : '', 'nav-link', 'dropdown-toggle']" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-inbox" viewBox="0 0 16 16">
                   <path d="M4.98 4a.5.5 0 0 0-.39.188L1.54 8H6a.5.5 0 0 1 .5.5 1.5 1.5 0 1 0 3 0A.5.5 0 0 1 10 8h4.46l-3.05-3.812A.5.5 0 0 0 11.02 4zm9.954 5H10.45a2.5 2.5 0 0 1-4.9 0H1.066l.32 2.562a.5.5 0 0 0 .497.438h12.234a.5.5 0 0 0 .496-.438zM3.809 3.563A1.5 1.5 0 0 1 4.981 3h6.038a1.5 1.5 0 0 1 1.172.563l3.7 4.625a.5.5 0 0 1 .105.374l-.39 3.124A1.5 1.5 0 0 1 14.117 13H1.883a1.5 1.5 0 0 1-1.489-1.314l-.39-3.124a.5.5 0 0 1 .106-.374z"/>
                 </svg>
@@ -70,8 +79,8 @@ import userdetails from '@/userdetails';
                 </li>
               </ul>
             </li>
-            <li class="nav-item dropdown">
-              <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+            <li class="nav-item dropdown" :style="{ cursor: hasAdminRole ? 'inherit' : 'not-allowed' }" >
+              <a :class="[!hasAdminRole ? 'disabled' : '', 'nav-link', 'dropdown-toggle']" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-truck" viewBox="0 0 16 16">
                   <path d="M0 3.5A1.5 1.5 0 0 1 1.5 2h9A1.5 1.5 0 0 1 12 3.5V5h1.02a1.5 1.5 0 0 1 1.17.563l1.481 1.85a1.5 1.5 0 0 1 .329.938V10.5a1.5 1.5 0 0 1-1.5 1.5H14a2 2 0 1 1-4 0H5a2 2 0 1 1-3.998-.085A1.5 1.5 0 0 1 0 10.5zm1.294 7.456A2 2 0 0 1 4.732 11h5.536a2 2 0 0 1 .732-.732V3.5a.5.5 0 0 0-.5-.5h-9a.5.5 0 0 0-.5.5v7a.5.5 0 0 0 .294.456M12 10a2 2 0 0 1 1.732 1h.768a.5.5 0 0 0 .5-.5V8.35a.5.5 0 0 0-.11-.312l-1.48-1.85A.5.5 0 0 0 13.02 6H12zm-9 1a1 1 0 1 0 0 2 1 1 0 0 0 0-2m9 0a1 1 0 1 0 0 2 1 1 0 0 0 0-2"/>
                 </svg>
@@ -97,8 +106,8 @@ import userdetails from '@/userdetails';
                 </li>
               </ul>
             </li>
-            <li id="clientes" class="nav-item dropdown">
-              <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+            <li id="clientes" class="nav-item dropdown" :style="{ cursor: hasAdminRole ? 'inherit' : 'not-allowed' }" >
+              <a :class="[!hasAdminRole ? 'disabled' : '', 'nav-link', 'dropdown-toggle']" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                 <i class="bi bi-buildings" id="clientes:icon"></i>
                 Clientes
               </a>

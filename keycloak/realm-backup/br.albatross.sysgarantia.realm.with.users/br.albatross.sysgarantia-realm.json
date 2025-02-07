@@ -49,17 +49,6 @@
   "failureFactor" : 30,
   "roles" : {
     "realm" : [ {
-      "id" : "3c4d532e-7128-4e05-b3db-ffbbed21916e",
-      "name" : "ADMIN",
-      "description" : "Usuários com acessos às URLS /administracao/*",
-      "composite" : true,
-      "composites" : {
-        "realm" : [ "USER" ]
-      },
-      "clientRole" : false,
-      "containerId" : "51ffc6d2-b75d-436d-b436-62be5529980b",
-      "attributes" : { }
-    }, {
       "id" : "cd506292-b16b-431d-849c-01c6cb452445",
       "name" : "default-roles-br.albatross.sysgarantia",
       "description" : "${role_default-roles}",
@@ -86,17 +75,6 @@
       "name" : "offline_access",
       "description" : "${role_offline-access}",
       "composite" : false,
-      "clientRole" : false,
-      "containerId" : "51ffc6d2-b75d-436d-b436-62be5529980b",
-      "attributes" : { }
-    }, {
-      "id" : "2842511a-6a33-4843-9d61-865459170244",
-      "name" : "USER",
-      "description" : "Usuários que estão apenas logados",
-      "composite" : true,
-      "composites" : {
-        "realm" : [ "default-roles-br.albatross.sysgarantia" ]
-      },
       "clientRole" : false,
       "containerId" : "51ffc6d2-b75d-436d-b436-62be5529980b",
       "attributes" : { }
@@ -359,6 +337,32 @@
         "attributes" : { }
       } ],
       "sysgarantia-api-quarkus" : [ {
+        "id" : "e5a357d9-a496-4e77-9804-3ab56cbe83cd",
+        "name" : "ADMIN",
+        "description" : "Acesso às URLs administrativas do sistema.\nJá inclui as permissões da role: USER.",
+        "composite" : true,
+        "composites" : {
+          "client" : {
+            "sysgarantia-api-quarkus" : [ "USER" ]
+          }
+        },
+        "clientRole" : true,
+        "containerId" : "d24d1e33-cb80-49c9-b77e-c8c76f3992e1",
+        "attributes" : { }
+      }, {
+        "id" : "375c9602-59ea-4a55-953b-7d6645f8d34e",
+        "name" : "USER",
+        "description" : "Permissão de Usuário Logado Padrão.",
+        "composite" : true,
+        "composites" : {
+          "client" : {
+            "sysgarantia-api-quarkus" : [ "uma_protection" ]
+          }
+        },
+        "clientRole" : true,
+        "containerId" : "d24d1e33-cb80-49c9-b77e-c8c76f3992e1",
+        "attributes" : { }
+      }, {
         "id" : "dfd864fa-5fed-42c6-b8ff-a53faea0ef73",
         "name" : "uma_protection",
         "composite" : false,
@@ -512,7 +516,8 @@
     "protocol" : "openid-connect",
     "attributes" : {
       "realm_client" : "false",
-      "client.use.lightweight.access.token.enabled" : "true"
+      "client.use.lightweight.access.token.enabled" : "true",
+      "post.logout.redirect.uris" : "+"
     },
     "authenticationFlowBindingOverrides" : { },
     "fullScopeAllowed" : true,
@@ -540,7 +545,8 @@
     "frontchannelLogout" : false,
     "protocol" : "openid-connect",
     "attributes" : {
-      "realm_client" : "true"
+      "realm_client" : "true",
+      "post.logout.redirect.uris" : "+"
     },
     "authenticationFlowBindingOverrides" : { },
     "fullScopeAllowed" : false,
@@ -568,7 +574,8 @@
     "frontchannelLogout" : false,
     "protocol" : "openid-connect",
     "attributes" : {
-      "realm_client" : "true"
+      "realm_client" : "true",
+      "post.logout.redirect.uris" : "+"
     },
     "authenticationFlowBindingOverrides" : { },
     "fullScopeAllowed" : false,
@@ -656,6 +663,7 @@
       "client.secret.creation.time" : "1738868906",
       "backchannel.logout.session.required" : "true",
       "frontchannel.logout.session.required" : "true",
+      "post.logout.redirect.uris" : "+",
       "oauth2.device.authorization.grant.enabled" : "true",
       "display.on.consent.screen" : "false",
       "backchannel.logout.revoke.offline.tokens" : "false"
@@ -1059,6 +1067,7 @@
       "config" : {
         "introspection.token.claim" : "true",
         "multivalued" : "true",
+        "userinfo.token.claim" : "true",
         "user.attribute" : "foo",
         "id.token.claim" : "true",
         "access.token.claim" : "true",
@@ -1083,8 +1092,9 @@
       "consentRequired" : false,
       "config" : {
         "user.session.note" : "AUTH_TIME",
-        "id.token.claim" : "true",
         "introspection.token.claim" : "true",
+        "userinfo.token.claim" : "true",
+        "id.token.claim" : "true",
         "access.token.claim" : "true",
         "claim.name" : "auth_time",
         "jsonType.label" : "long"
@@ -1117,12 +1127,13 @@
       "protocolMapper" : "oidc-organization-membership-mapper",
       "consentRequired" : false,
       "config" : {
-        "id.token.claim" : "true",
         "introspection.token.claim" : "true",
+        "multivalued" : "true",
+        "userinfo.token.claim" : "true",
+        "id.token.claim" : "true",
         "access.token.claim" : "true",
         "claim.name" : "organization",
-        "jsonType.label" : "String",
-        "multivalued" : "true"
+        "jsonType.label" : "String"
       }
     } ]
   }, {
@@ -1270,8 +1281,9 @@
       "consentRequired" : false,
       "config" : {
         "user.session.note" : "client_id",
-        "id.token.claim" : "true",
         "introspection.token.claim" : "true",
+        "userinfo.token.claim" : "true",
+        "id.token.claim" : "true",
         "access.token.claim" : "true",
         "claim.name" : "client_id",
         "jsonType.label" : "String"
@@ -1284,8 +1296,9 @@
       "consentRequired" : false,
       "config" : {
         "user.session.note" : "clientAddress",
-        "id.token.claim" : "true",
         "introspection.token.claim" : "true",
+        "userinfo.token.claim" : "true",
+        "id.token.claim" : "true",
         "access.token.claim" : "true",
         "claim.name" : "clientAddress",
         "jsonType.label" : "String"
@@ -1298,8 +1311,9 @@
       "consentRequired" : false,
       "config" : {
         "user.session.note" : "clientHost",
-        "id.token.claim" : "true",
         "introspection.token.claim" : "true",
+        "userinfo.token.claim" : "true",
+        "id.token.claim" : "true",
         "access.token.claim" : "true",
         "claim.name" : "clientHost",
         "jsonType.label" : "String"
@@ -1352,7 +1366,8 @@
       "config" : {
         "id.token.claim" : "true",
         "introspection.token.claim" : "true",
-        "access.token.claim" : "true"
+        "access.token.claim" : "true",
+        "userinfo.token.claim" : "true"
       }
     } ]
   } ],
@@ -1391,7 +1406,7 @@
       "subType" : "authenticated",
       "subComponents" : { },
       "config" : {
-        "allowed-protocol-mapper-types" : [ "oidc-usermodel-attribute-mapper", "saml-user-attribute-mapper", "saml-user-property-mapper", "oidc-usermodel-property-mapper", "oidc-full-name-mapper", "saml-role-list-mapper", "oidc-address-mapper", "oidc-sha256-pairwise-sub-mapper" ]
+        "allowed-protocol-mapper-types" : [ "oidc-usermodel-attribute-mapper", "oidc-full-name-mapper", "oidc-address-mapper", "saml-user-attribute-mapper", "saml-user-property-mapper", "oidc-sha256-pairwise-sub-mapper", "oidc-usermodel-property-mapper", "saml-role-list-mapper" ]
       }
     }, {
       "id" : "69b3f86d-30cb-4ef6-aac8-43b9e676c207",
@@ -1444,7 +1459,7 @@
       "subType" : "anonymous",
       "subComponents" : { },
       "config" : {
-        "allowed-protocol-mapper-types" : [ "oidc-usermodel-property-mapper", "oidc-usermodel-attribute-mapper", "saml-user-property-mapper", "oidc-sha256-pairwise-sub-mapper", "oidc-full-name-mapper", "oidc-address-mapper", "saml-role-list-mapper", "saml-user-attribute-mapper" ]
+        "allowed-protocol-mapper-types" : [ "oidc-usermodel-property-mapper", "oidc-address-mapper", "saml-role-list-mapper", "oidc-usermodel-attribute-mapper", "oidc-full-name-mapper", "saml-user-attribute-mapper", "saml-user-property-mapper", "oidc-sha256-pairwise-sub-mapper" ]
       }
     } ],
     "org.keycloak.keys.KeyProvider" : [ {
@@ -1493,8 +1508,8 @@
       }
     } ]
   },
-  "internationalizationEnabled" : false,
-  "supportedLocales" : [ ],
+  "internationalizationEnabled" : true,
+  "supportedLocales" : [ "pt-BR" ],
   "defaultLocale" : "pt-BR",
   "authenticationFlows" : [ {
     "id" : "6c88cc64-5678-4c49-9f16-f4f273dd88f2",
@@ -2122,8 +2137,8 @@
   "attributes" : {
     "cibaBackchannelTokenDeliveryMode" : "poll",
     "cibaAuthRequestedUserHint" : "login_hint",
-    "oauth2DevicePollingInterval" : "5",
     "clientOfflineSessionMaxLifespan" : "0",
+    "oauth2DevicePollingInterval" : "5",
     "clientSessionIdleTimeout" : "0",
     "clientOfflineSessionIdleTimeout" : "0",
     "cibaInterval" : "5",

@@ -1,15 +1,15 @@
-import { createRouter, createWebHistory } from 'vue-router'
-import IndexView from '@/views/IndexView.vue'
 import CadastroClienteView from '@/views/CadastroClienteView'
+import CadastroEmailsTemplates from '@/views/CadastroEmailsTemplates.vue'
 import CadastroFornecedorView from '@/views/CadastroFornecedorView.vue'
-import ListaFornecedoresView from '@/views/ListaFornecedoresView.vue'
-import ListaClientesView from '@/views/ListaClientesView.vue'
 import CategoriasProblemas from '@/views/CategoriasProblemas.vue'
-import TextosProntos from '@/views/TextosProntos.vue'
+import IndexView from '@/views/IndexView.vue'
+import ListaClientesView from '@/views/ListaClientesView.vue'
+import ListaEmailsTemplatesView from '@/views/ListaEmailsTemplatesView.vue'
+import ListaFornecedoresView from '@/views/ListaFornecedoresView.vue'
 import PageNotFound from '@/views/PageNotFound.vue'
 import RelatoriosGarantia from '@/views/RelatoriosGarantia.vue'
-import CadastroEmailsTemplates from '@/views/CadastroEmailsTemplates.vue'
-import ListaEmailsTemplatesView from '@/views/ListaEmailsTemplatesView.vue'
+import TextosProntos from '@/views/TextosProntos.vue'
+import { createRouter, createWebHistory } from 'vue-router'
 
 const routes = [
 
