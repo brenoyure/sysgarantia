@@ -1,5 +1,5 @@
 <template>
-    <div v-if="!modelosDeEmails.length">
+    <div v-if="!modelosDeEmails.length && !isFetchingFromApi">
         <br>
             <p>Não existem Modelos de E-mail Cadastrados. Clique <RouterLink to="/administracao/emailstemplates/cadastro">aqui</RouterLink> para cadastrar um novo modelo</p>
         <br>
@@ -36,20 +36,27 @@
             <td><RouterLink class="btn btn-outline-secondary" :to="`/administracao/emailstemplates/cadastro?id=${modelo.id}`">Informações</RouterLink></td>
         </tr>
     </tbody>
+    <LoadingFromApi v-if="isFetchingFromApi" />
 </table>
 
 </template>
 
 <script>
 import axios from '@/axios'
+import LoadingFromApi from './LoadingFromApi.vue';
 
 export default {
+    components: { LoadingFromApi },
     data() {
         return {
+            isFetchingFromApi: false,
             modelosDeEmails: []
         }
     },
-    async mounted() { await axios.get('/emailstemplates').then(response => this.modelosDeEmails = response.data) }
+    async created() { 
+        this.isFetchingFromApi = true
+        await axios.get('/emailstemplates').then(response => this.modelosDeEmails = response.data).finally(() => this.isFetchingFromApi = false) 
+    }
 }
 
 </script>

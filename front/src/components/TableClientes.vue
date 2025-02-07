@@ -27,25 +27,30 @@
             <td>{{ cliente.descricao }}</td>
             <td><RouterLink class="btn btn-outline-secondary" :to="`/administracao/clientes/cadastro?id=${cliente.id}`">Informações</RouterLink></td>
         </tr>
-        
+        <LoadingFromApi v-if="isFetchingFromApi" />
     </tbody>
 </table>
 </template>
 <script>
 import axios from '@/axios'
+import LoadingFromApi from './LoadingFromApi.vue';
 export default {
     name: 'TableClientesView',
+    components: { LoadingFromApi } ,
     data() {
         return {
+            isFetchingFromApi: false,
             clientes: null
         }
     },
     async created() {
+        this.isFetchingFromApi = true
         await axios
                 .get('/clientes')
                 .then(response => {
                     this.clientes = response.data
                 })
+                .finally(() => this.isFetchingFromApi = false)
     }
 }
 </script>

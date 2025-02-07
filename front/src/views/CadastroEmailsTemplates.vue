@@ -15,6 +15,10 @@ como $cliente.endereco.cidade, é possível conferir nos campos de cidade, seu v
 <br><br>
 </div>
 
+<div>
+    <LoadingFromApi v-if="isLoadingExistingEmailTemplateFromApi" />
+</div>
+
 <form style="display: grid;" @submit.prevent="salvar">
 
 <label class="form-label" style="font-weight: bold" for="inputText-descricaoDoEmailTemplate">Descrição do Tipo do E-mail: </label>
@@ -131,14 +135,15 @@ como $cliente.endereco.cidade, é possível conferir nos campos de cidade, seu v
 
 <script>
 import axios from '@/axios'
+import LoadingFromApi from '@/components/LoadingFromApi.vue';
 import { Fieldset } from 'primevue'
 import { useRoute, useRouter } from 'vue-router';
 
 export default {
-    components: { Fieldset },
+    components: { Fieldset, LoadingFromApi },
     data() {
         return {
-
+            isLoadingExistingEmailTemplateFromApi: false,
             modeloDeEmailCadastroDto: {
                 id: null,
                 descricao: '',
@@ -323,6 +328,7 @@ export default {
     async created() {
         const modeloDeEmailId = parseInt(useRoute().query.id)
         if (Number.isInteger(modeloDeEmailId) && modeloDeEmailId > 0) {
+            this.isLoadingExistingEmailTemplateFromApi = true
             await axios
                     .get(`/emailstemplates/${modeloDeEmailId}`)
                     .then(response => this.modeloDeEmailCadastroDto = response.data)
@@ -333,7 +339,7 @@ export default {
                                 'Modelo de E-mail com o id informado não encontrado', 
                                 'Redirecionando para a página de criação de novo Modelo')
                         }
-                    })
+                    }).finally(() => this.isLoadingExistingEmailTemplateFromApi = false)
         }
     },
 

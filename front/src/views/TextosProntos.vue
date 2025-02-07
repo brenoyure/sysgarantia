@@ -3,10 +3,12 @@
         <i class="bi bi-text-left"></i>
         Cadastro de Textos Prontos
     </h2>
-    
-    <div style="display: grid;">
-    
-        <form style="display: grid;" @submit.prevent="cadastrarNovaDescricaoProblema">
+
+    <div style="display: grid;">   
+        <form style="display: grid;" @submit.prevent="cadastrarNovaDescricaoProblema" >
+            <div v-if="isFetchingFromApi">
+                <LoadingFromApi />
+            </div>
             <div>
                 <label style="font-weight: bold;" for="selectOne-descricaoProblema-categoria">Selecione uma Categoria: </label>
                 <select id="selectOne-descricaoProblema-categoria" v-model="descricaoProblema.problemaId" class="form-select" required>
@@ -76,6 +78,7 @@
                             </div>
                         </td>
                     </tr>
+                    <LoadingFromApi v-if="isFetchingFromApi" />
                 </tbody>
             </table>
         </div>
@@ -86,9 +89,12 @@
     
     <script>
     import axios from '@/axios'
+    import LoadingFromApi from '@/components/LoadingFromApi.vue';
     export default {
+        components: { LoadingFromApi },
         data() {
             return {
+                isFetchingFromApi: false,
                 categorias: [],
                 descricaoProblemas: [],
                 descricaoProblema: {
@@ -286,26 +292,26 @@
                 await axios
                     .get('/descricaoProblemas')
                     .then(response => this.descricaoProblemas = response.data)
-    
-                const selectOneDescricaoProblemaCategoria = document.getElementById('selectOne-descricaoProblema-categoria')
-                selectOneDescricaoProblemaCategoria.options[0].selected = true
-                selectOneDescricaoProblemaCategoria.focus()
+                    .finally(() => {
+                        const selectOneDescricaoProblemaCategoria = document.getElementById('selectOne-descricaoProblema-categoria')
+                        selectOneDescricaoProblemaCategoria.options[0].selected = true
+                        selectOneDescricaoProblemaCategoria.focus() 
+                    })
             }
     
         },
-    
-        async created() {
+
+        async mounted() {
+            this.isFetchingFromApi = true
             await axios
                     .get('/problemas')
-                    .then(response => {
-                        response.data.forEach(c => this.categorias.push(c))})
-    
-            await this.fetchDescricaoProblemas()
-    
-        },
+                    .then(response => response.data.forEach(c => this.categorias.push(c)))
+                    .then(await this.fetchDescricaoProblemas())
+                    .finally(() => this.isFetchingFromApi = false)
+        }
     
     }
-    
+
     /** -- Método para Criar uma nova Row --
             criarNovaDataRowDescricaoProblema(id, categoriaTipo, descricaoResumida, descricaoDetalhada, categoriaId) {
                 const tableBody = document.getElementById('tableBody-descricaoProblemas')

@@ -7,6 +7,10 @@
     </ul>
 </div>
 
+<div v-if="isLoadingExistingFornecedorFromApi">
+    <LoadingFromApi />
+</div>
+
 <form style="display: grid;" @submit.prevent="salvar()">
 
     <label class="form-label"   for="inputText-nome">
@@ -76,13 +80,16 @@
 
 <script>
 import axios from '@/axios'
+import LoadingFromApi from '@/components/LoadingFromApi.vue';
 import router from '@/router'
 import { useRoute } from 'vue-router'
 
 export default {
     name: 'CadastroFornecedorView',
+    components: { LoadingFromApi },
     data() {
         return {
+            isLoadingExistingFornecedorFromApi: false,
             errors: new Set(),
             servicosSelecionados: new Set(),
             fornecedor: {
@@ -260,12 +267,14 @@ export default {
     async created() {
         const fornecedorId = parseInt(useRoute().query.id)
         if (Number.isInteger(fornecedorId) && fornecedorId > 0) {
+            this.isLoadingExistingFornecedorFromApi = true
             await axios
                     .get(`/fornecedores/${fornecedorId}`)
                     .then(response => {
                         const fornecedor = response.data
                         this.fornecedor = fornecedor
                         fornecedor.idsDosServicosDoFornecedorNoSistemaDeChamados.forEach(servico => this.servicosSelecionados.add(parseInt(servico)))})
+                    .finally(() => this.isLoadingExistingFornecedorFromApi = false)
         }
 
         await this.fetchServicosDoFornecedorNoSistemaDeChamados()

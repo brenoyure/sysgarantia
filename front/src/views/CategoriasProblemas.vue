@@ -20,6 +20,7 @@
 </div>
 <hr>
 <h2>Categorias Cadastradas</h2>
+<LoadingFromApi v-if="isFetchingFromApi" />
 <div>
     <p>
         <b>Dica: </b>Clique em uma das categorias abaixo para edita-las.
@@ -70,10 +71,12 @@
 <script>
 import axios from '@/axios'
 import DicaTiposDeProblemas from '@/components/DicaTiposDeProblemas.vue';
+import LoadingFromApi from '@/components/LoadingFromApi.vue';
 export default {
-    components: { DicaTiposDeProblemas },
+    components: { DicaTiposDeProblemas, LoadingFromApi },
     data() {
         return {
+            isFetchingFromApi: false,
             categorias: null,
             problemaSelecionado: null,
             novaCategoria: { tipo: null }
@@ -208,9 +211,11 @@ export default {
 
     },
     async created() {
+        this.isFetchingFromApi = true
         await axios
                 .get('/problemas')
                 .then(response => this.categorias = response.data )
+                .finally(() => this.isFetchingFromApi = false)
     },
 
     mounted() {

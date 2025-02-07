@@ -8,7 +8,11 @@
         </ul>
     </div>
 
-    <form style="display: grid;" @submit.prevent="salvar()">
+    <div v-if="isFetchingExistentUserFromApi">
+        <LoadingFromApi />
+    </div>
+
+    <form style="display: grid;" @submit.prevent="salvar()" >
 
         <label class="form-label"   for="inputText-nome">
             <i class="bi bi-buildings"></i>
@@ -124,12 +128,15 @@
 
 <script>
 import axios from '@/axios'
+import LoadingFromApi from '@/components/LoadingFromApi.vue';
 import router from '@/router';
 import { useRoute } from 'vue-router';
 export default {
     name: 'CadastroClienteView',
+    components: { LoadingFromApi },
     data() {
         return {
+            isFetchingExistentUserFromApi: false,
             errors: new Set(),
             cliente: {
                 nome: null,
@@ -270,9 +277,11 @@ export default {
     async created() {
         const clienteId = parseInt(useRoute().query.id)
         if (Number.isInteger(clienteId) && clienteId > 0) {
+            this.isFetchingExistentUserFromApi = true
             await axios
                     .get(`/clientes/${clienteId}`)
                     .then(response => this.cliente = response.data)
+                    .finally(() => this.isFetchingExistentUserFromApi = false)
         }
 
     },
