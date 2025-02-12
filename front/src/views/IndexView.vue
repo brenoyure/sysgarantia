@@ -8,16 +8,16 @@
     <form style="display: grid;" @submit.prevent="solicitarGarantia">
 
         <label style="font-weight: bold;" class="form-label" for="selectOne-cliente">Selecione o Cliente: </label>
-        <select class="form-select" id="selectOne-cliente" @change="setCliente()" v-model="cliente" required autofocus :disabled="isFetchingFromApi" >
+        <select class="form-select" id="selectOne-cliente" @change="setCliente" required autofocus :disabled="isFetchingFromApi" >
             <option value="0">Selecione o Cliente</option>
-            <option v-for="cliente in clientes" :value="cliente" :key="cliente.id">{{ cliente.nome }} - {{ cliente.descricao }}</option>
+            <option v-for="cliente in clientes" :value="cliente.id" :key="cliente.id">{{ cliente.nome }} - {{ cliente.descricao }}</option>
         </select>
 <br>
 
         <label style="font-weight: bold;" class="form-label" for="selectOne-fornecedor">Selecione o Fornecedor: </label>
-        <select class="form-select" id="selectOne-fornecedor" v-model="fornecedor" @change="setFornecedor()" required :disabled="isFetchingFromApi">
+        <select class="form-select" id="selectOne-fornecedor" @change="setFornecedor" required :disabled="isFetchingFromApi">
             <option value="0">Selecione o Fornecedor</option>
-            <option v-for="fornecedor in fornecedores" :value="fornecedor" :key="fornecedor.id">{{ fornecedor.nome }}</option>
+            <option v-for="fornecedor in fornecedores" :value="fornecedor.id" :key="fornecedor.id">{{ fornecedor.nome }}</option>
         </select>
 <br>
 
@@ -32,9 +32,9 @@
 <br>
 
         <label style="font-weight: bold;" class="form-label" for="selectOne-descricaoProblema">Selecione o Problema: </label>
-        <select class="form-select" id="selectOne-descricaoProblema" @change="setDescricaoProblema()" v-model="descricaoProblema" required :disabled="isFetchingFromApi">
+        <select class="form-select" id="selectOne-descricaoProblema" @change="setDescricaoProblema" required :disabled="isFetchingFromApi">
             <option value="0">Selecione o Problema</option>
-            <option v-for="descricaoProblema in descricaoProblemas" :title="descricaoProblema.descricaoDetalhada" :value="descricaoProblema" :key="descricaoProblema.id">{{ descricaoProblema.problema.tipo }} | {{ descricaoProblema.descricaoResumida }}</option>
+            <option v-for="descricaoProblema in descricaoProblemas" :title="descricaoProblema.descricaoDetalhada" :value="descricaoProblema.id" :key="descricaoProblema.id">{{ descricaoProblema.problemaTipo }} | {{ descricaoProblema.descricaoResumida }}</option>
         </select>
 <br>
 
@@ -49,17 +49,23 @@
 <br>
 
         <label style="font-weight: bold;" class="form-label" for="selectOne-emailTemplate">(Opcional) Utilizar modelo de e-mail pronto: </label>
-        <select class="form-select" id="selectOne-emailTemplate" :disabled="dadosObrigatoriosFaltantesParaGerarOTemplate()" v-model="emailTemplateSelecionado" required @change="setAssuntoECorpoDoEmail" >
+        <select class="form-select" id="selectOne-emailTemplate" :disabled="dadosObrigatoriosFaltantesParaGerarOTemplate()" required @change="setAssuntoECorpoDoEmail" >
             <option value="0">(Opcional) Selecione um Modelo</option>
-            <option v-for="emailTemplate in emailTemplates" :value="emailTemplate" :key="emailTemplate.id">{{ emailTemplate.descricao }}</option>
+            <option v-for="emailTemplate in emailTemplates" :value="emailTemplate.id" :key="emailTemplate.id">{{ emailTemplate.descricao }}</option>
         </select>
 <br>
+
+        <div v-if="isFetchingFromApi">
+            <LoadingFromApi />
+<br>
+        </div>
+
         <label style="font-weight: bold;" class="form-label"   for="inputText-assunto">Assunto: </label>
-        <input class="form-control" id="inputText-assunto" v-model="solicitacao.assunto" placeholder="" required>
+        <input class="form-control" id="inputText-assunto" v-model="solicitacao.assunto" placeholder="" required :disabled="isFetchingFromApi">
 <br>
 
         <label style="font-weight: bold;" class="form-label"   for="textArea-corpoDoEmail">Corpo do Email: </label>
-        <textarea rows="10" class="form-control" id="textArea-corpoDoEmail" v-model="solicitacao.corpo_do_email" placeholder="Prezados, falamos da empresa XPTO, equipamento de número de série AVCLX486 está ..." required></textarea>
+        <textarea rows="10" class="form-control" id="textArea-corpoDoEmail" v-model="solicitacao.corpo_do_email" :disabled="isFetchingFromApi" placeholder="Prezados, falamos da empresa XPTO, equipamento de número de série AVCLX486 está ..." required></textarea>
 <br>
 
         <label style="font-weight: bold;" class="form-label" for="inputFile-videoOuFotoProblema">(Opcional) Vídeo ou Foto do Problema: </label>
@@ -288,13 +294,34 @@ export default {
             return replaced;
         },
 
-        setCliente() {
-            this.solicitacao.cliente_id = this.cliente.id
-            this.solicitacao.copia_oculta = this.cliente.emailsParaContato
+        async setCliente(event) {
+            const clienteId = event.target.value
+            if (clienteId == undefined || isNaN(clienteId) || clienteId <= 0) {
+                this.cliente = null
+                this.solicitacao.cliente_id = null
+                this.solicitacao.copia_oculta = null
+                return
+            }
+            await axios
+                    .get(`/clientes/${clienteId}`)
+                    .then(response => {
+                        this.cliente = response.data
+                        this.solicitacao.cliente_id = this.cliente.id
+                        this.solicitacao.copia_oculta = this.cliente.emailsParaContato })
         },
 
-        setDescricaoProblema() {
-            this.solicitacao.descricao_problema_id = this.descricaoProblema.id
+        async setDescricaoProblema(event) {
+            const descricaoProblemaId = event.target.value
+            if (descricaoProblemaId == undefined || isNaN(descricaoProblemaId) || descricaoProblemaId <= 0) {
+                this.descricaoProblema = 0
+                this.solicitacao.descricao_problema_id = null
+                return
+             }
+            await axios
+                    .get(`/descricaoProblemas/${descricaoProblemaId}`)
+                    .then(response => {
+                        this.descricaoProblema = response.data
+                        this.solicitacao.descricao_problema_id = this.descricaoProblema.id })
         },
 
         setAnexo(event) {
@@ -302,12 +329,22 @@ export default {
             this.solicitacao.anexo = anexo
         },
 
-        setChamado() {
+        async setChamado() {
             this.solicitacao.chamado_id = this.chamado.id
         },
 
-        async setFornecedor() {
-            this.solicitacao.fornecedor_id = this.fornecedor.id
+        async setFornecedor(event) {
+            const fornecedorId = event.target.value
+            if (fornecedorId == undefined || isNaN(fornecedorId) || fornecedorId <= 0) {
+                this.fornecedor = null
+                this.solicitacao.fornecedor_id = null
+                return
+            }
+            await axios
+                   .get(`/fornecedores/${fornecedorId}`)
+                   .then(response => {
+                     this.fornecedor = response.data
+                     this.solicitacao.fornecedor_id = this.fornecedor.id })
             await this.listarChamadosDoFornecedor()
         },
 
@@ -328,11 +365,19 @@ export default {
             }
         },
 
-        setAssuntoECorpoDoEmail(event) {
-            if (event.target.value != 0) {
-                this.solicitacao.assunto = this.fromTemplateToRealString(this.emailTemplateSelecionado.assunto)
-                this.solicitacao.corpo_do_email = this.fromTemplateToRealString(this.emailTemplateSelecionado.corpoDoEmail)
+        async setAssuntoECorpoDoEmail(event) {
+            const emailTemplateId = event.target.value
+            this.isFetchingFromApi = true
+            if (emailTemplateId == undefined || isNaN(emailTemplateId) || emailTemplateId <= 0) {
+                this.solicitacao.assunto = null
+                this.solicitacao.corpo_do_email = null
+                return
             }
+            await axios.get(`/emailstemplates/${emailTemplateId}`)
+                    .then(response => this.emailTemplateSelecionado = response.data)
+                    .then(() => this.solicitacao.assunto = this.fromTemplateToRealString(this.emailTemplateSelecionado.assunto))
+                    .then(() => this.solicitacao.corpo_do_email = this.fromTemplateToRealString(this.emailTemplateSelecionado.corpoDoEmail))
+                    .finally(() => this.isFetchingFromApi = false)
         },
 
         async fetchFornecedores() {
@@ -388,14 +433,15 @@ export default {
             await this.fetchFornecedores()
             await this.fetchDescricaoProblemas()
             await this.fetchEmailsTemplates()
-
-            document.getElementById('selectOne-cliente').focus()
         }
 
     },
 
     async created() {
-        await this.apiFetch().finally(() =>  this.isFetchingFromApi = false )
+        await this.apiFetch().finally(() =>  {
+            this.isFetchingFromApi = false
+            document.getElementById('selectOne-cliente').focus()
+        })
     }
 
 }

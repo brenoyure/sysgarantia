@@ -11,14 +11,6 @@ public class DadosParaAtualizacaoDeFornecedor extends DadosParaCadastroDeNovoFor
 
     }
 
-    public DadosParaAtualizacaoDeFornecedor(DadosDoFornecedor fornecedor) {
-        this.id = fornecedor.getId();
-        this.setNome(fornecedor.getNome());
-        this.setEmails(fornecedor.getEmails());
-        this.setIdsDosServicosDoFornecedorNoSistemaDeChamados(
-                fornecedor.getIdsDosServicosDoFornecedorNoSistemaDeChamados());
-    }
-
     public int getId() {
         return id;
     }

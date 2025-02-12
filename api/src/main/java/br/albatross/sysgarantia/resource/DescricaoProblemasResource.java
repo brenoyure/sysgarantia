@@ -37,6 +37,12 @@ public class DescricaoProblemasResource {
 
     @GET
     public Response buscarTodos() {
+        return Response.ok(descricaoProblemasRepository.findAllAsDtoOrderByCategoriaAsc()).build();
+    }
+
+    @GET
+    @Path("/allattrs")
+    public Response buscarComTodosOsAtributos() {
         return Response.ok(descricaoProblemasRepository.findAll()).build();
     }
 

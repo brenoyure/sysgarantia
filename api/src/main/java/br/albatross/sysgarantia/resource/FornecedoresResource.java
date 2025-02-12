@@ -44,7 +44,7 @@ public class FornecedoresResource {
 
     @GET
     public Response fornecedores() {
-        return Response.ok(fornecedorRepository.findAll()).build();
+        return Response.ok(fornecedorRepository.findAllAsDtoOrderByNomeAsc()).build();
     }
 
     @POST

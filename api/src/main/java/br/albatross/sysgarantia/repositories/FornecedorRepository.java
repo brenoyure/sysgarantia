@@ -2,6 +2,7 @@ package br.albatross.sysgarantia.repositories;
 
 import java.util.List;
 
+import br.albatross.sysgarantia.dto.fornecedor.FornecedorDto;
 import br.albatross.sysgarantia.models.Fornecedor;
 
 public interface FornecedorRepository extends Repository<Fornecedor, Integer> {
@@ -11,5 +12,7 @@ public interface FornecedorRepository extends Repository<Fornecedor, Integer> {
     boolean existsByNomeAndNotById(String nome, int id);
 
     List<Integer> findIdsDosServicosDoFornecedorNoSistemaDeChamadosById(int id);
+
+    Iterable<FornecedorDto> findAllAsDtoOrderByNomeAsc();
 
 }

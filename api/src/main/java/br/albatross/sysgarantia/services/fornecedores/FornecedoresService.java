@@ -1,25 +1,49 @@
 package br.albatross.sysgarantia.services.fornecedores;
 
-import java.util.List;
-import java.util.Optional;
-
-import br.albatross.sysgarantia.dto.fornecedor.DadosDoFornecedor;
 import br.albatross.sysgarantia.dto.fornecedor.DadosParaAtualizacaoDeFornecedor;
 import br.albatross.sysgarantia.dto.fornecedor.DadosParaCadastroDeNovoFornecedor;
 import br.albatross.sysgarantia.models.Fornecedor;
+import br.albatross.sysgarantia.repositories.FornecedorRepository;
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.inject.Inject;
 import jakarta.validation.Valid;
+import jakarta.validation.ValidationException;
 
-public interface FornecedoresService {
+@ApplicationScoped
+public class FornecedoresService {
 
-    Fornecedor cadastrarNovoFornecedor(@Valid DadosParaCadastroDeNovoFornecedor dados);
+    @Inject
+    private FornecedorRepository repository;
 
-    List<DadosDoFornecedor> listarFornecedoresDisponiveis();
+    public Fornecedor cadastrarNovoFornecedor(@Valid DadosParaCadastroDeNovoFornecedor novosDados) {
 
-    void excluirFornecedorPeloId(int id);
+        if (repository.existsByNome(novosDados.getNome())) {
+            throw new ValidationException("Já existe outro Fornecedor cadastrado com o nome informado");
+        }
 
-    void atualizarFornecedor(@Valid DadosParaAtualizacaoDeFornecedor dados);
+        Fornecedor fornecedor = new Fornecedor();
+        fornecedor.setNome(novosDados.getNome());
+        fornecedor.setEmails(novosDados.getEmails());
+        fornecedor.getIdsDosServicosDoFornecedorNoSistemaDeChamados().addAll(novosDados.getIdsDosServicosDoFornecedorNoSistemaDeChamados());
 
-    Optional<DadosDoFornecedor> buscarPorId(int id);
+        return repository.persist(fornecedor);
 
-    List<Integer> listarOsIdsDosServicosDoFornecedor(int idDoFornecedor);
+    }
+
+    public void atualizarFornecedor(@Valid DadosParaAtualizacaoDeFornecedor dados) {
+
+        if (repository.existsByNomeAndNotById(dados.getNome(), dados.getId())) {
+            throw new ValidationException("Já existe outro Fornecedor cadastrado com o nome informado");
+        }
+
+        Fornecedor fornecedor = new Fornecedor();
+        fornecedor.setId(dados.getId());
+        fornecedor.setNome(dados.getNome());
+        fornecedor.setEmails(dados.getEmails());
+        fornecedor.getIdsDosServicosDoFornecedorNoSistemaDeChamados().addAll(dados.getIdsDosServicosDoFornecedorNoSistemaDeChamados());
+
+        repository.merge(fornecedor);        
+
+    }
+
 }

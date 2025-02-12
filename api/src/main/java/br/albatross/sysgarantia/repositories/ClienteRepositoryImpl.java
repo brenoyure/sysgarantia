@@ -1,5 +1,6 @@
 package br.albatross.sysgarantia.repositories;
 
+import br.albatross.sysgarantia.dto.cliente.ClienteDto;
 import br.albatross.sysgarantia.models.Cliente;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.persistence.NoResultException;
@@ -59,6 +60,13 @@ public class ClienteRepositoryImpl extends RepositoryImpl<Cliente, Integer> impl
                     .getSingleResult();
 
         } catch (NoResultException e) { return false; }
+    }
+
+    @Override
+    public Iterable<ClienteDto> findAllAsDtoOrderByNome() {
+        return entityManager
+                .createQuery("SELECT new br.albatross.sysgarantia.dto.cliente.ClienteDto(c.id, c.nome, c.descricao) FROM Cliente c ORDER BY c.nome", ClienteDto.class)
+                .getResultList();
     }
 
 }

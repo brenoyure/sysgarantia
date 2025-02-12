@@ -6,10 +6,11 @@ import static br.albatross.sysgarantia.models.EmailTemplate_.id;
 
 import java.util.List;
 
-import br.albatross.sysgarantia.dto.emailtemplate.DadosDoEmailTemplateDto;
-import br.albatross.sysgarantia.dto.emailtemplate.EmailTemplateComboBox;
+import br.albatross.sysgarantia.dto.emailtemplate.EmailTemplateDto;
 import br.albatross.sysgarantia.models.EmailTemplate;
+
 import jakarta.enterprise.context.ApplicationScoped;
+
 import jakarta.persistence.NoResultException;
 import jakarta.persistence.criteria.CompoundSelection;
 import jakarta.persistence.criteria.CriteriaBuilder;
@@ -26,18 +27,18 @@ public class EmailTemplateRepositoryImpl extends RepositoryImpl<EmailTemplate, I
     }
 
     @Override
-    public List<DadosDoEmailTemplateDto> findAllAsDtoOrderByAssunto() {
+    public List<EmailTemplateDto> findAllAsDtoOrderByAssunto() {
 
         CriteriaBuilder cb = 
                 entityManager.getCriteriaBuilder();
-        CriteriaQuery<DadosDoEmailTemplateDto> query = 
-                cb.createQuery(DadosDoEmailTemplateDto.class);
+        CriteriaQuery<EmailTemplateDto> query = 
+                cb.createQuery(EmailTemplateDto.class);
         Root<EmailTemplate> emailTemplate = 
                 query.from(EmailTemplate.class);
 
-        CompoundSelection<DadosDoEmailTemplateDto> emailTemplateSelect = 
+        CompoundSelection<EmailTemplateDto> emailTemplateSelect = 
                 cb.construct(
-                        DadosDoEmailTemplateDto.class, 
+                        EmailTemplateDto.class, 
                             emailTemplate.get(id),
                             emailTemplate.get(descricao),
                             emailTemplate.get(assunto));
@@ -75,31 +76,6 @@ public class EmailTemplateRepositoryImpl extends RepositoryImpl<EmailTemplate, I
                     .getSingleResult();
 
         } catch (NoResultException e) { return false; }
-
-    }
-
-    @Override
-    public List<EmailTemplateComboBox> findAllAsEmailTemplateComboBoxOrderByDescricao() {
-        CriteriaBuilder cb = 
-                entityManager.getCriteriaBuilder();
-        CriteriaQuery<EmailTemplateComboBox> query = 
-                cb.createQuery(EmailTemplateComboBox.class);
-        Root<EmailTemplate> emailTemplate = 
-                query.from(EmailTemplate.class);
-
-        CompoundSelection<EmailTemplateComboBox> emailTemplateSelect = 
-                cb.construct(
-                        EmailTemplateComboBox.class, 
-                            emailTemplate.get(id),
-                            emailTemplate.get(descricao));
-        Order assuntoAsc = 
-                cb.asc(emailTemplate.get(descricao));
-
-        query
-            .select(emailTemplateSelect)
-            .orderBy(assuntoAsc);        
-
-        return entityManager.createQuery(query).getResultList();
 
     }
 

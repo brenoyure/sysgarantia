@@ -1,5 +1,6 @@
 package br.albatross.sysgarantia.repositories;
 
+import br.albatross.sysgarantia.dto.cliente.ClienteDto;
 import br.albatross.sysgarantia.models.Cliente;
 
 public interface ClienteRepository extends Repository<Cliente, Integer> {
@@ -11,5 +12,7 @@ public interface ClienteRepository extends Repository<Cliente, Integer> {
     boolean existsByNomeAndNotById(String nome, int id);
 
     boolean existsByDescricaoAndNotById(String descricao, int id);
+
+    Iterable<ClienteDto> findAllAsDtoOrderByNome();
 
 }

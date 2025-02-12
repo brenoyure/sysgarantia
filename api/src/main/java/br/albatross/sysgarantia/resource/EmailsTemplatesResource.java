@@ -38,7 +38,7 @@ public class EmailsTemplatesResource {
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     public Response buscarTodos() {
-        return Response.ok(emailsTemplatesRepository.findAll()).build();
+        return Response.ok(emailsTemplatesRepository.findAllAsDtoOrderByAssunto()).build();
     }
 
     @GET

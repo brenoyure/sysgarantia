@@ -1,12 +1,18 @@
 package br.albatross.sysgarantia.repositories;
 
-import static br.albatross.sysgarantia.models.DescricaoProblema_.problema;
-
 import java.util.List;
 
+import static br.albatross.sysgarantia.models.DescricaoProblema_.descricaoResumida;
+import static br.albatross.sysgarantia.models.DescricaoProblema_.id;
+import static br.albatross.sysgarantia.models.DescricaoProblema_.problema;
+import static br.albatross.sysgarantia.models.Problema_.tipo;
+
+import br.albatross.sysgarantia.dto.problemas.DescricaoProblemaDto;
 import br.albatross.sysgarantia.models.DescricaoProblema;
 import br.albatross.sysgarantia.models.Problema_;
+
 import jakarta.enterprise.context.ApplicationScoped;
+
 import jakarta.persistence.NoResultException;
 import jakarta.persistence.criteria.JoinType;
 
@@ -57,6 +63,27 @@ public class DescricaoProblemaRepositoryImpl extends RepositoryImpl<DescricaoPro
                     .getSingleResult();
         } catch (NoResultException e) { return false; }
 
+    }
+
+    @Override
+    public Iterable<DescricaoProblemaDto> findAllAsDtoOrderByCategoriaAsc() {
+        var cb                =  entityManager.getCriteriaBuilder();
+        var cq                =  cb.createQuery(DescricaoProblemaDto.class);
+        var descricaoProblema =  cq.from(DescricaoProblema.class); 
+
+        cq.select(cb.construct(DescricaoProblemaDto.class, 
+                descricaoProblema.get(id),
+                descricaoProblema.get(descricaoResumida),
+                descricaoProblema.get(problema).get(Problema_.id),
+                descricaoProblema.get(problema).get(tipo)));
+
+        descricaoProblema.join(problema, JoinType.INNER);
+
+        cq.orderBy(cb.asc(descricaoProblema.get(problema).get(tipo)));
+
+        return entityManager
+                       .createQuery(cq)
+                       .getResultList();
     }
 
 }

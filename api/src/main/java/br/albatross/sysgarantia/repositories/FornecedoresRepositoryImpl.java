@@ -1,10 +1,12 @@
 package br.albatross.sysgarantia.repositories;
 
 import static br.albatross.sysgarantia.models.Fornecedor_.idsDosServicosDoFornecedorNoSistemaDeChamados;
+import static br.albatross.sysgarantia.models.Fornecedor_.nome;
 
 import java.util.List;
 import java.util.Optional;
 
+import br.albatross.sysgarantia.dto.fornecedor.FornecedorDto;
 import br.albatross.sysgarantia.models.Fornecedor;
 import br.albatross.sysgarantia.models.Fornecedor_;
 import jakarta.enterprise.context.ApplicationScoped;
@@ -23,14 +25,16 @@ public class FornecedoresRepositoryImpl extends RepositoryImpl<Fornecedor, Integ
     }
 
     @Override
-    public List<Fornecedor> findAll() {
+    public Iterable<FornecedorDto> findAllAsDtoOrderByNomeAsc() {
         CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
-        CriteriaQuery<Fornecedor> query = criteriaBuilder.createQuery(Fornecedor.class);
+        CriteriaQuery<FornecedorDto> query = criteriaBuilder.createQuery(FornecedorDto.class);
         Root<Fornecedor> fornecedor = query.from(Fornecedor.class);
 
-        fornecedor.fetch(idsDosServicosDoFornecedorNoSistemaDeChamados, JoinType.INNER);
-
-        query.orderBy(criteriaBuilder.asc(fornecedor.get(Fornecedor_.nome)));
+        query
+          .select(criteriaBuilder.construct(FornecedorDto.class, fornecedor.get(Fornecedor_.id),
+                                                                 fornecedor.get(Fornecedor_.nome),
+                                                                 fornecedor.get(Fornecedor_.emails)))
+          .orderBy(criteriaBuilder.asc(fornecedor.get(nome)));
 
         return entityManager.createQuery(query).getResultList();
     }

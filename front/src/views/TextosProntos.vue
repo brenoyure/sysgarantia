@@ -290,7 +290,7 @@
     
             async fetchDescricaoProblemas() {
                 await axios
-                    .get('/descricaoProblemas')
+                    .get('/descricaoProblemas/allattrs')
                     .then(response => this.descricaoProblemas = response.data)
                     .finally(() => {
                         const selectOneDescricaoProblemaCategoria = document.getElementById('selectOne-descricaoProblema-categoria')
