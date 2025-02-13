@@ -1,7 +1,7 @@
 <template>
 
 <div class="container px-4 py-5" id="hanging-icons">
-    <h2 class="pb-2 border-bottom" style="text-align: center;">Tecnologias utilizadas</h2>
+    <h2 class="pb-2 border-bottom" style="text-align: center;">Algumas das Tecnologias Utilizadas</h2>
     <div class="row g-4 py-5 row-cols-1 row-cols-lg-3 tecnologiasutilizadas-div">
         <TecnologiaUtilizada
             titulo="Apache Kafka" 
