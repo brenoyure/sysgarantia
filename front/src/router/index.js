@@ -1,3 +1,4 @@
+import AboutUs from '@/views/AboutUs.vue'
 import CadastroClienteView from '@/views/CadastroClienteView'
 import CadastroEmailsTemplates from '@/views/CadastroEmailsTemplates.vue'
 import CadastroFornecedorView from '@/views/CadastroFornecedorView.vue'
@@ -66,6 +67,11 @@ const routes = [
   {
     path: '/administracao/emailsTemplates/listagem',
     component: ListaEmailsTemplatesView
+  },
+
+  {
+    path: '/aboutUs',
+    component: AboutUs
   }
 
 ]

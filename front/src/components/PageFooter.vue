@@ -1,8 +1,8 @@
 <template>
-<div class="container">
+<div class="container" style="cursor: default">
   <footer class="py-3 my-4">
     <p class="text-center text-body-secondary">&copy; 2025 Serviço de Garantia por <a href="https://github.com/brenoyure" target="_blank" class="texto-git-dev">github.com/brenoyure</a></p>
-    <p class="text-center text-body-secondary">Dúvidas, Sugestões, Problemas: enviar para <a href="mailto:byurifb@gmail.com" target="_blank" class="texto-git-dev">byurifb@gmail.com</a></p>
+    <p class="text-center text-body-secondary">Projeto em desenvolvimento: dúvidas, sugestões, problemas: enviar para <a href="mailto:byurifb@gmail.com" target="_blank" class="texto-git-dev">byurifb@gmail.com</a></p>
     <p class="text-center text-body-secondary">A versão atual do sistema, possui integração com o banco de dados MySQL/MariaDB do sistema de chamados OTRS/Znuny</p>
   </footer>
 </div>
