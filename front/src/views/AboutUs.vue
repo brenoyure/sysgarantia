@@ -1,45 +1,22 @@
 <script setup>
-import TecnologiaUsada from '@/components/sobre/TecnologiaUsada.vue';
+import SobreDesenvolvedor from '@/components/sobre/SobreDesenvolvedor.vue';
+import TecnologiasUtilizadas from '@/components/sobre/TecnologiasUtilizadas.vue';
 
 </script>
 
 <template>
 <h2 style="text-align: center;">Sobre o Sistema de Garantia</h2>
+<hr>
 
-<div class="container px-4 py-5" id="hanging-icons">
-    <h2 class="pb-2 border-bottom" style="text-align: center;">Tecnologias utilizadas</h2>
-    <div class="row g-4 py-5 row-cols-1 row-cols-lg-3">
-        <TecnologiaUsada
-            titulo="Apache Kafka" 
-            texto="Paragraph of text beneath the heading to explain the heading. We'll add onto it with another sentence and probably just keep going until we run out of words." 
-            hrefBotao="https://google.com"
-            textoBotao="Saiba Mais"
-            simbolo="kafka">
-        </TecnologiaUsada>
-        <TecnologiaUsada
-            titulo="MySQL Community Edition" 
-            texto="Paragraph of text beneath the heading to explain the heading. We'll add onto it with another sentence and probably just keep going until we run out of words." 
-            hrefBotao="https://google.com"
-            textoBotao="Saiba Mais"
-            simbolo="mysql">
-        </TecnologiaUsada>
-        <TecnologiaUsada
-            titulo="VueJS Framework" 
-            texto="Paragraph of text beneath the heading to explain the heading. We'll add onto it with another sentence and probably just keep going until we run out of words." 
-            hrefBotao="https://google.com"
-            textoBotao="Saiba Mais"
-            simbolo="vuejs">
-        </TecnologiaUsada>
-        <TecnologiaUsada
-            titulo="Java" 
-            texto="Paragraph of text beneath the heading to explain the heading. We'll add onto it with another sentence and probably just keep going until we run out of words." 
-            hrefBotao="https://google.com"
-            textoBotao="Saiba Mais"
-            simbolo="java">
-        </TecnologiaUsada>
-    </div>
+<div>
+  <SobreDesenvolvedor />
 </div>
 
+<hr>
+
+<div>
+  <TecnologiasUtilizadas />
+</div>
 
 </template>
 
