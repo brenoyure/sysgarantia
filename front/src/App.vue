@@ -4,6 +4,8 @@
     <UserDoesntHaveRequiredPermissions v-if="userDoesntHaveRequiredPermissions" />
     <RouterView />
   </div>
+  <hr>
+  <PageFooter></PageFooter>
 </template>
 
 <script setup>
@@ -12,6 +14,7 @@ import NavBarComponent from '@/components/NavBarComponent.vue';
 import { onMounted, ref } from 'vue';
 import userdetails from './userdetails';
 import UserDoesntHaveRequiredPermissions from './components/UserDoesntHaveRequiredPermissions.vue';
+import PageFooter from './components/PageFooter.vue';
 
 const userDoesntHaveRequiredPermissions = ref(false)
 
