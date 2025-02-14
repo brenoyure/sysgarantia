@@ -1,6 +1,7 @@
 package br.albatross.sysgarantia.repositories;
 
 import java.util.List;
+import java.util.Optional;
 
 import static br.albatross.sysgarantia.models.DescricaoProblema_.descricaoResumida;
 import static br.albatross.sysgarantia.models.DescricaoProblema_.id;
@@ -9,6 +10,7 @@ import static br.albatross.sysgarantia.models.Problema_.tipo;
 
 import br.albatross.sysgarantia.dto.problemas.DescricaoProblemaDto;
 import br.albatross.sysgarantia.models.DescricaoProblema;
+import br.albatross.sysgarantia.models.DescricaoProblema_;
 import br.albatross.sysgarantia.models.Problema_;
 
 import jakarta.enterprise.context.ApplicationScoped;
@@ -22,6 +24,27 @@ public class DescricaoProblemaRepositoryImpl extends RepositoryImpl<DescricaoPro
     public DescricaoProblemaRepositoryImpl() {
         super(DescricaoProblema.class);
     }    
+
+	@Override
+	public Optional<DescricaoProblema> findById(Integer id) {
+        var cb                =  entityManager.getCriteriaBuilder();
+        var cq                =  cb.createQuery(DescricaoProblema.class);
+        var descricaoProblema =  cq.from(DescricaoProblema.class); 
+
+        descricaoProblema
+		                 .fetch(problema, JoinType.INNER);
+
+        var idParam = cb.parameter(Integer.class);
+
+        cq.where(cb.equal(descricaoProblema.get(DescricaoProblema_.id), idParam));
+
+        try {
+            return Optional.of(entityManager
+                       .createQuery(cq)
+                       .setParameter(idParam, id)
+                       .getSingleResult());
+        } catch (NoResultException e) { return Optional.empty(); }
+    }
 
 	@Override
     public List<DescricaoProblema> findAll() {
