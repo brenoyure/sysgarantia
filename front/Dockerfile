@@ -1,27 +1,13 @@
 FROM nginx:1.26.3-alpine3.20
 
-COPY ../nginx/nginx_template.conf /etc/nginx/
+COPY br.albatross.key.pem /etc/nginx/
+COPY br.albatross.cert.pem /etc/nginx/
 
-ARG SYSGARANTIA_KEYCLOAK_HOST=${SYSGARANTIA_KEYCLOAK_HOST}
-ARG SYSGARANTIA_KEYCLOAK_PORT=${SYSGARANTIA_KEYCLOAK_PORT}
+COPY br.albatross.key.pem /etc/nginx/nginx.conf
+COPY br.albatross.cert.pem /etc/nginx/nginx.conf
 
-ARG SYSGARANTIA_API_HOST=${SYSGARANTIA_API_HOST}
-ARG SYSGARANTIA_API_PORT=${SYSGARANTIA_API_PORT}
-
-ARG SYSGARANTIA_FRONT_HOST=${SYSGARANTIA_FRONT_HOST}
-ARG SYSGARANTIA_FRONT_PORT=${SYSGARANTIA_FRONT_PORT}
-
-ENV SYSGARANTIA_KEYCLOAK_HOST=${SYSGARANTIA_KEYCLOAK_HOST}
-ENV SYSGARANTIA_KEYCLOAK_PORT=${SYSGARANTIA_KEYCLOAK_PORT}
-
-ENV SYSGARANTIA_API_HOST=${SYSGARANTIA_API_HOST}
-ENV SYSGARANTIA_API_PORT=${SYSGARANTIA_API_PORT}
-
-ENV SYSGARANTIA_FRONT_HOST=${SYSGARANTIA_FRONT_HOST}
-ENV SYSGARANTIA_FRONT_PORT=${SYSGARANTIA_FRONT_PORT}
-
-RUN ["envsubst", "<", "/etc/nginx/nginx_template.conf", "/etc/nginx/nginx.conf"]
+COPY nginx_template.conf /etc/nginx/nginx.conf
 
 RUN ["rm", "-rf", "/usr/share/html/*"]
 
-COPY ./dist/* /usr/share/nginx/
+COPY ./dist/ /usr/share/nginx/html/

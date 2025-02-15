@@ -1,0 +1,66 @@
+services:
+  front:
+    hostname: sysgarantiafronthost
+    image: br.albatross.sysgarantia.front-i
+    container_name: br.albatross.sysgarantia.front-dc
+    build:
+      context: ./front
+    networks:
+      - sysgarantia-network
+    restart: always
+    ports:
+      - ${SYSGARANTIA_FRONT_PORT}:3000
+
+  keycloak:
+    hostname: keycloakhost
+    image: br.albatross.sysgarantia.keycloak-i
+    container_name: br.albatross.sysgarantia.keycloak-dc
+    build:
+      context: ./keycloak
+    networks:
+      - sysgarantia-network
+    restart: always
+    ports:
+      - ${SYSGARANTIA_KEYCLOAK_PORT}:8080
+
+  kafka1:
+    hostname: kafka1host
+    image: apache/kafka:3.9.0
+    container_name: br.albatross.sysgarantia.messaging.kafka-1-dc
+    networks:
+      - sysgarantia-network
+    restart: always
+
+  api:
+    hostname: sysgarantiaapihost
+    image: br.albatross.sysgarantia.backend.api-i
+    container_name: br.albatross.sysgarantia.backend.api-dc
+    build:
+      context: ./api/src/main/docker
+      dockerfile: Dockerfile.jvm
+    restart: always
+    networks:
+      - sysgarantia-network
+
+
+networks:
+  sysgarantia-network:
+    name: sysgarantia-network
+    driver: bridge
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
