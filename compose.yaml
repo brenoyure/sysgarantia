@@ -21,7 +21,17 @@ services:
       - sysgarantia-network
     restart: always
     ports:
-      - ${SYSGARANTIA_KEYCLOAK_PORT}:8080
+      - ${SYSGARANTIA_KEYCLOAK_PORT}:8443
+    depends_on:
+      db:
+        condition: service_started
+    environment:
+      - SYSGARANTIA_API_DB_HOST=${SYSGARANTIA_API_DB_HOST}
+      - SYSGARANTIA_API_DB_PORT=${SYSGARANTIA_API_DB_PORT}
+      - SYSGARANTIA_API_DB_USERNAME=${SYSGARANTIA_API_DB_USERNAME}
+      - SYSGARANTIA_API_DB_PASSWORD=${SYSGARANTIA_API_DB_PASSWORD}
+      - KC_BOOTSTRAP_ADMIN_USERNAME=admin
+      - KC_BOOTSTRAP_ADMIN_PASSWORD=admin
 
   kafka1:
     hostname: kafka1host
@@ -36,12 +46,28 @@ services:
     image: br.albatross.sysgarantia.backend.api-i
     container_name: br.albatross.sysgarantia.backend.api-dc
     build:
-      context: ./api/src/main/docker
-      dockerfile: Dockerfile.jvm
+      context: ./api
     restart: always
     networks:
       - sysgarantia-network
-
+    depends_on:
+      db:
+        condition: service_started
+      kafka1:
+        condition: service_started
+      keycloak:
+        condition: service_started
+  db:
+    hostname: sysgarantiaapidbhost
+    image: mariadb:11.4.5-noble
+    container_name: br.albatross.sysgarantia.api.db-dc
+    restart: always
+    environment:
+      - MARIADB_ROOT_PASSWORD=${SYSGARANTIA_API_DB_PASSWORD}
+    build:
+      context: ./db
+    networks:
+      - sysgarantia-network
 
 networks:
   sysgarantia-network:
