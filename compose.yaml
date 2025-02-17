@@ -38,6 +38,8 @@ services:
       - KC_BOOTSTRAP_ADMIN_USERNAME=admin
       - KC_BOOTSTRAP_ADMIN_PASSWORD=admin
       - KC_HTTPS_PORT=${SYSGARANTIA_KEYCLOAK_PORT}
+      - KC_HOSTNAME_URL=https://PUBLIC_IP_ADDRESS:${SYSGARANTIA_FRONT_PORT}/keycloak
+      - KC_HOSTNAME_ADMIN_URL=https://PUBLIC_IP_ADDRESS:${SYSGARANTIA_FRONT_PORT}/keycloak
 
   kafka1:
     hostname: kafka1host
@@ -88,17 +90,17 @@ services:
 
       - SYSGARANTIA_MAIL_SMTP_MAX_ATTACHMENT_SIZE=${SYSGARANTIA_MAIL_SMTP_MAX_ATTACHMENT_SIZE}
 
-  db:
-    hostname: sysgarantiaapidbhost
-    image: mariadb:11.4.5-noble
-    container_name: br.albatross.sysgarantia.api.db-dc
-    restart: always
-    environment:
-      - MARIADB_ROOT_PASSWORD=${SYSGARANTIA_API_DB_PASSWORD}
-    build:
-      context: ./db
-    networks:
-      - sysgarantia-network
+  # db:
+  #   hostname: sysgarantiaapidbhost
+  #   image: mariadb:11.4.5-noble
+  #   container_name: br.albatross.sysgarantia.api.db-dc
+  #   restart: always
+  #   environment:
+  #     - MARIADB_ROOT_PASSWORD=${SYSGARANTIA_API_DB_PASSWORD}
+  #   build:
+  #     context: ./db
+  #   networks:
+  #     - sysgarantia-network
 
 networks:
   sysgarantia-network:
