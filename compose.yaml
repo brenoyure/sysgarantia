@@ -10,6 +10,11 @@ services:
     restart: always
     ports:
       - ${SYSGARANTIA_FRONT_PORT}:3000
+    depends_on:
+      api:
+        condition: service_started
+      keycloak:
+        condition: service_started
 
   keycloak:
     hostname: keycloakhost
@@ -22,9 +27,9 @@ services:
     restart: always
     ports:
       - ${SYSGARANTIA_KEYCLOAK_PORT}:8443
-    depends_on:
-      db:
-        condition: service_started
+#    depends_on:
+#      db:
+#        condition: service_started
     environment:
       - SYSGARANTIA_API_DB_HOST=${SYSGARANTIA_API_DB_HOST}
       - SYSGARANTIA_API_DB_PORT=${SYSGARANTIA_API_DB_PORT}
@@ -32,6 +37,7 @@ services:
       - SYSGARANTIA_API_DB_PASSWORD=${SYSGARANTIA_API_DB_PASSWORD}
       - KC_BOOTSTRAP_ADMIN_USERNAME=admin
       - KC_BOOTSTRAP_ADMIN_PASSWORD=admin
+      - KC_HTTPS_PORT=${SYSGARANTIA_KEYCLOAK_PORT}
 
   kafka1:
     hostname: kafka1host
@@ -51,8 +57,8 @@ services:
     networks:
       - sysgarantia-network
     depends_on:
-      db:
-        condition: service_started
+#      db:
+#        condition: service_started
       kafka1:
         condition: service_started
       keycloak:
