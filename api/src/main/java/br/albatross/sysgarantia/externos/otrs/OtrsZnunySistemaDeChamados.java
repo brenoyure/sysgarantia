@@ -1,15 +1,11 @@
 package br.albatross.sysgarantia.externos.otrs;
 
-import static br.albatross.sysgarantia.externos.otrs.entities.service.Service_.id;
-import static br.albatross.sysgarantia.externos.otrs.entities.service.Service_.name;
-
 import java.util.List;
 import java.util.Optional;
 
 import br.albatross.sysgarantia.externos.SistemaDeChamados;
 import br.albatross.sysgarantia.externos.dto.Chamado;
 import br.albatross.sysgarantia.externos.dto.Servico;
-import br.albatross.sysgarantia.externos.otrs.entities.service.Service;
 
 import io.quarkus.hibernate.orm.PersistenceUnit;
 
@@ -19,9 +15,6 @@ import jakarta.inject.Inject;
 
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.NoResultException;
-import jakarta.persistence.criteria.CriteriaBuilder;
-import jakarta.persistence.criteria.CriteriaQuery;
-import jakarta.persistence.criteria.Root;
 
 /**
  * Representa a integração, utilizando o JPA, com o Sistema de Chamados OTRS/Znuny
@@ -124,21 +117,11 @@ WHERE
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public List<Servico> findAllTicketsServices() {
-        CriteriaBuilder builder       =  entityManager.getCriteriaBuilder();
-        CriteriaQuery<Servico> query  =  builder.createQuery(Servico.class);
-        Root<Service> service         =  query.from(Service.class);
-
-        query
-            .select(
-                builder.construct(Servico.class, 
-                                        service.get(id),
-                                        service.get(name)))
-            .orderBy(
-                builder.asc(service.get(name))
-            );
-
-        return entityManager.createQuery(query).getResultList();
+        return (List<Servico>) entityManager
+                .createNativeQuery("SELECT s.id, s.name FROM service s ORDER BY s.name ASC", Servico.class)
+                .getResultList();
     }
     
 }
