@@ -734,7 +734,7 @@
       "realm_client" : "false",
       "oidc.ciba.grant.enabled" : "false",
       "backchannel.logout.session.required" : "true",
-      "post.logout.redirect.uris" : "/",
+      "post.logout.redirect.uris" : "+",
       "frontchannel.logout.session.required" : "true",
       "oauth2.device.authorization.grant.enabled" : "false",
       "display.on.consent.screen" : "false",
