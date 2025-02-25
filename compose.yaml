@@ -10,11 +10,13 @@ services:
     restart: always
     ports:
       - ${SYSGARANTIA_FRONT_PORT}:3000
+    volumes:
+      - br.albatross.sysgarantia.front-vol:/var/log/nginx/:rw
     depends_on:
       api:
         condition: service_started
-      keycloak:
-        condition: service_started
+#      keycloak:
+#        condition: service_started
 
   keycloak:
     hostname: keycloakhost
@@ -49,6 +51,18 @@ services:
     networks:
       - sysgarantia-network
     restart: always
+    volumes:
+      - br.albatross.sysgarantia.messaging.kafka1-data-vol:/var/lib/kafka/data/
+    environment:
+      KAFKA_NODE_ID: 1
+      KAFKA_PROCESS_ROLES: broker,controller
+      KAFKA_LISTENERS: CONTROLLER://localhost:9091,HOST://0.0.0.0:9092,DOCKER://0.0.0.0:9093
+      KAFKA_ADVERTISED_LISTENERS: HOST://localhost:9092,DOCKER://kafka1:9093
+      KAFKA_CONTROLLER_LISTENER_NAMES: CONTROLLER
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: CONTROLLER:PLAINTEXT,HOST:PLAINTEXT,DOCKER:PLAINTEXT
+      KAFKA_CONTROLLER_QUORUM_VOTERS: 1@localhost:9091
+      KAFKA_INTER_BROKER_LISTENER_NAME: DOCKER
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
 
   api:
     hostname: sysgarantiaapihost
@@ -65,9 +79,9 @@ services:
       kafka1:
         condition: service_started
         required: true
-      keycloak:
-        condition: service_started
-        required: true
+#      keycloak:
+#        condition: service_started
+#        required: true
     environment:
       - SYSGARANTIA_API_DB_USERNAME=${SYSGARANTIA_API_DB_USERNAME}
       - SYSGARANTIA_API_DB_PASSWORD=${SYSGARANTIA_API_DB_PASSWORD}
@@ -80,6 +94,7 @@ services:
       - SYSGARANTIA_OTRS_ZNUNY_DB_PORT=${SYSGARANTIA_OTRS_ZNUNY_DB_PORT}
       - SYSGARANTIA_OTRS_ZNUNY_DB_NAME=${SYSGARANTIA_OTRS_ZNUNY_DB_NAME}
 
+      - SYSGARANTIA_MAIL_SMTP_FROM=${SYSGARANTIA_MAIL_SMTP_FROM}
       - SYSGARANTIA_MAIL_SMTP_USERNAME=${SYSGARANTIA_MAIL_SMTP_USERNAME}
       - SYSGARANTIA_MAIL_SMTP_PASSWORD=${SYSGARANTIA_MAIL_SMTP_PASSWORD}
       - SYSGARANTIA_MAIL_SMTP_HOST=${SYSGARANTIA_MAIL_SMTP_HOST}
@@ -110,8 +125,9 @@ networks:
     name: sysgarantia-network
     driver: bridge
 
-
-
+volumes:
+  br.albatross.sysgarantia.front-vol:
+  br.albatross.sysgarantia.messaging.kafka1-data-vol:
 
 
 
