@@ -2,7 +2,9 @@ package br.albatross.sysgarantia.messaging;
 
 import java.io.StringReader;
 import java.util.concurrent.CompletionStage;
+import java.util.concurrent.TimeUnit;
 
+import org.eclipse.microprofile.config.inject.ConfigProperty;
 import org.eclipse.microprofile.context.ManagedExecutor;
 import org.eclipse.microprofile.reactive.messaging.Incoming;
 import org.eclipse.microprofile.reactive.messaging.Message;
@@ -46,11 +48,15 @@ public class MessagingConsumerService {
     @Inject
     QuarkusMailerService emailService;
 
+    @Inject
+    @ConfigProperty(name="quarkus-mailer-service-timeout-seconds", defaultValue="30")
+    long timeOutSeconds;
+
     @Incoming("in-sysgarantia-novas-solicitacoes-channel")
     public CompletionStage<Void> enviarEmailDeGarantia(Message<String> emailGarantiaAsJson) {
         return executor.supplyAsync(() -> this.obterIdDoEmailAPartirDoMessagePayload(emailGarantiaAsJson))
                  .thenApplyAsync(this::buscarEmailPorId)
-                 .thenAcceptAsync(emailService::enviar)
+                 .thenAcceptAsync(emailService::enviar).orTimeout(timeOutSeconds, TimeUnit.SECONDS)
                  .thenRunAsync(emailGarantiaAsJson::ack)
                  .exceptionally(e -> {
                      emailGarantiaAsJson.nack(e).thenRunAsync(e::printStackTrace);
