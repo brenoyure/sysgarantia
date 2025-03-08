@@ -15,8 +15,8 @@ services:
     depends_on:
       api:
         condition: service_started
-#      keycloak:
-#        condition: service_started
+      keycloak:
+        condition: service_started
 
   keycloak:
     hostname: keycloakhost
@@ -29,9 +29,9 @@ services:
     restart: always
     ports:
       - ${SYSGARANTIA_KEYCLOAK_PORT}:8443
-#    depends_on:
-#      db:
-#        condition: service_started
+    depends_on:
+      db:
+        condition: service_started
     environment:
       - SYSGARANTIA_API_DB_HOST=${SYSGARANTIA_API_DB_HOST}
       - SYSGARANTIA_API_DB_PORT=${SYSGARANTIA_API_DB_PORT}
@@ -74,14 +74,14 @@ services:
     networks:
       - sysgarantia-network
     depends_on:
-#      db:
-#        condition: service_started
+      db:
+        condition: service_started
       kafka1:
         condition: service_started
         required: true
-#      keycloak:
-#        condition: service_started
-#        required: true
+      keycloak:
+        condition: service_started
+        required: true
     environment:
       - SYSGARANTIA_API_DB_USERNAME=${SYSGARANTIA_API_DB_USERNAME}
       - SYSGARANTIA_API_DB_PASSWORD=${SYSGARANTIA_API_DB_PASSWORD}
@@ -108,17 +108,17 @@ services:
       - SYSGARANTIA_MAIL_SMTP_MAX_ATTACHMENT_SIZE=${SYSGARANTIA_MAIL_SMTP_MAX_ATTACHMENT_SIZE}
       - SYSGARANTIA_API_HTTP_CORS_ORIGIN=${SYSGARANTIA_API_HTTP_CORS_ORIGIN}
 
-  # db:
-  #   hostname: sysgarantiaapidbhost
-  #   image: mariadb:11.4.5-noble
-  #   container_name: br.albatross.sysgarantia.api.db-dc
-  #   restart: always
-  #   environment:
-  #     - MARIADB_ROOT_PASSWORD=${SYSGARANTIA_API_DB_PASSWORD}
-  #   build:
-  #     context: ./db
-  #   networks:
-  #     - sysgarantia-network
+  db:
+    hostname: sysgarantiaapidbhost
+    image: mariadb:11.4.5-noble
+    container_name: br.albatross.sysgarantia.api.db-dc
+    restart: always
+    environment:
+      - MARIADB_ROOT_PASSWORD=${SYSGARANTIA_API_DB_PASSWORD}
+    networks:
+      - sysgarantia-network
+    volumes:
+      - br.albatross.sysgarantia.api.db-data-vol:/var/lib/mysql/data/
 
 networks:
   sysgarantia-network:
@@ -128,6 +128,7 @@ networks:
 volumes:
   br.albatross.sysgarantia.front-vol:
   br.albatross.sysgarantia.messaging.kafka1-data-vol:
+  br.albatross.sysgarantia.api.db-data-vol:
 
 
 
