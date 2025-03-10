@@ -119,7 +119,7 @@ services:
     networks:
       - sysgarantia-network
     volumes:
-      - br.albatross.sysgarantia.api.db-data-vol:/var/lib/mysql/data/
+      - br.albatross.sysgarantia.api.db-data-vol:/var/lib/mysql/
 
 networks:
   sysgarantia-network:
