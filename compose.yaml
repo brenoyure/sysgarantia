@@ -53,6 +53,7 @@ services:
     restart: always
     volumes:
       - br.albatross.sysgarantia.messaging.kafka1-data-vol:/var/lib/kafka/data/
+      - br.albatross.sysgarantia.messaging.kafka1-logs-vol:/tmp/kafka-logs/
     environment:
       KAFKA_NODE_ID: 1
       KAFKA_PROCESS_ROLES: broker,controller
@@ -128,7 +129,9 @@ networks:
 volumes:
   br.albatross.sysgarantia.front-vol:
   br.albatross.sysgarantia.messaging.kafka1-data-vol:
+  br.albatross.sysgarantia.messaging.kafka1-logs-vol:
   br.albatross.sysgarantia.api.db-data-vol:
+  
 
 
 
