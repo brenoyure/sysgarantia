@@ -68,7 +68,7 @@
         <textarea rows="10" class="form-control" id="textArea-corpoDoEmail" v-model="solicitacao.corpo_do_email" :disabled="isFetchingFromApi" placeholder="Prezados, falamos da empresa XPTO, equipamento de número de série AVCLX486 está ..." required></textarea>
 <br>
 
-        <label style="font-weight: bold;" class="form-label" for="inputFile-videoOuFotoProblema">(Opcional) Vídeo ou Foto do Problema: </label>
+        <label style="font-weight: bold;" class="form-label" for="inputFile-videoOuFotoProblema">(Opcional) Vídeo ou Foto do Problema (max 15MB): </label>
         <input type="file" class="form-control form-control-sm" id="inputFile-videoOuFotoProblema" @change="setAnexo">
 <br>
 
@@ -295,13 +295,15 @@ export default {
         },
 
         async setCliente(event) {
-            const clienteId = event.target.value
-            if (clienteId == undefined || isNaN(clienteId) || clienteId <= 0) {
-                this.cliente = null
-                this.solicitacao.cliente_id = null
-                this.solicitacao.copia_oculta = null
-                return
+            const selectCliente = event.target
+            const clienteId = selectCliente.value
+
+            for (let i = 0; i < selectCliente.options.length; i++) {
+                if (selectCliente.options[i].value == 0) {
+                    selectCliente.options[i].disabled = true
+                }
             }
+
             await axios
                     .get(`/clientes/${clienteId}`)
                     .then(response => {
@@ -311,12 +313,15 @@ export default {
         },
 
         async setDescricaoProblema(event) {
-            const descricaoProblemaId = event.target.value
-            if (descricaoProblemaId == undefined || isNaN(descricaoProblemaId) || descricaoProblemaId <= 0) {
-                this.descricaoProblema = 0
-                this.solicitacao.descricao_problema_id = null
-                return
-             }
+            const selectDescricaoProblema = event.target
+            const descricaoProblemaId = selectDescricaoProblema.value
+
+            for (let i = 0; i < selectDescricaoProblema.options.length; i++) {
+                if (selectDescricaoProblema.options[i].value == 0) {
+                    selectDescricaoProblema.options[i].disabled = true
+                }
+            }
+
             await axios
                     .get(`/descricaoProblemas/${descricaoProblemaId}`)
                     .then(response => {
@@ -326,7 +331,18 @@ export default {
 
         setAnexo(event) {
             const anexo = event.target.files[0]
-            this.solicitacao.anexo = anexo
+            if (anexo == undefined || anexo == null) {
+                return
+            }
+            if (anexo.size > 14900000) {
+                this.solicitacao.anexo = null;
+                this.showToast(
+                    'warning', 
+                    'O tamanho máximo de anexo permitido é de 15MB', 
+                    'Anexos maiores podem ocasionar problemas durante o envio do e-mail através do seu servidor SMTP. O arquivo selecionado não será enviado')
+            } else {
+                this.solicitacao.anexo = anexo
+            }
         },
 
         async setChamado() {
@@ -334,12 +350,14 @@ export default {
         },
 
         async setFornecedor(event) {
-            const fornecedorId = event.target.value
-            if (fornecedorId == undefined || isNaN(fornecedorId) || fornecedorId <= 0) {
-                this.fornecedor = null
-                this.solicitacao.fornecedor_id = null
-                return
+            const selectFornecedor = event.target
+            for (let i = 0; i < selectFornecedor.options.length; i++) {
+                if (selectFornecedor.options[i].value == 0) {
+                    selectFornecedor.options[i].disabled = true
+                }
             }
+
+            const fornecedorId = selectFornecedor.value
             await axios
                    .get(`/fornecedores/${fornecedorId}`)
                    .then(response => {
@@ -367,12 +385,15 @@ export default {
 
         async setAssuntoECorpoDoEmail(event) {
             const emailTemplateId = event.target.value
-            this.isFetchingFromApi = true
+
             if (emailTemplateId == undefined || isNaN(emailTemplateId) || emailTemplateId <= 0) {
                 this.solicitacao.assunto = null
                 this.solicitacao.corpo_do_email = null
                 return
             }
+
+            this.isFetchingFromApi = true
+
             await axios.get(`/emailstemplates/${emailTemplateId}`)
                     .then(response => this.emailTemplateSelecionado = response.data)
                     .then(() => this.solicitacao.assunto = this.fromTemplateToRealString(this.emailTemplateSelecionado.assunto))

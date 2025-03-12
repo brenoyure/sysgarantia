@@ -50,7 +50,7 @@
     </h3>
 
         <label class="form-label"   for="inputText-cep">CEP: </label>
-        <input class="form-control" id="inputText-cep" @change="fetchEndereco" v-model="cliente.cep" minlength="8" maxlength="9" required>
+        <input class="form-control" id="inputText-cep" @change="fetchEndereco" v-model="cliente.cep" minlength="8" maxlength="10" required>
 <br>
 
         <label class="form-label"   for="inputText-logradouro">Rua ou Avenida: </label>
@@ -169,9 +169,9 @@ export default {
         async cadastrarCliente() {
             await axios
                     .post('/clientes', this.cliente)
-                    .then(response => {
+                    .then(() => {
                         this.showToast('success', `Cliente ${this.cliente.nome} cadastrado com sucesso`)
-                        window.location.href = window.location.href.concat(`?id=${response.data.id}`)
+                        this.$router.push('/administracao/clientes/listagem')
                     })
                     .catch(error => {
                         console.log(error)

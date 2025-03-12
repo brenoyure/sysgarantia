@@ -1,10 +1,10 @@
 package br.albatross.sysgarantia.externos.resource;
 
 import java.util.List;
-import java.util.ArrayList;
+// import java.util.ArrayList;
 
 import br.albatross.sysgarantia.externos.SistemaDeChamados;
-import br.albatross.sysgarantia.externos.dto.*;
+// import br.albatross.sysgarantia.externos.dto.*;
 
 import jakarta.inject.Inject;
 
