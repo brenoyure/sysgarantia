@@ -53,7 +53,7 @@ services:
     restart: always
     volumes:
       - br.albatross.sysgarantia.messaging.kafka1-data-vol:/var/lib/kafka/data/
-      - br.albatross.sysgarantia.messaging.kafka1-logs-vol:/tmp/kafka-logs/
+      - br.albatross.sysgarantia.messaging.kafka1-logs-vol:/var/lib/kafka/data/
     environment:
       KAFKA_NODE_ID: 1
       KAFKA_PROCESS_ROLES: broker,controller
@@ -64,6 +64,7 @@ services:
       KAFKA_CONTROLLER_QUORUM_VOTERS: 1@localhost:9091
       KAFKA_INTER_BROKER_LISTENER_NAME: DOCKER
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+      KAFKA_LOG_DIR: /var/lib/kafka/data/
 
   api:
     hostname: sysgarantiaapihost
