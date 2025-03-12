@@ -1,6 +1,6 @@
 package br.albatross.sysgarantia.messaging;
 
-import java.io.StringReader;
+import java.util.Set;
 import java.util.concurrent.CompletionStage;
 import java.util.concurrent.TimeUnit;
 
@@ -9,13 +9,13 @@ import org.eclipse.microprofile.context.ManagedExecutor;
 import org.eclipse.microprofile.reactive.messaging.Incoming;
 import org.eclipse.microprofile.reactive.messaging.Message;
 
+import br.albatross.sysgarantia.models.Anexo;
 import br.albatross.sysgarantia.models.Email;
 import br.albatross.sysgarantia.repositories.EmailRepository;
 import br.albatross.sysgarantia.services.garantia.QuarkusMailerService;
+
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
-import jakarta.json.Json;
-import jakarta.json.JsonReader;
 import jakarta.transaction.Transactional;
 
 /**
@@ -37,8 +37,6 @@ import jakarta.transaction.Transactional;
 @ApplicationScoped
 public class MessagingConsumerService {
 
-    private static final String EMAIL_ID_JSON_FIELD = "email_id";
-
     @Inject
     ManagedExecutor executor;    
 
@@ -53,26 +51,24 @@ public class MessagingConsumerService {
     long timeOutSeconds;
 
     @Incoming("in-sysgarantia-novas-solicitacoes-channel")
-    public CompletionStage<Void> enviarEmailDeGarantia(Message<String> emailGarantiaAsJson) {
-        return executor.supplyAsync(() -> this.obterIdDoEmailAPartirDoMessagePayload(emailGarantiaAsJson))
-                 .thenApplyAsync(this::buscarEmailPorId)
+    public CompletionStage<Void> enviarEmailDeGarantia(Message<Email> emailGarantiaMessage) {
+        return executor.supplyAsync(() -> recuperarAnexosPeloIdDoEmail(emailGarantiaMessage.getPayload().getId()))
+                 .thenApplyAsync(anexos -> {
+                     Email email = emailGarantiaMessage.getPayload();
+                     email.setAnexos(anexos);
+                     return email;
+                 })
                  .thenAcceptAsync(emailService::enviar).orTimeout(timeOutSeconds, TimeUnit.SECONDS)
-                 .thenRunAsync(emailGarantiaAsJson::ack)
+                 .thenRunAsync(emailGarantiaMessage::ack)
                  .exceptionally(e -> {
-                     emailGarantiaAsJson.nack(e).thenRunAsync(e::printStackTrace);
+                     emailGarantiaMessage.nack(e).thenRunAsync(e::printStackTrace);
                      return null;
                  });
     }
 
-    long obterIdDoEmailAPartirDoMessagePayload(Message<String> message) {
-        try (JsonReader jsonReader = Json.createReader(new StringReader(message.getPayload()))) {
-            return jsonReader.readObject().getJsonNumber(EMAIL_ID_JSON_FIELD).longValueExact();          
-        }
-    }
-
     @Transactional
-    Email buscarEmailPorId(Long id) {
-        return emailRepository.getById((id));
+    Set<Anexo> recuperarAnexosPeloIdDoEmail(long id) {
+        return emailRepository.findAnexosById(id);
     }
 
 }

@@ -1,9 +1,12 @@
 package br.albatross.sysgarantia.repositories;
 
+import java.util.Set;
+
+import br.albatross.sysgarantia.models.Anexo;
 import br.albatross.sysgarantia.models.Email;
 
 public interface EmailRepository extends Repository<Email, Long> {
 
-    Email getById(Long id);
+    Set<Anexo> findAnexosById(long id);
 
 }

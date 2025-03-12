@@ -1,20 +1,16 @@
 package br.albatross.sysgarantia.repositories;
 
-import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
 
+import br.albatross.sysgarantia.models.Anexo;
+import br.albatross.sysgarantia.models.Anexo_;
 import br.albatross.sysgarantia.models.Email;
-import br.albatross.sysgarantia.models.Email_;
-import br.albatross.sysgarantia.models.SolicitacaoGarantia_;
-
 import jakarta.enterprise.context.ApplicationScoped;
-
 import jakarta.persistence.LockModeType;
-import jakarta.persistence.NoResultException;
-
+import jakarta.persistence.Parameter;
 import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.CriteriaQuery;
-import jakarta.persistence.criteria.JoinType;
-import jakarta.persistence.criteria.ParameterExpression;
 import jakarta.persistence.criteria.Root;
 
 @ApplicationScoped
@@ -25,31 +21,21 @@ public class EmailRepositoryImpl extends RepositoryImpl<Email, Long> implements 
     }
 
     @Override
-    public Optional<Email> findById(Long id) {
-        try {
-            return Optional.of(this.getById(id));
-        } catch (NoResultException e) { return Optional.empty(); }
-    }
-
-    @Override
-    public Email getById(Long id) {
+    public Set<Anexo> findAnexosById(long id) {
         CriteriaBuilder cb = entityManager.getCriteriaBuilder();
-        CriteriaQuery<Email> query = cb.createQuery(Email.class);
-        Root<Email> email = query.from(Email.class);
+        CriteriaQuery<Anexo> query = cb.createQuery(Anexo.class);
+        Root<Anexo> anexo = query.from(Anexo.class);
 
-        email
-            .fetch(Email_.anexos, JoinType.INNER);
-        email
-            .fetch(Email_.solicitacaoGarantia,   JoinType.INNER)
-            .fetch(SolicitacaoGarantia_.cliente, JoinType.INNER);
+        Parameter<Long> idParam = cb.parameter(Long.class);
 
-        ParameterExpression<Long> paramId = cb.parameter(Long.class);
-        query.where(cb.equal(email.get(Email_.id), paramId));
+        query.where(cb.equal(anexo.get(Anexo_.id), idParam));
 
-        return entityManager.createQuery(query)
-                .setParameter(paramId, id)
+        return entityManager
+                .createQuery(query)
+                .setParameter(idParam, id)
                 .setLockMode(LockModeType.PESSIMISTIC_READ)
-                .getSingleResult();
+                .getResultStream().collect(Collectors.toUnmodifiableSet());
+
     }
-    
+
 }

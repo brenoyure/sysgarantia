@@ -2,6 +2,9 @@ package br.albatross.sysgarantia.models;
 
 import java.sql.Blob;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
+import jakarta.json.bind.annotation.JsonbTransient;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -24,10 +27,14 @@ public class Anexo {
     private String nome;
 
     @Column(nullable = false)
+    @JsonbTransient
+    @JsonIgnore
     private Blob arquivo;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "fk_email_id", nullable = false)
+    @JsonbTransient
+    @JsonIgnore
     private Email email;
 
     public Anexo() {
