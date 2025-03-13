@@ -332,7 +332,8 @@ export default {
         setAnexo(event) {
             const anexo = event.target.files[0]
             if (anexo == undefined || anexo == null) {
-                return
+                this.solicitacao.anexo = null;
+                return;
             }
             if (anexo.size > 14900000) {
                 this.solicitacao.anexo = null;
